@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "913355758401",
+    "project_id": "chocu-93e07",
+    "storage_bucket": "chocu-93e07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913355758401:android:ffdf927caf9e98f7a7dfc0",
+        "android_client_info": {
+          "package_name": "com.chocu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "913355758401-25dgsor0o0pkact3ooakmhgaige8thln.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUyBqrfCk7GYypCSHyGJdm7X0U-PUbPdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "913355758401-25dgsor0o0pkact3ooakmhgaige8thln.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
