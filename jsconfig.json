@@ -1,0 +1,23 @@
+{
+   "compilerOptions": {
+       "baseUrl": ".",
+       "target": "es6",
+       "module": "commonjs",
+       "paths": {
+           "@src": ["."],
+           "@common": ["./src/common"],
+           "@constants": ["./src/constants"],
+           "@styles": ["./src/styles"],
+           "@components": ["./src/components"],
+           "@animation": ["./src/animations"],
+           "@containers": ["./src/containers"],
+           "@menu": ["./src/menu"],
+           "@naivgations": ["./src/naivgations"],
+           "@reducers": ["./src/reducers"],
+           "@screens": ["./src/screens"],
+           "@translation": ["./src/translation"],
+       }
+   },
+   "include": ["src/**/*", "jsconfig.json"],
+   "exclude": ["node_modules", "**/node_modules", "dist"]
+}
