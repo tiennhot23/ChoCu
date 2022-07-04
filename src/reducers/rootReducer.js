@@ -2,7 +2,7 @@ import {combineReducers} from 'redux'
 
 import {initAppAction} from '../initApp'
 import {appThemeReducer} from '../containers/AppTheme/reducer'
-// import { loginReducer } from 'containers/Login/reducer'
+import {loginReducer} from 'src/containers/Login/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -16,7 +16,7 @@ const inintAppReducer = (state = {}, action) => {
 
 const rootReducer = combineReducers({
   appThemeReducer,
-  inintAppReducer
-  // loginReducer
+  inintAppReducer,
+  loginReducer
 })
 export default rootReducer

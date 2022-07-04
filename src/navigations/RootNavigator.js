@@ -4,5 +4,5 @@ import SidebarDrawNavigator from './SidebarDrawNavigator'
 
 export default function RootNavigator() {
   const [loggedIn, isLoggedIn] = useState(true)
-  return <SidebarDrawNavigator />
+  return <AuthStackNavigator />
 }
