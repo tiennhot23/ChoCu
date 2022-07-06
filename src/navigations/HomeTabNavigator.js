@@ -10,16 +10,78 @@ import {
   PERSONAL_SCR,
   POSTS_MANAGER_SCR
 } from 'src/constants/constant'
+import {Icon} from '@components'
+import {ThemeConsumer} from 'src/context/ThemeContext'
 
 const Tab = createBottomTabNavigator()
 
 export default function HomeTabNavigator() {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
-      <Tab.Screen name={HOME_SCR} component={Home} />
-      <Tab.Screen name={POSTS_MANAGER_SCR} component={PostsManager} />
-      <Tab.Screen name={CREATE_POST_SCR} component={CreatePost} />
-      <Tab.Screen name={PERSONAL_SCR} component={Personal} />
-    </Tab.Navigator>
+    <ThemeConsumer>
+      {(theme) => (
+        <Tab.Navigator
+          initialRouteName={PERSONAL_SCR}
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveBackgroundColor: theme.colors.primaryBackground,
+            tabBarInactiveBackgroundColor: theme.colors.secondaryBackground,
+            tabBarActiveTintColor: theme.colors.primaryText,
+            tabBarInactiveTintColor: theme.colors.secondaryText
+          }}>
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({color}) => (
+                <Icon
+                  name="home-outline"
+                  color={theme.colors.primaryForeground}
+                  size={20}
+                />
+              )
+            }}
+            name={HOME_SCR}
+            component={Home}
+          />
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({color}) => (
+                <Icon
+                  name="newspaper-outline"
+                  color={theme.colors.primaryForeground}
+                  size={20}
+                />
+              )
+            }}
+            name={POSTS_MANAGER_SCR}
+            component={PostsManager}
+          />
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({color}) => (
+                <Icon
+                  name="pencil-outline"
+                  color={theme.colors.primaryForeground}
+                  size={20}
+                />
+              )
+            }}
+            name={CREATE_POST_SCR}
+            component={CreatePost}
+          />
+          <Tab.Screen
+            options={{
+              tabBarIcon: ({color}) => (
+                <Icon
+                  name="person-outline"
+                  color={theme.colors.primaryForeground}
+                  size={20}
+                />
+              )
+            }}
+            name={PERSONAL_SCR}
+            component={Personal}
+          />
+        </Tab.Navigator>
+      )}
+    </ThemeConsumer>
   )
 }

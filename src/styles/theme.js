@@ -8,9 +8,9 @@ const LightTheme = {
   colors: {
     ...DefaultTheme.colors,
     primaryBackground: '#ffffff',
-    secondaryBackground: '#ffffff',
-    primaryForeground: '#6546d7',
-    secondaryForeground: '#8442bd',
+    secondaryBackground: '#e6e7e8',
+    primaryForeground: '#ffba00',
+    secondaryForeground: '#ffd900',
     foregroundContrast: 'white',
     primaryText: '#151723',
     secondaryText: '#7e7e7e',
