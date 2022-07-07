@@ -4,7 +4,7 @@ import {font} from '@styles'
 
 export default class BaseText extends PureComponent {
   render() {
-    const {typeFont, style, text, onPress, children} = this.props
+    const {typeFont, style, text, oneline, onPress, children} = this.props
 
     return (
       <Text
@@ -13,7 +13,9 @@ export default class BaseText extends PureComponent {
           this.defaultStyle(typeFont),
           style
         ])}
-        onPress={onPress}>
+        onPress={onPress}
+        numberOfLines={oneline && 1}
+        ellipsizeMode={oneline ? 'tail' : 'clip'}>
         {text}
         {children}
       </Text>

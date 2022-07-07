@@ -7,11 +7,13 @@ import Personal from 'src/containers/Personal'
 import {
   CREATE_POST_SCR,
   HOME_SCR,
+  NOTIFICATION_SCR,
   PERSONAL_SCR,
   POSTS_MANAGER_SCR
 } from 'src/constants/constant'
 import {Icon} from '@components'
 import {ThemeConsumer} from 'src/context/ThemeContext'
+import Notification from 'src/containers/Notification'
 
 const Tab = createBottomTabNavigator()
 
@@ -66,6 +68,20 @@ export default function HomeTabNavigator() {
             }}
             name={CREATE_POST_SCR}
             component={CreatePost}
+          />
+          <Tab.Screen
+            options={{
+              tabBarBadge: 4,
+              tabBarIcon: ({color}) => (
+                <Icon
+                  name="notifications-outline"
+                  color={theme.colors.primaryForeground}
+                  size={20}
+                />
+              )
+            }}
+            name={NOTIFICATION_SCR}
+            component={Notification}
           />
           <Tab.Screen
             options={{

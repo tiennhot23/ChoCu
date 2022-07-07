@@ -32,11 +32,11 @@ class Personal extends Component {
       <>
         <View style={this.state.style.header}>
           <View style={this.state.style.headerGroupIcon}>
-            <Icon
+            {/* <Icon
               name="notifications-outline"
               size={dimen.normalIcon}
               color={'black'}
-            />
+            /> */}
           </View>
         </View>
         <ScrollView
