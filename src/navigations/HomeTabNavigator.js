@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import Home from 'src/containers/Home'
 import PostsManager from 'src/containers/PostsManager'
@@ -14,10 +14,14 @@ import {
 import {Icon} from '@components'
 import {ThemeConsumer} from 'src/context/ThemeContext'
 import Notification from 'src/containers/Notification'
+import {useSelector} from 'react-redux'
 
 const Tab = createBottomTabNavigator()
 
 export default function HomeTabNavigator() {
+  const notifyReducer = useSelector((state) => state.notifyReducer)
+  const unreadNotify = notifyReducer.dataNotify.filter((item) => !item.isRead)
+
   return (
     <ThemeConsumer>
       {(theme) => (
@@ -71,7 +75,7 @@ export default function HomeTabNavigator() {
           />
           <Tab.Screen
             options={{
-              tabBarBadge: 4,
+              tabBarBadge: unreadNotify.length > 0 ? unreadNotify.length : null,
               tabBarIcon: ({color}) => (
                 <Icon
                   name="notifications-outline"

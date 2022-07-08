@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import {connect} from 'react-redux'
 import {Avatar, withTheme} from 'react-native-paper'
+import {bindActionCreators} from 'redux'
 
 import dynamicStyle from './style'
 import {BaseText, Button, Icon} from '@components'
@@ -17,24 +18,16 @@ import {dimen} from '@styles'
 import {constant} from '@constants'
 import {firebase} from '@react-native-firebase/messaging'
 import RowItem from './components/RowItem'
+import BaseLoading from 'src/components/BaseLoading'
+import * as actionNotifyCreator from './action'
+import PushNotification from 'react-native-push-notification'
 
 class Notification extends Component {
   constructor(props) {
     super(props)
     this.state = {
       themeTag: this.props.theme.tag,
-      style: dynamicStyle(this.props.theme),
-      data: [
-        {
-          id: 1,
-          title: 'a',
-          content: 'Đây là một thông báo dài dài dài dài dài dài dài dài dài',
-          time: 1657175634417,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          isRead: false
-        }
-      ]
+      style: dynamicStyle(this.props.theme)
     }
   }
 
@@ -48,60 +41,106 @@ class Notification extends Component {
     return null
   }
 
+  onDelete = (notifyIndex) => {
+    const {actionNotify} = this.props
+    actionNotify.delete_notify(notifyIndex)
+  }
+
+  onRead = (notifyIndex) => {
+    const {actionNotify} = this.props
+    actionNotify.mark_notify_as_read(notifyIndex)
+  }
+
   render() {
+    const {dataNotify, stateNotify, isLoadMore, stateLoadMore} = this.props
     return (
       <>
         <View style={this.state.style.header}>
           <View style={this.state.style.headerGroupIcon}>
             {/* <Icon
-              name="notifications-outline"
+              name="trash-outline"
               size={dimen.normalIcon}
               color={'black'}
             /> */}
           </View>
         </View>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          style={this.state.style.wrapper}
-          data={this.state.data}
-          renderItem={(data) => (
-            <RowItem
-              title={data.item.title}
-              content={data.item.content}
-              image={data.item.image}
-              time={data.item.time}
-              theme={this.props.theme}
-              isRead={data.item.isRead}
+        <BaseLoading
+          isLoading={false}
+          isError={false}
+          isEmpty={false}
+          textLoadingError={'loading error from compo notification'}
+          onPressTryAgains={() => {}}
+          content={
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              style={this.state.style.wrapper}
+              data={dataNotify}
+              renderItem={({item, index}) => (
+                <RowItem
+                  item={item}
+                  index={index}
+                  theme={this.props.theme}
+                  onDelete={this.onDelete}
+                  onRead={this.onRead}
+                />
+              )}
+              ListFooterComponent={
+                <ListFooter
+                  isLoadMore={isLoadMore}
+                  stateLoadMore={stateLoadMore}
+                  style={this.state.style.load_more}
+                />
+              }
+              keyExtractor={(item, index) => `${index}`}
+              onEndReachedThreshold={0.5}
+              onEndReached={() => {}}
             />
-          )}
-          ListFooterComponent={() => {
-            return (
-              <View style={{margin: 10, alignItems: 'center'}}>
-                {false ? (
-                  <ActivityIndicator size={'large'} />
-                ) : (
-                  <TouchableOpacity>
-                    <BaseText
-                      text="Load more"
-                      style={this.state.style.load_more}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-            )
-          }}
-          keyExtractor={(item) => item.id}
+          }
         />
       </>
     )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  dataNotify: state.notifyReducer.dataNotify,
+  stateNotify: state.notifyReducer.stateNotify,
+  isLoadMore: state.notifyReducer.isLoadMore,
+  stateLoadMore: state.notifyReducer.stateLoadMore
+})
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = (dispatch) => ({
+  actionNotify: bindActionCreators(actionNotifyCreator, dispatch)
+})
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(withTheme(Notification))
+
+const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
+  const {isFetching, isError} = stateLoadMore
+  return (
+    <View style={{margin: 10, alignItems: 'center'}}>
+      {isLoadMore ? (
+        isFetching ? (
+          <ActivityIndicator size={'large'} color={style.color} />
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              PushNotification.cancelAllLocalNotifications()
+              PushNotification.localNotification({
+                channelId: 'channel-id',
+                title: 'TITLE',
+                message: 'MESSAGE'
+              })
+            }}>
+            <BaseText text="Load more" style={style} />
+          </TouchableOpacity>
+        )
+      ) : (
+        <BaseText text="End" style={style} />
+      )}
+    </View>
+  )
+}

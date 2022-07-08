@@ -3,22 +3,24 @@ import {constant} from '@constants'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React from 'react'
-import {Image, View} from 'react-native'
+import {Image, TouchableOpacity, View} from 'react-native'
 import {calcWidth} from 'src/constants/constant'
 import {FONT_SIZE_16} from 'src/styles/fonts'
 
-export default function RowItem({title, content, image, time, theme, isRead}) {
+export default function RowItem({item, index, theme, onRead, onDelete}) {
+  const {title, content, image, time, isRead} = item
   return (
-    <View
+    <TouchableOpacity
       style={{
         padding: calcWidth(10),
         flexDirection: 'row',
         backgroundColor: isRead
           ? theme.colors.primaryBackground
           : theme.colors.secondaryBackground,
-        borderBottomWidth: 0.7,
+        borderBottomWidth: 1,
         borderBottomColor: theme.colors.primaryForeground
-      }}>
+      }}
+      onPress={() => onRead(index)}>
       {image && (
         <Image
           source={{uri: image}}
@@ -65,14 +67,17 @@ export default function RowItem({title, content, image, time, theme, isRead}) {
           />
         </View>
       </View>
-      <Icon
-        name="trash-outline"
-        color={theme.colors.primaryText}
-        size={dimen.smallIcon}
+      <TouchableOpacity
         style={{
           alignSelf: 'center'
         }}
-      />
-    </View>
+        onPress={() => onDelete(index)}>
+        <Icon
+          name="trash-outline"
+          color={theme.colors.primaryText}
+          size={dimen.smallIcon}
+        />
+      </TouchableOpacity>
+    </TouchableOpacity>
   )
 }
