@@ -1,4 +1,4 @@
-import { storageHelper } from '@common'
+import {storageHelper} from '@common'
 
 /* ======== STORE ========== */
 

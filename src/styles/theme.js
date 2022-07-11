@@ -23,7 +23,8 @@ const LightTheme = {
     grey3: '#f5f5f5',
     grey6: '#d6d6d6',
     grey9: '#939393',
-    red: '#ea0606'
+    red: '#ea0606',
+    blue: '#4287f5'
   }
 }
 
@@ -50,7 +51,8 @@ const DarkTheme = {
     grey3: '#2a2a2a',
     grey6: '#f5f5f5',
     grey9: '#eaeaea',
-    red: '#ea0606'
+    red: '#ea0606',
+    blue: '#4287f5'
   }
 }
 

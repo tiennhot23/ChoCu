@@ -7,6 +7,7 @@ import dynamicStyle from './style'
 import {BaseText, Icon} from '@components'
 import {dimen} from '@styles'
 import RowItem from './components/RowItem'
+import {USER_INFO_SCR} from 'src/constants/constant'
 
 class Personal extends Component {
   constructor(props) {
@@ -52,7 +53,7 @@ class Personal extends Component {
             <View
               style={{
                 flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'space-around',
                 padding: 10
               }}>
               <BaseText
@@ -62,6 +63,7 @@ class Personal extends Component {
               <BaseText
                 text="Xem trang cá nhân"
                 style={this.state.style.nor_text}
+                onPress={() => this.props.navigation.navigate(USER_INFO_SCR)}
               />
             </View>
           </View>
