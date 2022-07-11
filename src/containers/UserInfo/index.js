@@ -2,6 +2,7 @@ import {BaseText, Icon} from '@components'
 import React, {Component} from 'react'
 import {ScrollView, Text, View} from 'react-native'
 import {Avatar} from 'react-native-paper'
+import {EDIT_INFO_SCR} from 'src/constants/constant'
 import ThemeContext, {ThemeConsumer} from 'src/context/ThemeContext'
 import PostContainer from './components/PostContainer'
 import dynamicStyle from './style'
@@ -50,9 +51,11 @@ export default class UserInfo extends Component {
                     />
                   </View>
                   <BaseText
-                    text="Chỉnh sửa trang cá nhân"
+                    text="Chỉnh sửa thông tin cá nhân"
                     style={[style.nor_text, style.thin_border]}
-                    onPress={() => {}}
+                    onPress={() => {
+                      this.props.navigation.navigate(EDIT_INFO_SCR)
+                    }}
                   />
                 </View>
               </View>

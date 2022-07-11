@@ -1,10 +1,16 @@
 import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import {HOME_NAV, POST_SCR, USER_INFO_SCR} from 'src/constants/constant'
+import {
+  EDIT_INFO_SCR,
+  HOME_NAV,
+  POST_SCR,
+  USER_INFO_SCR
+} from 'src/constants/constant'
 import HomeTabNavigator from './HomeTabNavigator'
 import Post from 'src/containers/Post'
 import UserInfo from 'src/containers/UserInfo'
 import {ThemeConsumer} from 'src/context/ThemeContext'
+import EditInfo from 'src/containers/EditInfo'
 
 const Stack = createNativeStackNavigator()
 
@@ -28,6 +34,7 @@ export default function MainStackNavigator() {
               }}>
               <Stack.Screen name={POST_SCR} component={Post} />
               <Stack.Screen name={USER_INFO_SCR} component={UserInfo} />
+              <Stack.Screen name={EDIT_INFO_SCR} component={EditInfo} />
             </Stack.Group>
           </Stack.Navigator>
         )

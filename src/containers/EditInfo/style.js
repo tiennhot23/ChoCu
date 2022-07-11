@@ -1,13 +1,13 @@
 import {constant} from '@constants'
 import {dimen} from '@styles'
 import {StyleSheet} from 'react-native'
-import {FONT_SIZE_16} from 'src/styles/fonts'
+import {calcHeight, calcWidth} from 'src/constants/constant'
+import {FONT_SIZE_14, FONT_SIZE_16} from 'src/styles/fonts'
 
 const dynamicStyle = (theme) => {
   const colors = theme.colors
   return StyleSheet.create({
     wrapper: {
-      padding: constant.calcWidth(5),
       backgroundColor: colors.secondaryBackground
     },
     person_container: {
@@ -18,6 +18,48 @@ const dynamicStyle = (theme) => {
       flex: 1,
       flexDirection: 'row'
     },
+    list_container: {
+      marginBottom: '20%',
+      borderBottomWidth: 1,
+      borderBottomColor: colors.primaryForeground
+    },
+    border_input: {
+      flex: 1,
+      borderWidth: 1,
+      borderRadius: 10,
+      padding: calcWidth(5),
+      marginVertical: calcWidth(10),
+      marginHorizontal: calcWidth(20),
+      flexDirection: 'column'
+    },
+    camera: {
+      padding: 3,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderStyle: 'dotted',
+      backgroundColor: colors.hairline,
+      position: 'absolute',
+      left: calcWidth(50),
+      top: calcHeight(50)
+    },
+    absolute_button: {
+      width: '70%',
+      marginHorizontal: '15%',
+      backgroundColor: colors.primaryForeground,
+      padding: 15,
+      borderRadius: 20,
+      position: 'absolute',
+      left: 0,
+      top: constant.height - 150,
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    row_item: {
+      flexDirection: 'column',
+      backgroundColor: colors.primaryBackground,
+      padding: calcWidth(5)
+    },
+
     detail_container: {
       backgroundColor: colors.primaryBackground,
       padding: constant.calcWidth(5),
@@ -25,17 +67,11 @@ const dynamicStyle = (theme) => {
       flexDirection: 'column'
     },
     posts_container: {
-      marginVertical: 10,
+      marginVertical: calcHeight(10),
       backgroundColor: colors.primaryBackground,
       padding: constant.calcWidth(5),
       flex: 1,
       flexDirection: 'column'
-    },
-    list_container: {
-      borderTopWidth: 1,
-      borderBottomWidth: 1,
-      borderBottomColor: colors.secondaryText,
-      borderTopColor: colors.secondaryText
     },
     bold_text: {
       fontSize: FONT_SIZE_16,
@@ -46,8 +82,8 @@ const dynamicStyle = (theme) => {
     },
     nor_text: {
       color: colors.secondaryText,
-      marginLeft: 4,
-      padding: 5
+      marginLeft: calcWidth(4),
+      padding: calcWidth(5)
     },
     link_text: {
       color: colors.blue,

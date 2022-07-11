@@ -14,6 +14,7 @@ export const FORGOT_PASSWORD_SCR = 'ForgotPassword'
 export const OTP_SCR = 'OTP'
 export const NOTIFICATION_SCR = 'Notification'
 export const USER_INFO_SCR = 'UserInfo'
+export const EDIT_INFO_SCR = 'EditInfo'
 
 export const width = Dimensions.get('window').width
 export const height = Dimensions.get('window').height
