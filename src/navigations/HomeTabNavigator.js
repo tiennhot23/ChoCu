@@ -26,7 +26,6 @@ export default function HomeTabNavigator() {
     <ThemeConsumer>
       {(theme) => (
         <Tab.Navigator
-          initialRouteName={PERSONAL_SCR}
           screenOptions={{
             headerShown: false,
             tabBarActiveBackgroundColor: theme.colors.primaryBackground,

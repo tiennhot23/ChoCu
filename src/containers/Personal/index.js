@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
-import {Image, ScrollView, Text, View} from 'react-native'
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import {connect} from 'react-redux'
 import {Avatar, withTheme} from 'react-native-paper'
 
 import dynamicStyle from './style'
 import {BaseText, Icon} from '@components'
-import {dimen} from '@styles'
+import {dimen, theme} from '@styles'
 import RowItem from './components/RowItem'
 import {USER_INFO_SCR} from 'src/constants/constant'
 
@@ -52,19 +52,33 @@ class Personal extends Component {
             />
             <View
               style={{
-                flexDirection: 'column',
-                justifyContent: 'space-around',
-                padding: 10
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-between'
               }}>
-              <BaseText
-                text="Ten dang nhap"
-                style={[this.state.style.bold_text]}
-              />
-              <BaseText
-                text="Xem trang cá nhân"
-                style={this.state.style.nor_text}
-                onPress={() => this.props.navigation.navigate(USER_INFO_SCR)}
-              />
+              <View
+                style={{
+                  flexDirection: 'column',
+                  justifyContent: 'space-around',
+                  padding: 10
+                }}>
+                <BaseText
+                  text="Ten dang nhap"
+                  style={[this.state.style.bold_text]}
+                />
+                <BaseText
+                  text="Xem trang cá nhân"
+                  style={this.state.style.nor_text}
+                  onPress={() => this.props.navigation.navigate(USER_INFO_SCR)}
+                />
+              </View>
+              <TouchableOpacity style={{alignSelf: 'center'}}>
+                <Icon
+                  name="log-out-outline"
+                  size={32}
+                  color={this.props.theme.colors.primaryText}
+                />
+              </TouchableOpacity>
             </View>
           </View>
           <RowItem
