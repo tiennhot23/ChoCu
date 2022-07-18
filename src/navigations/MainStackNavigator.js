@@ -32,15 +32,16 @@ export default function MainStackNavigator() {
                 name={HOME_NAV}
                 component={HomeTabNavigator}
               />
+              <Stack.Group screenOptions={{headerShown: false}}>
+                <Stack.Screen name={POST_SCR} component={Post} />
+              </Stack.Group>
               <Stack.Group
                 screenOptions={{
-                  headerShown: false,
                   headerShadowVisible: false,
                   headerStyle: {
                     backgroundColor: theme.colors.primaryForeground
                   }
                 }}>
-                <Stack.Screen name={POST_SCR} component={Post} />
                 <Stack.Screen name={USER_INFO_SCR} component={UserInfo} />
                 <Stack.Screen name={EDIT_INFO_SCR} component={EditInfo} />
               </Stack.Group>

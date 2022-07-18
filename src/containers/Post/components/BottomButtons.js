@@ -49,8 +49,8 @@ export default function BottomButtons({style}) {
           alignItems: 'center'
         }}>
         <Icon
-          type="FontAwsome"
-          name="comments"
+          tye="MaterialCommunityIcons"
+          name="message-text"
           size={20}
           color={style.colors.primaryText}
         />
