@@ -4,6 +4,7 @@ import {
   EDIT_INFO_SCR,
   HOME_NAV,
   POST_SCR,
+  SEARCH_SCR,
   USER_INFO_SCR
 } from 'src/constants/constant'
 import HomeTabNavigator from './HomeTabNavigator'
@@ -13,6 +14,7 @@ import EditInfo from 'src/containers/EditInfo'
 import Post from 'src/containers/Post'
 import PostMenu from 'src/containers/Post/components/PostMenu'
 import {Button, StatusBar} from 'react-native'
+import Search from 'src/containers/Search'
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +36,7 @@ export default function MainStackNavigator() {
               />
               <Stack.Group screenOptions={{headerShown: false}}>
                 <Stack.Screen name={POST_SCR} component={Post} />
+                <Stack.Screen name={SEARCH_SCR} component={Search} />
               </Stack.Group>
               <Stack.Group
                 screenOptions={{

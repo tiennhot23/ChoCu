@@ -2,14 +2,14 @@ import React from 'react'
 import {View, TouchableOpacity, Text} from 'react-native'
 import {Icon} from '@components'
 
-export default function Header({style}) {
+export default function Header({style, onSearchBarPress, onChatBoxPress}) {
   return (
     <View
       style={{
-        flex: 1,
         flexDirection: 'row',
-        padding: 16,
-        backgroundColor: style.colors.primaryForeground
+        padding: 10,
+        backgroundColor: style.colors.primaryForeground,
+        alignItems: 'center'
       }}>
       <TouchableOpacity
         style={{
@@ -22,7 +22,8 @@ export default function Header({style}) {
           alignItems: 'center',
           justifyContent: 'space-between',
           backgroundColor: style.colors.primaryBackground
-        }}>
+        }}
+        onPress={onSearchBarPress}>
         <Text>Tìm kiếm trên chợ cũ</Text>
         <Icon
           name="search-outline"
@@ -30,7 +31,7 @@ export default function Header({style}) {
           color={style.colors.primaryText}
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={onChatBoxPress}>
         <Icon
           name="chatbox-outline"
           style={{

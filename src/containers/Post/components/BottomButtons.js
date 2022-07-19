@@ -49,7 +49,7 @@ export default function BottomButtons({style}) {
           alignItems: 'center'
         }}>
         <Icon
-          tye="MaterialCommunityIcons"
+          type="MaterialCommunityIcons"
           name="message-text"
           size={20}
           color={style.colors.primaryText}

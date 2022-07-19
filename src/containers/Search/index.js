@@ -1,25 +1,15 @@
 import React, {Component} from 'react'
-import {Text, TouchableOpacity, View, ScrollView, FlatList} from 'react-native'
-import {connect} from 'react-redux'
-import {Icon} from '@components'
-import {POST_SCR, SEARCH_SCR} from 'src/constants/constant'
+import {FlatList, Text, View} from 'react-native'
 import {ThemeConsumer} from 'src/context/ThemeContext'
-
-import dynamicStyle from './style'
-import Slider from './components/Slider'
+import Filter from './components/Filter'
 import Header from './components/Header'
-import Categories from './components/Categories'
-import {PostsHeader, PostCard} from './components/Posts'
+import {PostCard, PostsHeader} from './components/Posts'
+import dynamicStyle from './style'
 
-class Home extends Component {
+export default class Search extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      images: [
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444'
-      ],
       categories: [
         {
           id: 1,
@@ -161,14 +151,6 @@ class Home extends Component {
     }
   }
 
-  onPostPress = () => {
-    this.props.navigation.navigate(POST_SCR)
-  }
-
-  onSearchBarPress = () => {
-    this.props.navigation.navigate(SEARCH_SCR)
-  }
-
   render() {
     return (
       <ThemeConsumer>
@@ -176,23 +158,12 @@ class Home extends Component {
           const style = dynamicStyle(theme)
           return (
             <View style={style.wrapper}>
+              <View>
+                <Header style={style} navigation={this.props.navigation} />
+                <Filter style={style} />
+                <PostsHeader style={style} />
+              </View>
               <FlatList
-                ListHeaderComponent={() => {
-                  return (
-                    <View key={0}>
-                      <Header
-                        style={style}
-                        onSearchBarPress={this.onSearchBarPress}
-                      />
-                      <Slider images={this.state.images} />
-                      <Categories
-                        style={style}
-                        categories={this.state.categories}
-                      />
-                      <PostsHeader style={style} />
-                    </View>
-                  )
-                }}
                 data={this.state.posts}
                 showsVerticalScrollIndicator={false}
                 overScrollMode={'never'}
@@ -218,9 +189,3 @@ class Home extends Component {
     )
   }
 }
-
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = (dispatch) => ({})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
