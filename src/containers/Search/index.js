@@ -147,8 +147,31 @@ export default class Search extends Component {
           location: 'Ho Chi Minh',
           haveOnlinePayment: true
         }
-      ]
+      ],
+      modalLocationVisible: false,
+      modalCategoryVisible: false,
+      location: '',
+      category: ''
     }
+  }
+
+  openLocationSelection = () => {
+    this.setState({
+      modalLocationVisible: true
+    })
+  }
+
+  cancelLocationSelection = () => {
+    this.setState({
+      modalLocationVisible: false
+    })
+  }
+
+  applyLocationSelection = (location) => {
+    this.setState({
+      modalLocationVisible: false,
+      location: location
+    })
   }
 
   render() {

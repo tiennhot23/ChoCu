@@ -1,8 +1,63 @@
 import {Icon} from '@components'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
+import {useDispatch, useSelector} from 'react-redux'
+import ItemsSelection from 'src/containers/ItemsSelection'
+import {
+  getDataDistricts,
+  getDataProvinces
+} from 'src/containers/Location/action'
+
+const PROVINCE = 'Tỉnh/Thành phố'
+const DISTRICT = 'Quận/Huyện'
+const CATEGORY = 'Danh mục'
 
 export default function Filter({style}) {
+  const [selectedLocation, setSelectedLocation] = useState({})
+
+  const [selectedCategory, setSelectedCategory] = useState({})
+
+  const dispatch = useDispatch()
+  const provinces = useSelector((state) => state.locationReducer.provinces)
+  const districts = useSelector((state) => state.locationReducer.districts)
+  const [titleSelection, setTitleSelection] = useState('')
+  const [dataSelection, setDataSelection] = useState([])
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    dispatch(getDataProvinces())
+  }, [])
+
+  const openSelection = (title, data) => {
+    setVisible(true)
+    setTitleSelection(title)
+    setDataSelection(data)
+  }
+
+  const cancelSelection = () => {
+    setVisible(false)
+  }
+
+  const applySelection = (valueSelected) => {
+    setVisible(false)
+    switch (titleSelection) {
+      case PROVINCE:
+        setSelectedLocation({
+          province: valueSelected
+        })
+        dispatch(getDataDistricts(valueSelected))
+        break
+      case DISTRICT:
+        setSelectedLocation({
+          ...selectedLocation,
+          district: valueSelected
+        })
+        break
+      default:
+        break
+    }
+  }
+
   return (
     <View style={{padding: 10}}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -17,8 +72,18 @@ export default function Filter({style}) {
               style={{marginHorizontal: 4, color: style.colors.secondaryText}}>
               Khu vực:
             </Text>
-            <SelectedBox style={style} title={'Tỉnh/Thành phố'} />
-            <SelectedBox style={style} title={'Quận/Huyện'} />
+            <SelectedBox
+              style={style}
+              title={selectedLocation.province || PROVINCE}
+              onPress={() => openSelection(PROVINCE, provinces)}
+            />
+            {selectedLocation.province && (
+              <SelectedBox
+                style={style}
+                title={selectedLocation.district || DISTRICT}
+                onPress={() => openSelection(DISTRICT, districts)}
+              />
+            )}
           </View>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
@@ -30,10 +95,22 @@ export default function Filter({style}) {
               style={{marginHorizontal: 4, color: style.colors.secondaryText}}>
               Chi tiết:
             </Text>
-            <SelectedBox style={style} title={'Danh mục'} />
+            <SelectedBox
+              style={style}
+              title={selectedCategory.category || CATEGORY}
+              onPress={() => {}}
+            />
           </View>
         </View>
       </ScrollView>
+      <ItemsSelection
+        style={style}
+        visible={visible}
+        onCancel={cancelSelection}
+        onApply={applySelection}
+        data={dataSelection}
+        title={titleSelection}
+      />
     </View>
   )
 }
