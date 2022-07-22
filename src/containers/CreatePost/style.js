@@ -3,12 +3,11 @@ import {StyleSheet} from 'react-native'
 const dynamicStyle = (theme) => {
   const colors = theme.colors
   return StyleSheet.create({
-    container: {
-      backgroundColor: colors.hairline,
+    wrapper: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    }
+      backgroundColor: colors.primaryBackground
+    },
+    colors
   })
 }
 

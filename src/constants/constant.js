@@ -26,3 +26,5 @@ const standardHeight = 667
 export const calcWidth = (size) => Math.round((width / standardWidth) * size)
 
 export const calcHeight = (size) => Math.round((height / standardHeight) * size)
+
+export const headerHeight = calcHeight(48)
