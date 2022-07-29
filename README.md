@@ -12,3 +12,7 @@ npx react-native init ChoCu --version 0.68.2
 -   clean grandle and rebuild
 -   adb reverse tcp:8097 tcp:8097
 
+### config prettier
+
+-   yarn add --dev prettier
+-   config file .prettierrc.js, .vscode/settings.json
