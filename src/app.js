@@ -1,7 +1,9 @@
+import {NavigationContainer} from '@react-navigation/native'
 import React from 'react'
 import {SafeAreaView, Text} from 'react-native'
 import {useAppTheme} from './common/hooks'
 import {ThemeProvider} from './context/ThemeContext'
+import RootNavigator from './navigations/RootNavigator'
 
 export default function app() {
   const appTheme = useAppTheme()
@@ -9,7 +11,9 @@ export default function app() {
     <ThemeProvider value={appTheme}>
       <SafeAreaView
         style={{flex: 1, backgroundColor: appTheme.primaryBackground}}>
-        <Text style={{color: appTheme.primaryText}}>TET</Text>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
       </SafeAreaView>
     </ThemeProvider>
   )

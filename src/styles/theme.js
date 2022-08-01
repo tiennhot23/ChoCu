@@ -3,8 +3,8 @@ const LightTheme = {
   colors: {
     primaryBackground: '#ffffff',
     secondaryBackground: '#e6e7e8',
-    primaryForeground: '#ffba00',
-    secondaryForeground: '#ffd900',
+    primaryForeground: '#121212',
+    secondaryForeground: '#000000',
     foregroundContrast: 'white',
     primaryText: '#151723',
     secondaryText: '#7e7e7e',
