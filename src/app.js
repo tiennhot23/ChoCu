@@ -1,6 +1,16 @@
 import React from 'react'
-import {Text} from 'react-native'
+import {SafeAreaView, Text} from 'react-native'
+import {useAppTheme} from './common/hooks'
+import {ThemeProvider} from './context/ThemeContext'
 
 export default function app() {
-  return <Text>Hello</Text>
+  const appTheme = useAppTheme()
+  return (
+    <ThemeProvider value={appTheme}>
+      <SafeAreaView
+        style={{flex: 1, backgroundColor: appTheme.primaryBackground}}>
+        <Text style={{color: appTheme.primaryText}}>TET</Text>
+      </SafeAreaView>
+    </ThemeProvider>
+  )
 }
