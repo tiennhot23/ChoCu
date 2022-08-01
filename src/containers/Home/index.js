@@ -4,10 +4,13 @@ import {Text, View} from 'react-native'
 export default class Home extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      theme: this.props.route.params
+    }
   }
 
   render() {
-    const theme = this.props.route.params
+    const {theme} = this.state
     return (
       <View
         style={[

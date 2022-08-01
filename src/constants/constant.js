@@ -16,6 +16,8 @@ export const NOTIFICATION_SCR = 'Notification'
 export const USER_INFO_SCR = 'UserInfo'
 export const EDIT_INFO_SCR = 'EditInfo'
 export const SEARCH_SCR = 'Search'
+export const MAIN_NAV = 'MainNav'
+export const AUTH_NAV = 'AuthNav'
 
 export const width = Dimensions.get('window').width
 export const height = Dimensions.get('window').height
@@ -27,8 +29,11 @@ export const calcWidth = (size) => Math.round((width / standardWidth) * size)
 
 export const calcHeight = (size) => Math.round((height / standardHeight) * size)
 
-export const headerHeight = calcHeight(48)
+export const headerHeight = calcHeight(45)
 
 export const smallIcon = 20
 export const normalIcon = 28
 export const largeIcon = 40
+
+export const default_user =
+  'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-default-avatar-profile-icon-vector-social-media-user-image-vector-illustration-227787227.jpg'

@@ -1,4 +1,5 @@
 import {storageHelper} from '@common'
+import {CURRENT_THEME, CURRENT_USER} from './constants/storage'
 
 /* ======== STORE ========== */
 
@@ -7,14 +8,30 @@ export const initAppAction = {
   INIT_STORE
 }
 
-export const initStore = (result) => {
-  console.log(result)
+export const initStore = (storageData) => {
+  console.log(storageData)
   return {
     type: INIT_STORE,
-    currentTheme: result[0][1]
+    currentTheme: storageData.currentTheme,
+    currentUser: storageData.currentUser
   }
 }
 
 export const getAsyncStorage = () => (dispatch) => {
-  storageHelper.getInitStoreData().then((result) => dispatch(initStore(result)))
+  storageHelper.getInitStoreData().then((result) => {
+    let storageData = {}
+    result.map((item, index) => {
+      switch (item[0]) {
+        case CURRENT_THEME:
+          storageData.currentTheme = item[1]
+          break
+        case CURRENT_USER:
+          storageData.currentUser = item[1]
+          break
+        default:
+          break
+      }
+    })
+    dispatch(initStore(storageData))
+  })
 }
