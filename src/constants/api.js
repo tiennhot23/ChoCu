@@ -1,0 +1,10 @@
+const baseUrl = 'http://10.152.214.96:3000'
+
+export const API_REQUEST_LOCATION = baseUrl + '/location'
+export const API_REQUEST_LOCATION_PROVINCES = baseUrl + '/location/provinces'
+export const API_REQUEST_LOCATION_DISTRICTS = baseUrl + '/location/districts'
+export const API_REQUEST_LOCATION_WARDS = baseUrl + '/location/wards'
+export const API_REQUEST_AUTH_TOKEN = baseUrl + '/user/login'
+export const API_LOGOUT = baseUrl + '/user/logout'
+export const API_SUBSCRIBE_NOTIFY = baseUrl + '/user/subcribe-notify'
+export const API_UNSUBSCRIBE_NOTIFY = baseUrl + '/user/unsubcribe-notify'

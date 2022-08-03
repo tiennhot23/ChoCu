@@ -29,11 +29,6 @@ export const SUCCESS = true
 const ONE_SECOND = 1000
 export const TIME_OUT = 60 * ONE_SECOND
 
-export const API_REQUEST_LOCATION = baseUrl + '/location'
-export const API_REQUEST_LOCATION_PROVINCES = baseUrl + '/location/provinces'
-export const API_REQUEST_LOCATION_DISTRICTS = baseUrl + '/location/districts'
-export const API_REQUEST_LOCATION_WARDS = baseUrl + '/location/wards'
-
 export const apiBase = (
   url,
   method,

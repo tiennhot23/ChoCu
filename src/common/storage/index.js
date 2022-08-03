@@ -53,6 +53,7 @@ export const setItem = (key, value) => {
 
 export const getItem = (key) => {
   return new Promise((resolve, reject) => {
+    logCurrData()
     AsyncStorage.getItem(key)
       .then((result) => {
         if (helper.isValidObject(result)) resolve(result)

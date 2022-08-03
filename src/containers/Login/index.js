@@ -17,7 +17,11 @@ import * as LoginActionCreator from './action'
 import FormMessage from './components/FormMessage'
 import FormInput from './components/FormInput'
 import FormButton from './components/FormButton'
-import {FORGOT_PASSWORD_SCR, SIGN_UP_SCR} from 'src/constants/constant'
+import {
+  FORGOT_PASSWORD_SCR,
+  HOME_SCR,
+  SIGN_UP_SCR
+} from 'src/constants/constant'
 import {FONT_SIZE_18} from 'src/styles/fonts'
 import {BaseText, Icon} from '@components'
 
@@ -75,14 +79,13 @@ class Login extends Component {
     const {isFetching} = this.props
     if (preProps.isFetching !== isFetching) {
       if (!isFetching) {
-        const {message, isError, appSwitchAction} = this.props
+        const {message, isError} = this.props
         if (isError) {
           // hideBlockUI()
           this.setState({messageErrorLogin: message})
         } else {
           // hideBlockUI()
-          // storageHelper.setItem(STORAGE_CONST.CURRENT_LANGUAGE, this.state.language)
-          // appSwitchAction.switchToMainScreen()
+          this.props.navigation.navigate(HOME_SCR)
         }
       }
     }
