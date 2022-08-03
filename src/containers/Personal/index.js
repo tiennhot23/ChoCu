@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import {Avatar} from 'react-native-paper'
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 import {AUTH_NAV, LOGIN_SCR} from 'src/constants/constant'
 
 import {removeUser} from '../CurrentUser/action'
@@ -46,7 +47,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  removeCurrentUser: () => dispatch(removeUser)
+  removeCurrentUser: bindActionCreators(removeUser, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Personal)

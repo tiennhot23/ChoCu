@@ -1,24 +1,295 @@
+import {helper} from '@common'
+import {dimen} from '@styles'
+import {constant} from '@constants'
 import React, {Component} from 'react'
-import {Text, View} from 'react-native'
+import {
+  I18nManager,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {saveUser} from '../CurrentUser/action'
+import * as LoginActionCreator from './action'
+import FormMessage from './components/FormMessage'
+import FormInput from './components/FormInput'
+import FormButton from './components/FormButton'
+import {FORGOT_PASSWORD_SCR, SIGN_UP_SCR} from 'src/constants/constant'
+import {FONT_SIZE_18} from 'src/styles/fonts'
+import {BaseText, Icon} from '@components'
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      theme: props.route.params,
+      messageErrorLogin: '',
+      language: 'vi',
+      userName: '',
+      passWord: '',
+      isShowPassword: false,
+      rememberAccount: false
+    }
+  }
+
+  initFocus = () => {
+    if (helper.isValidObject(this.inputUser)) {
+      this.inputUser.focus()
+      this.inputUser.blur()
+    }
+  }
+
+  clearErrorMessage = () => {
+    this.setState({messageErrorLogin: ''})
+  }
+
+  doActionLogin = () => {
+    const {loginAction} = this.props
+    const {userName, passWord} = this.state
+    this.clearErrorMessage()
+    if (!helper.isNonEmptyString(userName)) {
+      this.setState({messageErrorLogin: 'Username not empty'})
+      return
+    }
+    if (!helper.isNonEmptyString(passWord)) {
+      this.setState({messageErrorLogin: 'Password not empty'})
+      return
+    }
+    Keyboard.dismiss()
+    // showBlockUI()
+    loginAction.requestAuthToken({
+      username: userName.trim(),
+      password: passWord
+    })
+  }
+
+  componentDidMount() {
+    this.initFocus()
+    // this.setState({ language: getCurrentLocaleLanguage() })
+  }
+
+  componentDidUpdate(preProps, preState) {
+    const {isFetching} = this.props
+    if (preProps.isFetching !== isFetching) {
+      if (!isFetching) {
+        const {message, isError, appSwitchAction} = this.props
+        if (isError) {
+          // hideBlockUI()
+          this.setState({messageErrorLogin: message})
+        } else {
+          // hideBlockUI()
+          // storageHelper.setItem(STORAGE_CONST.CURRENT_LANGUAGE, this.state.language)
+          // appSwitchAction.switchToMainScreen()
+        }
+      }
+    }
   }
 
   render() {
+    const {theme} = this.state
+    const {navigate} = this.props.navigation
+    const style = initStyle(theme)
+    const {userData} = this.props
+    const {userName, passWord, isShowPassword, messageErrorLogin} = this.state
     return (
-      <View
-        style={[
-          {
-            backgroundColor: '#fff666',
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }
-        ]}>
-        <Text style={{fontSize: 50}}>Login</Text>
+      <View style={style.wrapper}>
+        <View style={style.container}>
+          <View>
+            <FormInput
+              icon={{uri: 'person-outline'}}
+              placeholder={'Username'}
+              _inputRef={(ref) => (this.inputUser = ref)}
+              onSubmitEditing={(event) => {
+                this.inputPassword.focus()
+              }}
+              onChangeText={(username) =>
+                this.setState({
+                  userName: username,
+                  messageErrorLogin: ''
+                })
+              }
+              value={userName}
+              autoFocus={true}
+            />
+            <FormInput
+              icon={{uri: 'lock-closed-outline'}}
+              _inputRef={(ref) => (this.inputPassword = ref)}
+              placeholder={'Password'}
+              secureTextEntry={!isShowPassword}
+              onSubmitEditing={this.doActionLogin}
+              onChangeText={(password) =>
+                this.setState({
+                  passWord: password,
+                  messageErrorLogin: ''
+                })
+              }
+              value={passWord}
+              autoFocus={false}
+              isPassword={true}
+              isShowPassword={isShowPassword}
+              onPress={() => this.setState({isShowPassword: !isShowPassword})}
+            />
+          </View>
+
+          {messageErrorLogin !== '' && (
+            <FormMessage message={messageErrorLogin} messageType="error" />
+          )}
+
+          <View
+            style={{
+              width: constant.calcWidth(255),
+              marginVertical: constant.calcHeight(15)
+            }}>
+            <BaseText
+              text={'Quên mật khẩu?'}
+              onPress={() =>
+                navigate(FORGOT_PASSWORD_SCR, {
+                  style: style
+                })
+              }
+            />
+          </View>
+
+          <FormButton
+            title="Login"
+            color={theme.primaryForeground}
+            textColor={theme.primaryButtonText}
+            onPress={this.doActionLogin}
+          />
+
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              paddingVertical: 4
+            }}>
+            <BaseText color={theme.primaryText} text={'Chưa có tài khoản? '}>
+              <BaseText
+                color={theme.blue}
+                text={'Đăng ký'}
+                onPress={() => navigate(SIGN_UP_SCR)}
+              />
+            </BaseText>
+          </View>
+        </View>
       </View>
     )
   }
+}
+const mapStateToProps = (state) => ({
+  userData: state.currentUserReducer.userData,
+  isFetching: state.loginReducer.isFetching,
+  message: state.loginReducer.message,
+  isError: state.loginReducer.isError
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  saveCurrentUser: bindActionCreators(saveUser, dispatch),
+  loginAction: bindActionCreators(LoginActionCreator, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
+const initStyle = (theme) => {
+  return StyleSheet.create({
+    wrapper: {
+      flex: 1,
+      backgroundColor: theme.primaryBackground
+    },
+    title: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      color: theme.primaryForeground,
+      marginTop: 25,
+      marginBottom: 20,
+      alignSelf: 'stretch',
+      textAlign: 'left',
+      marginLeft: 30
+    },
+    back_arrow: {
+      marginTop: Platform.OS === 'ios' ? 50 : 20,
+      marginLeft: 10,
+      transform: [{scaleX: I18nManager.isRTL ? -1 : 1}]
+    },
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    bold_text: {
+      color: theme.primaryForeground,
+      marginLeft: 4,
+      fontWeight: 'bold'
+    },
+
+    containerFlex: {
+      flex: 1,
+      justifyContent: 'center',
+      alignContent: 'center',
+      alignItems: 'center'
+    },
+    cotainerScrollView: {
+      paddingTop: constant.calcWidth(114),
+      paddingBottom: constant.calcWidth(300)
+    },
+    wrap_container: {
+      height: constant.calcWidth(43),
+      width: constant.calcWidth(255),
+      flexDirection: 'row',
+      marginBottom: constant.calcWidth(20)
+    },
+    ic_logo: {
+      width: constant.calcWidth(70),
+      height: constant.calcWidth(70),
+      marginBottom: constant.calcWidth(5)
+    },
+    container_icon: {
+      height: constant.calcWidth(43),
+      width: constant.calcWidth(45),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'white',
+      borderTopLeftRadius: 4,
+      borderBottomLeftRadius: 4
+    },
+    container_input: {
+      height: constant.calcWidth(43),
+      width: constant.calcWidth(207),
+      marginLeft: constant.calcWidth(3),
+      backgroundColor: 'white',
+      borderTopRightRadius: 4,
+      borderBottomRightRadius: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingRight: 8
+    },
+    button: {
+      width: constant.calcWidth(189),
+      height: constant.calcWidth(45),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'yellow',
+      borderRadius: constant.calcWidth(50),
+      marginBottom: constant.calcWidth(20),
+      marginHorizontal: constant.calcWidth(10)
+    },
+    container_qrcode: {
+      height: constant.calcWidth(50),
+      width: constant.calcWidth(178),
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginBottom: constant.calcWidth(36)
+    },
+    containerViewLogin: {
+      backgroundColor: 'transparent',
+      flex: 1,
+      height: constant.calcHeight(100),
+      justifyContent: 'center',
+      alignItems: 'center'
+    }
+  })
 }
