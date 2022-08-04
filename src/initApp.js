@@ -1,5 +1,5 @@
 import {storageHelper} from '@common'
-import {CURRENT_THEME, CURRENT_USER} from './constants/storage'
+import {ACCESS_TOKEN, CURRENT_THEME, CURRENT_USER} from './constants/storage'
 
 /* ======== STORE ========== */
 
@@ -9,11 +9,12 @@ export const initAppAction = {
 }
 
 export const initStore = (storageData) => {
-  console.log(storageData)
+  console.log('storageData', storageData)
   return {
     type: INIT_STORE,
     currentTheme: storageData.currentTheme,
-    currentUser: storageData.currentUser
+    currentUser: storageData.currentUser,
+    accessToken: storageData.accessToken
   }
 }
 
@@ -27,6 +28,9 @@ export const getAsyncStorage = () => (dispatch) => {
           break
         case CURRENT_USER:
           storageData.currentUser = item[1]
+          break
+        case ACCESS_TOKEN:
+          storageData.accessToken = item[1]
           break
         default:
           break

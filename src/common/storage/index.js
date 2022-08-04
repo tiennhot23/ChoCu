@@ -110,6 +110,23 @@ export const removeMulti = (arrKey) => {
   })
 }
 
+export const getStorage = () => {
+  return new Promise((resolve, reject) => {
+    logPrevData()
+    AsyncStorage.getAllKeys().then((keys) => {
+      AsyncStorage.multiGet(keys)
+        .then((data) => {
+          if (helper.isValidObject(data)) resolve(data)
+          else resolve(null)
+        })
+        .catch((err) => {
+          resolve(err)
+          logError(err)
+        })
+    })
+  })
+}
+
 export const clearStorage = () => {
   return new Promise((resolve, reject) => {
     logPrevData()
@@ -130,7 +147,7 @@ export const clearStorage = () => {
 // init store
 
 export const getInitStoreData = async () => {
-  const res = await getMulti([CURRENT_THEME])
+  const res = await getStorage()
   if (helper.isError(res))
     return new Error('Storage Error: Cannot get init data')
   if (helper.isValidObject(res)) return res

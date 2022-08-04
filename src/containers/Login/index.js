@@ -1,19 +1,12 @@
 import {helper} from '@common'
-import {dimen} from '@styles'
 import {constant} from '@constants'
 import React, {Component} from 'react'
-import {
-  I18nManager,
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import {I18nManager, Keyboard, StyleSheet, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {saveUser} from '../CurrentUser/action'
 import * as LoginActionCreator from './action'
+import * as AppNavigateActionCreator from '../AppNavigate/action'
 import FormMessage from './components/FormMessage'
 import FormInput from './components/FormInput'
 import FormButton from './components/FormButton'
@@ -22,8 +15,7 @@ import {
   HOME_SCR,
   SIGN_UP_SCR
 } from 'src/constants/constant'
-import {FONT_SIZE_18} from 'src/styles/fonts'
-import {BaseText, Icon} from '@components'
+import {BaseText} from '@components'
 
 class Login extends Component {
   constructor(props) {
@@ -70,6 +62,10 @@ class Login extends Component {
     })
   }
 
+  backToHome = () => {
+    this.props.appNavigate.navigateToMainScreen()
+  }
+
   componentDidMount() {
     this.initFocus()
     // this.setState({ language: getCurrentLocaleLanguage() })
@@ -85,7 +81,7 @@ class Login extends Component {
           this.setState({messageErrorLogin: message})
         } else {
           // hideBlockUI()
-          this.props.navigation.navigate(HOME_SCR)
+          this.props.appNavigate.navigateToMainScreen()
         }
       }
     }
@@ -95,7 +91,6 @@ class Login extends Component {
     const {theme} = this.state
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
-    const {userData} = this.props
     const {userName, passWord, isShowPassword, messageErrorLogin} = this.state
     return (
       <View style={style.wrapper}>
@@ -157,10 +152,17 @@ class Login extends Component {
           </View>
 
           <FormButton
-            title="Login"
+            title="Đăng nhập"
             color={theme.primaryForeground}
             textColor={theme.primaryButtonText}
             onPress={this.doActionLogin}
+          />
+
+          <FormButton
+            title="Quay lại trang chủ"
+            color={theme.secondaryText}
+            textColor={theme.primaryButtonText}
+            onPress={this.backToHome}
           />
 
           <View
@@ -183,15 +185,14 @@ class Login extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  userData: state.currentUserReducer.userData,
   isFetching: state.loginReducer.isFetching,
   message: state.loginReducer.message,
   isError: state.loginReducer.isError
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  saveCurrentUser: bindActionCreators(saveUser, dispatch),
-  loginAction: bindActionCreators(LoginActionCreator, dispatch)
+  loginAction: bindActionCreators(LoginActionCreator, dispatch),
+  appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

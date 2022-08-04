@@ -1,7 +1,8 @@
+import {helper} from '@common'
 import {BaseText, Icon} from '@components'
 import {constant} from '@constants'
 import {dimen} from '@styles'
-import React, {Component} from 'react'
+import React, {Component, useEffect, useState} from 'react'
 import {
   ScrollView,
   StyleSheet,
@@ -12,9 +13,17 @@ import {
 import {Avatar} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {AUTH_NAV, LOGIN_SCR} from 'src/constants/constant'
+import {getItem} from 'src/common/storage'
+import {AUTH_NAV} from 'src/constants/constant'
+import {CURRENT_USER} from 'src/constants/storage'
+import * as AppNavigateActionCreator from '../AppNavigate/action'
 
-import {removeUser} from '../CurrentUser/action'
+import {
+  removeUser,
+  requestLogoutUser,
+  requestUserData
+} from '../CurrentUser/action'
+import Header from './components/Header'
 
 class Personal extends Component {
   constructor(props) {
@@ -24,18 +33,29 @@ class Personal extends Component {
     }
   }
 
+  handleLogin = () => {
+    this.props.appNavigate.navigateToLoginScreen()
+  }
+
+  handleLogout = () => {
+    this.props.removeCurrentUser()
+    this.props.appNavigate.navigateToLoginScreen()
+  }
+
   render() {
     const {theme} = this.state
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
-    const {userData} = this.props
+    const {isLoggedIn} = this.props
     return (
       <ScrollView style={style.wrapper}>
         <Header
           theme={theme}
           navigate={navigate}
           style={style}
-          user={userData}
+          isLoggedIn={isLoggedIn}
+          handleLogin={this.handleLogin}
+          handleLogout={this.handleLogout}
         />
       </ScrollView>
     )
@@ -43,11 +63,13 @@ class Personal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  userData: state.currentUserReducer.userData
+  isLoggedIn: state.currentUserReducer.isLoggedIn
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  removeCurrentUser: bindActionCreators(removeUser, dispatch)
+  getDataCurrentUser: bindActionCreators(requestUserData, dispatch),
+  removeCurrentUser: bindActionCreators(requestLogoutUser, dispatch),
+  appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Personal)
@@ -68,66 +90,4 @@ const initStyle = (theme) => {
       flexDirection: 'row'
     }
   })
-}
-
-const Header = (props) => {
-  const {theme, navigate, style, user} = props
-  return (
-    <View style={style.header}>
-      <Avatar.Image
-        source={{
-          uri: user ? user.avatar : constant.default_user
-        }}
-        size={70}
-      />
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-        <View
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'space-around',
-            padding: 10
-          }}>
-          <BaseText text={`${user ? user.name : 'Chua dang nhap'}`} />
-          {user ? (
-            <BaseText
-              color={theme.blue}
-              text="Xem trang cá nhân"
-              onPress={() => navigate(USER_INFO_SCR)}
-            />
-          ) : null}
-        </View>
-        {user ? (
-          <TouchableOpacity
-            style={{
-              alignSelf: 'center',
-              backgroundColor: theme.secondaryBackground,
-              borderRadius: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: 5
-            }}>
-            <Icon name="log-out-outline" size={32} color={theme.primaryText} />
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={{
-              alignSelf: 'center',
-              backgroundColor: theme.secondaryBackground,
-              borderRadius: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              padding: 5
-            }}
-            onPress={() => navigate(AUTH_NAV)}>
-            <Icon name="log-in-outline" size={32} color={theme.primaryText} />
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  )
 }
