@@ -1,8 +1,11 @@
 import {AnimatedImageSlide, AnimatedImageSlide2} from '@components'
 import {dimen} from '@styles'
-import React, {Component} from 'react'
+import moment from 'moment'
+import React, {Component, PureComponent} from 'react'
 import {FlatList, StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import {requestPosts} from '../Posts/action'
 import Categories from './components/Categories'
 import Header from './components/Header'
 import {PostCard, PostsHeader} from './components/Posts'
@@ -12,95 +15,12 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params,
-      images: [
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-        'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444'
-      ],
-      posts: [
-        {
-          id: 1,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang dai dai dai dai daida dadasdasdasdasdas',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 2,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 3,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 4,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 5,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 6,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 7,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        },
-        {
-          id: 8,
-          image:
-            'https://static.lag.vn/upload/news/22/04/28/one-punch-man-211-1_PTEC.jpg?w=800&encoder=wic&subsampling=444',
-          title: 'Tieu de bai dang',
-          price: 10000,
-          time: '3 gio truoc',
-          location: 'Ho Chi Minh',
-          haveOnlinePayment: true
-        }
-      ]
+      theme: this.props.route.params
     }
+  }
+
+  componentDidMount() {
+    this.props.getPosts()
   }
 
   onPostPress = () => {
@@ -114,36 +34,30 @@ class Home extends Component {
   render() {
     const {theme} = this.state
     const {navigate} = this.props.navigation
+    const {posts} = this.props
     const style = initStyle(theme)
     return (
       <View style={style.wrapper}>
         <FlatList
-          ListHeaderComponent={() => {
-            return (
-              <View key={0}>
-                <Header
-                  theme={theme}
-                  onSearchBarPress={this.onSearchBarPress}
-                />
-                <Slider />
-                <Categories theme={theme} />
-                <PostsHeader theme={theme} />
-              </View>
-            )
-          }}
-          data={this.state.posts}
+          ListHeaderComponent={
+            <ListHeaderComponent
+              theme={theme}
+              onSearchBarPress={this.onSearchBarPress}
+            />
+          }
+          data={posts}
           showsVerticalScrollIndicator={false}
           overScrollMode={'never'}
           renderItem={({item, index}) => (
             <PostCard
               theme={theme}
-              id={item.id}
-              image={item.image}
+              id={item.post_id}
+              image={item.picture[0]}
               title={item.title}
-              price={item.price}
-              time={item.time}
-              location={item.location}
-              haveOnlinePayment={item.haveOnlinePayment}
+              price={item.default_price}
+              time={moment(item.time_updated).fromNow()}
+              location={item.sell_address.split(', ')[2]}
+              haveOnlinePayment={item.online_payment}
               onPress={this.onPostPress}
             />
           )}
@@ -154,9 +68,13 @@ class Home extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  posts: state.postsReducer.dataPosts
+})
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = (dispatch) => ({
+  getPosts: bindActionCreators(requestPosts, dispatch)
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
 
@@ -176,4 +94,21 @@ const initStyle = (theme) => {
       flexDirection: 'row'
     }
   })
+}
+
+class ListHeaderComponent extends PureComponent {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const {theme, onSearchBarPress} = this.props
+    return (
+      <View key={0}>
+        <Header theme={theme} onSearchBarPress={onSearchBarPress} />
+        <Slider />
+        <Categories theme={theme} />
+        <PostsHeader theme={theme} />
+      </View>
+    )
+  }
 }

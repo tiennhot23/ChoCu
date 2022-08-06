@@ -61,28 +61,22 @@ export const PostCard = ({
         }}>
         {price} d
       </Text>
-      <View
+      <Text
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-        <Text
-          style={{
-            color: theme.secondaryText
-          }}
-          ellipsizeMode={'tail'}
-          numberOfLines={2}>
-          {time}
-        </Text>
-        <Text
-          style={{
-            color: theme.secondaryText
-          }}
-          ellipsizeMode={'tail'}
-          numberOfLines={2}>
-          {location}
-        </Text>
-      </View>
+          color: theme.secondaryText
+        }}
+        ellipsizeMode={'tail'}
+        numberOfLines={2}>
+        {location}
+      </Text>
+      <Text
+        style={{
+          color: theme.secondaryText
+        }}
+        ellipsizeMode={'tail'}
+        numberOfLines={2}>
+        {time}
+      </Text>
       {/* <Image
         source={require('../../../assets/images/online_payment.png')}
         style={{width: 80, height: 50, position: 'absolute'}}
