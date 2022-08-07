@@ -148,7 +148,7 @@ const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              global._notify.localNotify({
+              global._notify.scheduleNotif({
                 title: 'Title',
                 message: 'Message'
               })

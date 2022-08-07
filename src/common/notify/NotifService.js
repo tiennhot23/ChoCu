@@ -24,7 +24,9 @@ class NotifService {
       {
         channelId: 'chocu-channel-id', // (required)
         channelName: 'ChoCu channel', // (required)
-        importance: Importance.HIGH // (optional) default: 4. Int value of the Android notification importance
+        importance: Importance.HIGH, // (optional) default: 4. Int value of the Android notification importance
+        playSound: true,
+        soundName: 'notif_sound.wav'
       },
       (created) =>
         console.log(
@@ -111,8 +113,9 @@ class NotifService {
       message: notification.message, // (required)
       // userInfo: notification.data, // (optional) default: {} (using null throws a JSON value '<null>' error)
       userInfo: {id: '1', ...notification.data}, // for iOS
+      importance: 'high',
       playSound: true, // (optional) default: true
-      soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      soundName: 'notif_sound.wav', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       number: 10 // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
       // repeatType: "day", // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
     })

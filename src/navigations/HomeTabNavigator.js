@@ -17,6 +17,7 @@ import Notification from 'src/containers/Notification'
 import {useSelector} from 'react-redux'
 import {constant} from '@constants'
 import NotifService from 'src/common/notify/NotifService'
+import {firebase} from '@react-native-firebase/messaging'
 
 const Tab = createBottomTabNavigator()
 
@@ -39,7 +40,19 @@ export default function HomeTabNavigator() {
 
   useEffect(() => {
     global._notify = _notify
+    const unsubcribe = firebase.messaging().onMessage(onReceiveForeground)
+    return unsubcribe
   }, [])
+
+  const onReceiveForeground = async (remoteMessage) => {
+    console.log('onRemoteMessage', remoteMessage)
+    const {notification, data} = remoteMessage
+    _notify.localNotify({
+      title: notification.title,
+      message: notification.body,
+      data: data
+    })
+  }
 
   return (
     <ThemeConsumer>
