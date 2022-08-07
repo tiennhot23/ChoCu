@@ -7,6 +7,7 @@ import {loginReducer} from 'src/containers/Login/reducer'
 import {appNavigateReducer} from 'src/containers/AppNavigate/reducer'
 import {categoriesReducer} from 'src/containers/Categories/reducer'
 import {postsReducer} from 'src/containers/Posts/reducer'
+import {notifyReducer} from 'src/containers/Notification/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   loginReducer,
   appNavigateReducer,
   categoriesReducer,
-  postsReducer
+  postsReducer,
+  notifyReducer
 })
 export default rootReducer

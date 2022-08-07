@@ -20,6 +20,8 @@ import {constant} from '@constants'
 const Tab = createBottomTabNavigator()
 
 export default function HomeTabNavigator() {
+  const notifyReducer = useSelector((state) => state.notifyReducer)
+  const unreadNotify = notifyReducer.dataNotify.filter((item) => !item.isRead)
   return (
     <ThemeConsumer>
       {(theme) => (
@@ -75,6 +77,7 @@ export default function HomeTabNavigator() {
           />
           <Tab.Screen
             options={{
+              tabBarBadge: unreadNotify.length > 0 ? unreadNotify.length : null,
               tabBarIcon: ({color}) => (
                 <Icon
                   name="notifications-outline"

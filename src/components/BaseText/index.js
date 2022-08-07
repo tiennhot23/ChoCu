@@ -12,6 +12,7 @@ export default class BaseText extends PureComponent {
       color = 'black',
       text = '',
       oneline = false,
+      style,
       onPress,
       children
     } = this.props
@@ -20,7 +21,8 @@ export default class BaseText extends PureComponent {
       <Text
         style={StyleSheet.flatten([
           {color: color, fontWeight: weight, fontSize: size},
-          this.defaultStyle(typeFont)
+          this.defaultStyle(typeFont),
+          style
         ])}
         onPress={onPress}
         ellipsizeMode={oneline ? 'tail' : 'clip'}>
