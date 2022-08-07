@@ -148,12 +148,10 @@ const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              // PushNotification.cancelAllLocalNotifications()
-              // PushNotification.localNotification({
-              //   channelId: 'channel-id',
-              //   title: 'TITLE',
-              //   message: 'MESSAGE'
-              // })
+              global._notify.localNotify({
+                title: 'Title',
+                message: 'Message'
+              })
             }}>
             <BaseText text="Load more" style={style} />
           </TouchableOpacity>

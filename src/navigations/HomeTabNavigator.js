@@ -16,12 +16,31 @@ import {ThemeConsumer} from 'src/context/ThemeContext'
 import Notification from 'src/containers/Notification'
 import {useSelector} from 'react-redux'
 import {constant} from '@constants'
+import NotifService from 'src/common/notify/NotifService'
 
 const Tab = createBottomTabNavigator()
 
 export default function HomeTabNavigator() {
   const notifyReducer = useSelector((state) => state.notifyReducer)
   const unreadNotify = notifyReducer.dataNotify.filter((item) => !item.isRead)
+
+  const onRegister = (token) => {
+    console.log('onRegister', token)
+  }
+  const onNotification = (notification) => {
+    console.log('onNotification', notification)
+    // const { data } = notification;
+    // if (helper.IsNonEmptyString(data?.custom_notification)) {
+    //     const { title, body } = JSON.parse(data?.custom_notification);
+    //     Alert.alert(title, body);
+    // }
+  }
+  const _notify = new NotifService(onRegister, onNotification)
+
+  useEffect(() => {
+    global._notify = _notify
+  }, [])
+
   return (
     <ThemeConsumer>
       {(theme) => (
