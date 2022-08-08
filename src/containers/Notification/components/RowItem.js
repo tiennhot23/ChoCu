@@ -7,7 +7,15 @@ import {Image, TouchableOpacity, View} from 'react-native'
 import {FONT_SIZE_16, FONT_WEIGHT_BOLD} from 'src/styles/fonts'
 
 export default function RowItem({item, index, theme, onRead, onDelete}) {
-  const {title, content, image, time, isRead} = item
+  const {
+    notify_id,
+    notify_detail_id,
+    notify_type,
+    title,
+    message,
+    time_created,
+    isRead
+  } = item
   return (
     <TouchableOpacity
       activeOpacity={1}
@@ -21,7 +29,7 @@ export default function RowItem({item, index, theme, onRead, onDelete}) {
           : theme.secondaryBackground
       }}
       onPress={() => onRead(index)}>
-      {image && (
+      {/* {image && (
         <Image
           source={{uri: image}}
           style={{
@@ -30,7 +38,7 @@ export default function RowItem({item, index, theme, onRead, onDelete}) {
             alignSelf: 'center'
           }}
         />
-      )}
+      )} */}
       <View
         style={{
           flex: 1,
@@ -52,14 +60,14 @@ export default function RowItem({item, index, theme, onRead, onDelete}) {
             }}
           />
           <BaseText
-            text={content}
+            text={message}
             color={theme.secondaryText}
             style={{
               marginLeft: 4
             }}
           />
           <BaseText
-            text={moment(time).fromNow()}
+            text={moment(time_created).fromNow()}
             color={theme.secondaryText}
             style={{
               marginLeft: 4

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, useEffect} from 'react'
 import {
   ActivityIndicator,
   FlatList,
@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import {connect} from 'react-redux'
+import {connect, useDispatch, useSelector} from 'react-redux'
 import {Avatar, withTheme} from 'react-native-paper'
 import {bindActionCreators} from 'redux'
 
@@ -28,6 +28,11 @@ class Notification extends Component {
     this.state = {
       theme: this.props.route.params
     }
+  }
+
+  componentDidMount() {
+    const {actionNotify} = this.props
+    actionNotify.getDataNotification()
   }
 
   onDelete = (notifyIndex) => {
@@ -75,7 +80,7 @@ class Notification extends Component {
                   style={style.load_more}
                 />
               }
-              keyExtractor={(item, index) => `${index}`}
+              keyExtractor={(item, index) => item.time_created}
               onEndReachedThreshold={0.5}
               onEndReached={() => {}}
             />
@@ -139,6 +144,7 @@ const initStyle = (theme) => {
 }
 
 const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
+  const dispatch = useDispatch()
   const {isFetching, isError} = stateLoadMore
   return (
     <View style={{margin: 10, alignItems: 'center'}}>
@@ -148,7 +154,15 @@ const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              global._notify.scheduleNotif({
+              dispatch(
+                actionNotifyCreator.add_notify({
+                  notify_detail_id: '9edc3410-e26c-4925-8209-c65e2744995e',
+                  notify_type: 'new_post',
+                  title: 'Thông báo từ server',
+                  message: 'Người bạn đang theo dõi vừa đăng bài mới'
+                })
+              )
+              global._notify.localNotify({
                 title: 'Title',
                 message: 'Message'
               })

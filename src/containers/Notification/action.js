@@ -1,4 +1,6 @@
-import {storageHelper} from '@common'
+import {helper, storageHelper} from '@common'
+import {STORAGE_CONST} from '@constants'
+import {getItem} from 'src/common/storage'
 
 const START_GET_LIST_NOTIFICATION = 'START_GET_LIST_NOTIFICATION'
 const STOP_GET_LIST_NOTIFICATION = 'STOP_GET_LIST_NOTIFICATION'
@@ -6,6 +8,7 @@ const START_LOAD_MORE_NOTIFICATION = 'START_LOAD_MORE_NOTIFICATION'
 const STOP_LOAD_MORE_NOTIFICATION = 'STOP_LOAD_MORE_NOTIFICATION'
 const MARK_NOTIFY_AS_READ = 'MARK_NOTIFY_AS_READ'
 const MARK_ALL_NOTIFY_AS_READ = 'MARK_ALL_NOTIFY_AS_READ'
+const ADD_NOTIFY = 'ADD_NOTIFY'
 const DELETE_NOTIFY = 'DELETE_NOTIFY'
 const CLEAR_ALL_NOTIFY = 'CLEAR_ALL_NOTIFY'
 
@@ -16,56 +19,66 @@ export const notifyAction = {
   STOP_LOAD_MORE_NOTIFICATION,
   MARK_NOTIFY_AS_READ,
   MARK_ALL_NOTIFY_AS_READ,
+  ADD_NOTIFY,
   DELETE_NOTIFY,
   CLEAR_ALL_NOTIFY
 }
 
-export const getDataNotification = () => (dispatch, getState) => {
-  const body = {
-    accessToken: '',
-    filters: [
-      {
-        property: 'last_notify_id',
-        value: -1
-      }
-    ],
-    pageSize: 10
+export const add_notify = ({
+  notify_id = '',
+  notify_detail_id,
+  notify_type,
+  title,
+  message,
+  time_created = new Date().toISOString(),
+  isRead = false
+}) => {
+  return {
+    type: ADD_NOTIFY,
+    notify: {
+      notify_id,
+      notify_detail_id,
+      notify_type,
+      title,
+      message,
+      time_created,
+      isRead
+    }
   }
-  let isLoadMore = true
-  let isEmpty = true
-  let isError = true
+}
+
+export const getDataNotification = () => (dispatch, getState) => {
   dispatch(start_get_list_notification())
-  //   apiBase(API_GET_LIST_NOTIFICATION, METHOD.POST, body)
-  //     .then((response) => {
-  //       console.log('\nGET_DATA_NOTIFICATION_SUCCESS: ', response)
-  //       const {object} = response
-  //       if (helper.IsNonEmptyArray(object?.data)) {
-  //         const {data} = object
-  //         isLoadMore = data.length == 10
-  //         dispatch(stop_get_list_notification(data, isLoadMore))
-  //       } else {
-  //         dispatch(
-  //           stop_get_list_notification(
-  //             [],
-  //             isLoadMore,
-  //             isEmpty,
-  //             'Không có thông báo'
-  //           )
-  //         )
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error('\nGET_DATA_NOTIFICATION_ERROR: ', error)
-  //       dispatch(
-  //         stop_get_list_notification(
-  //           [],
-  //           isLoadMore,
-  //           !isEmpty,
-  //           error.msgError,
-  //           isError
-  //         )
-  //       )
-  //     })
+  getItem(STORAGE_CONST.NOTIFICATIONS)
+    .then((res) => JSON.parse(res))
+    .then((dataNotify) => {
+      if (helper.isNonEmptyArray(dataNotify)) {
+        dispatch(
+          stop_get_list_notification({
+            dataNotify: dataNotify.reverse(),
+            isLoadMore: true
+          })
+        )
+      } else
+        dispatch(
+          stop_get_list_notification({
+            dataNotify: [],
+            isLoadMore: true,
+            isEmpty: true
+          })
+        )
+    })
+    .catch((err) =>
+      dispatch(
+        stop_get_list_notification({
+          dataNotify: [],
+          isLoadMore: true,
+          isEmpty: true,
+          message: err.message,
+          isError: true
+        })
+      )
+    )
 }
 
 export const getMoreDataNotification = () => (dispatch, getState) => {
@@ -107,13 +120,13 @@ const start_get_list_notification = () => {
   return {type: START_GET_LIST_NOTIFICATION}
 }
 
-const stop_get_list_notification = (
+const stop_get_list_notification = ({
   dataNotify,
   isLoadMore,
   isEmpty = false,
   message = '',
   isError = false
-) => {
+}) => {
   return {
     type: STOP_GET_LIST_NOTIFICATION,
     dataNotify,
@@ -128,11 +141,11 @@ const start_load_more_notification = () => {
   return {type: START_LOAD_MORE_NOTIFICATION}
 }
 
-const stop_load_more_notification = (
+const stop_load_more_notification = ({
   dataNotify,
   isLoadMore,
   isError = false
-) => {
+}) => {
   return {
     type: STOP_LOAD_MORE_NOTIFICATION,
     dataNotify,

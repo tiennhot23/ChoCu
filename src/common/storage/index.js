@@ -176,7 +176,7 @@ const logPrevData = () => {
   if (__DEV__) {
     AsyncStorage.getAllKeys().then((keys) => {
       AsyncStorage.multiGet(keys).then((data) => {
-        console.log('STORAGE PREV DATA', JSON.stringify(data))
+        console.log('STORAGE PREV DATA', data)
       })
     })
   }
@@ -186,7 +186,7 @@ const logCurrData = () => {
   if (__DEV__) {
     AsyncStorage.getAllKeys().then((keys) => {
       AsyncStorage.multiGet(keys).then((data) => {
-        console.log('STORAGE CURR DATA', JSON.stringify(data))
+        console.log('STORAGE CURR DATA', data)
       })
     })
   }

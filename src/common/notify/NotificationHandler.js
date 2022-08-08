@@ -14,6 +14,7 @@ class NotificationHandler {
     }
   }
 
+  // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
   onAction = (notification) => {
     console.log('ACTION:', notification.action)
     console.log('NOTIFICATION:', notification)

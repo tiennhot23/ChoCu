@@ -1,9 +1,16 @@
 import {notifyState} from './state'
 import {notifyAction} from './action'
+import {helper} from '@common'
 
 const notifyReducer = function (state = notifyState, action) {
   let newDataNotify
   switch (action.type) {
+    case notifyAction.ADD_NOTIFY:
+      return {
+        ...state,
+        dataNotify: [...state.dataNotify, action.notify]
+      }
+
     case notifyAction.START_GET_LIST_NOTIFICATION:
       return {
         ...state,
