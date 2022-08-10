@@ -56,20 +56,6 @@ export default function AnimatedDropdown({
         overflow: 'hidden',
         margin: 5
       }}>
-      <Text
-        style={{
-          paddingHorizontal: 10,
-          position: 'absolute',
-          zIndex: 10,
-          backgroundColor: backgroundColor,
-          fontSize: font.FONT_SIZE_14,
-          left: 10,
-          marginHorizontal: 5,
-          color: color,
-          fontWeight: '800'
-        }}>
-        {title} {required && <Text style={{color: 'red'}}> * </Text>}
-      </Text>
       <TouchableOpacity
         activeOpacity={1}
         style={{
@@ -121,6 +107,19 @@ export default function AnimatedDropdown({
           <Icon name={'caret-down-outline'} size={20} color={color} />
         </Animated.View>
       </TouchableOpacity>
+      <Text
+        style={{
+          paddingHorizontal: 10,
+          position: 'absolute',
+          backgroundColor: backgroundColor,
+          fontSize: font.FONT_SIZE_14,
+          left: 10,
+          marginHorizontal: 5,
+          color: color,
+          fontWeight: '800'
+        }}>
+        {title} {required && <Text style={{color: 'red'}}> * </Text>}
+      </Text>
       {isShown && (
         <View
           style={{

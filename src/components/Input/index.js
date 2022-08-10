@@ -45,20 +45,6 @@ export default Input = forwardRef(
             height: height,
             margin: 5
           }}>
-          <Text
-            style={{
-              paddingHorizontal: 10,
-              position: 'absolute',
-              zIndex: 1,
-              backgroundColor: backgroundColor,
-              fontSize: font.FONT_SIZE_14,
-              left: 10,
-              marginHorizontal: 5,
-              color: color,
-              fontWeight: '800'
-            }}>
-            {title} {required && <Text style={{color: 'red'}}> * </Text>}
-          </Text>
           <View
             activeOpacity={1}
             style={{
@@ -94,6 +80,19 @@ export default Input = forwardRef(
               onChangeText={(text) => setText(text)}
             />
           </View>
+          <Text
+            style={{
+              paddingHorizontal: 10,
+              position: 'absolute',
+              backgroundColor: backgroundColor,
+              fontSize: font.FONT_SIZE_14,
+              left: 10,
+              marginHorizontal: 5,
+              color: color,
+              fontWeight: '800'
+            }}>
+            {title} {required && <Text style={{color: 'red'}}> * </Text>}
+          </Text>
         </View>
         {(message || isEmpty) && (
           <Text

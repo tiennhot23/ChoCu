@@ -6,6 +6,7 @@ import AnimatedImageSlide from './AnimatedImageSlide'
 import BaseLoading from './BaseLoading'
 import AnimatedDropdown from './AnimatedDropdown'
 import Input from './Input'
+import BottomSheet from './BottomSheet'
 
 export {
   Icon,
@@ -15,5 +16,6 @@ export {
   AnimatedImageSlide,
   BaseLoading,
   AnimatedDropdown,
-  Input
+  Input,
+  BottomSheet
 }

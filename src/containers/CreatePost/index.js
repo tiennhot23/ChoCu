@@ -1,4 +1,4 @@
-import {AnimatedDropdown, Input} from '@components'
+import {AnimatedDropdown, BottomSheet, Input} from '@components'
 import {dimen} from '@styles'
 import React, {
   Component,
@@ -6,8 +6,10 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from 'react'
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native'
+import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import {connect} from 'react-redux'
+import AddressSelection from './components/AddressSelection'
 import FilePicker from './components/FilePicker'
 
 class CreatePost extends Component {
@@ -57,29 +59,31 @@ class CreatePost extends Component {
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
-      <View
-        style={[
-          {
-            backgroundColor: theme.primaryBackground,
-            flex: 1,
-            alignItems: 'center'
-          }
-        ]}>
-        <AnimatedDropdown
-          title={'a'}
-          required
-          items={['react', 'node', '3']}
-          data={['a', 'b', 'c']}
-          onSelect={(itemSelected) => {}}
-        />
-        <FilePicker title={'Pick image'} icon={'image-outline'} />
-        <Input title={'abc'} required ref={this.inputRef} />
-        <Input title={'abc'} />
-        <TouchableOpacity
-          style={{width: 100, height: 100, backgroundColor: 'red'}}
-          onPress={this.onClick}
-        />
-      </View>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <View
+          style={[
+            {
+              backgroundColor: theme.primaryBackground,
+              flex: 1,
+              alignItems: 'center'
+            }
+          ]}>
+          <AnimatedDropdown
+            title={'a'}
+            required
+            items={['react', 'node', '3']}
+            data={['a', 'b', 'c']}
+            onSelect={(itemSelected) => {}}
+          />
+          <FilePicker title={'Pick image'} icon={'image-outline'} />
+          <Input title={'abc'} required ref={this.inputRef} />
+          <TouchableOpacity
+            style={{width: 100, height: 100, backgroundColor: 'red'}}
+            onPress={this.onClick}
+          />
+          <AddressSelection required />
+        </View>
+      </GestureHandlerRootView>
     )
   }
 }
