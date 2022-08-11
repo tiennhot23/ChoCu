@@ -19,12 +19,14 @@ export default Input = forwardRef(
       width = '80%',
       height = 70,
       title,
+      _text,
       required,
-      placeHolder = 'Select',
+      placeholder = 'Select',
       message,
       multiLine = false,
       inputType,
-      onSelect
+      editable = true,
+      onPress
     },
     ref
   ) => {
@@ -32,8 +34,8 @@ export default Input = forwardRef(
     const [text, setText] = useState('')
 
     useImperativeHandle(ref, () => ({
-      getAlert() {
-        alert(text)
+      getText() {
+        return text
       }
     }))
 
@@ -45,7 +47,8 @@ export default Input = forwardRef(
             height: height,
             margin: 5
           }}>
-          <View
+          <TouchableOpacity
+            onPress={onPress}
             activeOpacity={1}
             style={{
               flex: 1,
@@ -63,10 +66,12 @@ export default Input = forwardRef(
             <TextInput
               keyboardType={inputType}
               multiline={multiLine}
+              editable={editable}
               style={{
                 width: '100%',
-                fontSize: 18,
-                paddingVertical: 3
+                fontSize: 14,
+                paddingVertical: 3,
+                color: color
               }}
               onFocus={() => {
                 setIsEmpty(false)
@@ -75,11 +80,11 @@ export default Input = forwardRef(
                 if (required && text === '') setIsEmpty(true)
               }}
               selectionColor={color}
-              value={text}
-              placeholder={title}
+              value={_text || text}
+              placeholder={placeholder}
               onChangeText={(text) => setText(text)}
             />
-          </View>
+          </TouchableOpacity>
           <Text
             style={{
               paddingHorizontal: 10,

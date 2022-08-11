@@ -15,7 +15,10 @@ import Animated, {
 } from 'react-native-reanimated'
 
 const BottomSheet = forwardRef(
-  ({children, color = 'black', backgroundColor = 'white'}, ref) => {
+  (
+    {children, color = 'black', backgroundColor = 'white', draggable = true},
+    ref
+  ) => {
     useImperativeHandle(ref, () => ({}))
 
     const translateY = useSharedValue(0)
@@ -79,13 +82,31 @@ const BottomSheet = forwardRef(
             backgroundStyle
           ]}
         />
-        <GestureDetector gesture={gesture}>
+        {draggable ? (
+          <GestureDetector gesture={gesture}>
+            <Animated.View
+              style={[
+                {
+                  height: constant.height,
+                  width: '100%',
+                  backgroundColor: backgroundColor,
+                  position: 'absolute',
+                  top: constant.height,
+                  borderTopStartRadius: 25,
+                  borderTopEndRadius: 25
+                },
+                animatedStyle
+              ]}>
+              {children}
+            </Animated.View>
+          </GestureDetector>
+        ) : (
           <Animated.View
             style={[
               {
                 height: constant.height,
                 width: '100%',
-                backgroundColor: 'red',
+                backgroundColor: backgroundColor,
                 position: 'absolute',
                 top: constant.height,
                 borderTopStartRadius: 25,
@@ -95,7 +116,7 @@ const BottomSheet = forwardRef(
             ]}>
             {children}
           </Animated.View>
-        </GestureDetector>
+        )}
       </>
     )
   }

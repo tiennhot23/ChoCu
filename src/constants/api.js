@@ -1,4 +1,4 @@
-const baseUrl = 'http://192.168.1.7:3000'
+export const baseUrl = 'http://192.168.1.7:3000'
 
 export const API_REQUEST_LOCATION = baseUrl + '/location'
 export const API_REQUEST_LOCATION_PROVINCES = baseUrl + '/location/provinces'

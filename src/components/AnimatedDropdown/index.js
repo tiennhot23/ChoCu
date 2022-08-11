@@ -26,10 +26,12 @@ if (
 export default function AnimatedDropdown({
   color = 'black',
   backgroundColor = 'white',
-  width,
+  width = '80%',
+  height = 70,
   title,
   required,
   placeHolder = 'Select',
+  item,
   items,
   data,
   onSelect
@@ -52,7 +54,7 @@ export default function AnimatedDropdown({
   return (
     <View
       style={{
-        width: width || '80%',
+        width,
         overflow: 'hidden',
         margin: 5
       }}>
@@ -91,6 +93,8 @@ export default function AnimatedDropdown({
                   {item}
                 </Text>
               ))
+            ) : item ? (
+              <Text style={{color: color}}> {item} </Text>
             ) : (
               <Text style={{color: 'gray'}}> {placeHolder} </Text>
             )}
@@ -133,12 +137,16 @@ export default function AnimatedDropdown({
             maxHeight: 200,
             backgroundColor: backgroundColor
           }}>
-          <ScrollView>
+          <ScrollView nestedScrollEnabled={true}>
             {data.map((item) => (
               <Text
                 style={{
                   padding: 10,
                   color: color
+                }}
+                onPress={() => {
+                  onSelect(item)
+                  setIsShown(false)
                 }}>
                 {item}
               </Text>
