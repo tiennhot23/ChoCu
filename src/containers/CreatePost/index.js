@@ -18,8 +18,12 @@ import {
 import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'
 import {connect} from 'react-redux'
-import BottomSheetView from './components/BottomSheetView'
+import {bindActionCreators} from 'redux'
+import {requestCategories, requestDetails} from '../Categories/action'
+import AddressSelection from './components/AddressSelection'
+import CategorySelection from './components/CategorySelection'
 import FilePicker from './components/FilePicker'
+import FormButton from './components/FormButton'
 
 class CreatePost extends Component {
   constructor(props) {
@@ -29,25 +33,26 @@ class CreatePost extends Component {
       address: ''
     }
     this.inputRef = createRef()
-    this.bottomSheetRef = null
+    this.categorySelectionRef = createRef()
+    this.addressSelectionRef = null
   }
 
-  openBottomSheet = () => {
-    const isActive = this.bottomSheetRef?.isActive()
+  openAddressSeletion = () => {
+    const isActive = this.addressSelectionRef?.isActive()
     if (isActive) {
-      this.bottomSheetRef?.scrollTo(0)
+      this.addressSelectionRef?.scrollTo(0)
     } else {
-      this.bottomSheetRef?.scrollTo(-500)
+      this.addressSelectionRef?.scrollTo(-500)
     }
   }
 
-  bindBottomSheet = (ref) => {
+  bindCallbackRef = (ref) => {
     //callback ref
-    this.bottomSheetRef = ref
+    this.addressSelectionRef = ref
   }
 
-  componentDidUpdate() {
-    console.log('renderere')
+  onSubmit = () => {
+    alert(JSON.stringify({...this.categorySelectionRef.current.getData()}))
   }
 
   //   sendComment = () => {
@@ -81,7 +86,6 @@ class CreatePost extends Component {
 
   render() {
     const {theme, address} = this.state
-    const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
@@ -95,40 +99,29 @@ class CreatePost extends Component {
                 alignItems: 'center'
               }
             ]}>
-            <AnimatedDropdown
-              title={'a'}
-              required
-              items={['react', 'node', '3']}
-              data={['a', 'b', 'c']}
-              onSelect={(itemSelected) => {}}
-            />
+            <CategorySelection ref={this.categorySelectionRef} />
             <FilePicker title={'Pick image'} icon={'image-outline'} />
             <Input title={'abc'} required ref={this.inputRef} />
-            <TouchableOpacity
-              style={{width: 100, height: 100, backgroundColor: 'red'}}
-              onPress={this.openBottomSheet}
-            />
             <Input
               title={'Địa chỉ'}
               _text={address}
               placeholder={'Nơi bán'}
               editable={false}
               required
-              onPress={this.openBottomSheet}
+              onPress={this.openAddressSeletion}
             />
-            <Input title={'abc'} />
-            <Input title={'abc'} />
-            <Input title={'abc'} />
-            <Input title={'abc'} />
-            <Input title={'abc'} />
+            <FormButton
+              title={'Đăng bài'}
+              styleContainer={{flex: 1}}
+              onPress={this.onSubmit}
+            />
           </View>
         </ScrollView>
-        <BottomSheetView
-          bind={this.bindBottomSheet}
+        <AddressSelection
+          bindCallbackRef={this.bindCallbackRef}
           setAddress={(address) => {
-            console.log(address)
             this.setState({address: address})
-            this.bottomSheetRef?.scrollTo(0)
+            this.addressSelectionRef?.scrollTo(0)
           }}
         />
       </GestureHandlerRootView>

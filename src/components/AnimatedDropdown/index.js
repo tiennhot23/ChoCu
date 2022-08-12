@@ -147,8 +147,9 @@ export default function AnimatedDropdown({
                 onPress={() => {
                   onSelect(item)
                   setIsShown(false)
-                }}>
-                {item}
+                }}
+                key={item?.id}>
+                {item?.title}
               </Text>
             ))}
           </ScrollView>

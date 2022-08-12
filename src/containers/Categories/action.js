@@ -50,6 +50,13 @@ export const requestDetails =
   ({category_id}) =>
   (dispatch, getState) => {
     dispatch(startGetDetails())
+    let dataCategories = getState().categoriesReducer.dataCategories
+    const details = dataCategories.filter(
+      (item) => item.category_id === category_id
+    ).details
+    if (helper.isArray(details)) {
+      return dispatch({category_id, details})
+    }
     apiBase(API_REQUEST_CATEGORY_DETAILS + category_id, METHOD_GET)
       .then((res) => {
         const {data} = res

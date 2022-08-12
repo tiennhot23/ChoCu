@@ -23,8 +23,8 @@ import {helper} from '@common'
 import {constant} from '@constants'
 import FormButton from './FormButton'
 
-export default function BottomSheetView({
-  bind,
+export default function AddressSelection({
+  bindCallbackRef,
   color = 'black',
   backgroundColor = 'white',
   setAddress
@@ -43,7 +43,11 @@ export default function BottomSheetView({
       .then((res) => res.json())
       .then((res) => {
         let {data} = res
-        data = helper.isArray(data) ? data.map((item) => item.province) : []
+        data = helper.isArray(data)
+          ? data.map((item, index) => {
+              return {title: item.province, id: index}
+            })
+          : []
         setProvinces(data)
       })
       .catch((ignored) => {
@@ -52,12 +56,18 @@ export default function BottomSheetView({
   }, [])
 
   const onSelectProvince = (province) => {
-    setProv(province)
-    fetch(baseUrl + `/location/districts?province=${province}`)
+    setDist('')
+    setDistricts([])
+    setProv(province.title)
+    fetch(baseUrl + `/location/districts?province=${province.title}`)
       .then((res) => res.json())
       .then((res) => {
         let {data} = res
-        data = helper.isArray(data) ? data.map((item) => item.district) : []
+        data = helper.isArray(data)
+          ? data.map((item, index) => {
+              return {title: item.district, id: index}
+            })
+          : []
         setDistricts(data)
       })
       .catch((ignored) => {
@@ -66,12 +76,18 @@ export default function BottomSheetView({
   }
 
   const onSelectDisctrict = (district) => {
-    setDist(district)
-    fetch(baseUrl + `/location/wards?district=${district}`)
+    setWard('')
+    setWards([])
+    setDist(district.title)
+    fetch(baseUrl + `/location/wards?district=${district.title}`)
       .then((res) => res.json())
       .then((res) => {
         let {data} = res
-        data = helper.isArray(data) ? data.map((item) => item.ward) : []
+        data = helper.isArray(data)
+          ? data.map((item, index) => {
+              return {title: item.ward, id: index}
+            })
+          : []
         setWards(data)
       })
       .catch((ignored) => {
@@ -79,7 +95,7 @@ export default function BottomSheetView({
       })
   }
 
-  const onSelectWard = (ward) => setWard(ward)
+  const onSelectWard = (ward) => setWard(ward.title)
 
   const onSubmit = () => {
     setAddress(
@@ -100,7 +116,7 @@ export default function BottomSheetView({
       draggable={false}
       ref={(newRef) => {
         ref = newRef
-        bind(newRef)
+        bindCallbackRef(newRef)
       }}>
       <ScrollView>
         <View

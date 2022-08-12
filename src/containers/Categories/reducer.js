@@ -40,13 +40,13 @@ const categoriesReducer = (state = categoriesState, action) => {
       if (!action.isError)
         newData = newData.map((item) =>
           item.category_id === action.category_id
-            ? {...item, details: action.etails}
+            ? {...item, details: action.details}
             : item
         )
       return {
         ...state,
         dataCategories: newData,
-        stateCategories: {
+        stateDetails: {
           isFetching: false,
           isEmpty: action.isEmpty,
           message: action.message,

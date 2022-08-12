@@ -10,6 +10,7 @@ import {
   View
 } from 'react-native'
 import {font} from '@styles'
+import {constant} from '@constants'
 
 export default Input = forwardRef(
   (
@@ -26,7 +27,8 @@ export default Input = forwardRef(
       multiLine = false,
       inputType,
       editable = true,
-      onPress
+      onPress,
+      onChange
     },
     ref
   ) => {
@@ -39,6 +41,11 @@ export default Input = forwardRef(
       }
     }))
 
+    const onChangeText = (text) => {
+      setText(text)
+      onChange(text)
+    }
+
     return (
       <View>
         <View
@@ -47,44 +54,80 @@ export default Input = forwardRef(
             height: height,
             margin: 5
           }}>
-          <TouchableOpacity
-            onPress={onPress}
-            activeOpacity={1}
-            style={{
-              flex: 1,
-              marginTop: 10,
-              paddingTop: 20,
-              padding: 10,
-              borderWidth: 1,
-              borderColor: isEmpty ? 'red' : color,
-              borderRadius: 5,
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: backgroundColor,
-              elevation: 3
-            }}>
-            <TextInput
-              keyboardType={inputType}
-              multiline={multiLine}
-              editable={editable}
+          {editable ? (
+            <TouchableOpacity
+              onPress={onPress}
+              activeOpacity={1}
+              style={{
+                flex: 1,
+                marginTop: 10,
+                paddingTop: 20,
+                padding: 10,
+                borderWidth: 1,
+                borderColor: isEmpty ? 'red' : color,
+                borderRadius: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: backgroundColor,
+                elevation: 3
+              }}>
+              <TextInput
+                keyboardType={inputType}
+                multiline={multiLine}
+                editable={editable}
+                style={{
+                  width: '100%',
+                  fontSize: 14,
+                  paddingVertical: 3,
+                  color: color
+                }}
+                onFocus={() => {
+                  setIsEmpty(false)
+                }}
+                onBlur={() => {
+                  if (required && text === '') setIsEmpty(true)
+                }}
+                selectionColor={color}
+                value={_text || text}
+                placeholder={placeholder}
+                onChangeText={onChangeText}
+              />
+            </TouchableOpacity>
+          ) : (
+            <View
               style={{
                 width: '100%',
-                fontSize: 14,
-                paddingVertical: 3,
-                color: color
-              }}
-              onFocus={() => {
-                setIsEmpty(false)
-              }}
-              onBlur={() => {
-                if (required && text === '') setIsEmpty(true)
-              }}
-              selectionColor={color}
-              value={_text || text}
-              placeholder={placeholder}
-              onChangeText={(text) => setText(text)}
-            />
-          </TouchableOpacity>
+                marginTop: 10,
+                paddingTop: 20,
+                padding: 10,
+                borderWidth: 1,
+                borderColor: isEmpty ? 'red' : color,
+                borderRadius: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: backgroundColor,
+                elevation: 3
+              }}>
+              <ScrollView horizontal style={{}}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    paddingVertical: 3,
+                    color: color
+                  }}>
+                  {_text || text || placeholder}
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{
+                    position: 'absolute',
+                    width: (constant.width * 80) / 100,
+                    height: height
+                  }}
+                  onPress={onPress}></TouchableOpacity>
+              </ScrollView>
+            </View>
+          )}
           <Text
             style={{
               paddingHorizontal: 10,
