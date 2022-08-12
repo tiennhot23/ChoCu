@@ -9,7 +9,8 @@ export default function FilePicker({
   width = '80%',
   height = 150,
   title,
-  icon
+  icon,
+  onPicked
 }) {
   const [file, setFile] = useState(null)
 
@@ -29,6 +30,7 @@ export default function FilePicker({
     try {
       const res = (await launchImageLibrary(options)).assets
       setFile(res[0])
+      onPicked(res[0])
     } catch (ignored) {}
   }
 

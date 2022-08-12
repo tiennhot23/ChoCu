@@ -143,7 +143,7 @@ export default function HomeTabNavigator() {
             component={PostsManager}
             initialParams={theme}
           />
-          <Tab.Screen
+          {/* <Tab.Screen
             options={{
               tabBarIcon: ({color}) => (
                 <Icon
@@ -156,7 +156,7 @@ export default function HomeTabNavigator() {
             name={CREATE_POST_SCR}
             component={CreatePost}
             initialParams={theme}
-          />
+          /> */}
           <Tab.Screen
             options={{
               tabBarBadge: unreadNotify.length > 0 ? unreadNotify.length : null,

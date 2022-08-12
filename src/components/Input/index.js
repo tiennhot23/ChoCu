@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import {font} from '@styles'
 import {constant} from '@constants'
+import {helper} from '@common'
 
 export default Input = forwardRef(
   (
@@ -24,7 +25,7 @@ export default Input = forwardRef(
       required,
       placeholder = 'Select',
       message,
-      multiLine = false,
+      multiline = false,
       inputType,
       editable = true,
       onPress,
@@ -38,12 +39,15 @@ export default Input = forwardRef(
     useImperativeHandle(ref, () => ({
       getText() {
         return text
+      },
+      alertMessage() {
+        setIsEmpty(true)
       }
     }))
 
     const onChangeText = (text) => {
       setText(text)
-      onChange(text)
+      if (helper.isFunction(onChange)) onChange(text)
     }
 
     return (
@@ -61,7 +65,7 @@ export default Input = forwardRef(
               style={{
                 flex: 1,
                 marginTop: 10,
-                paddingTop: 20,
+                paddingTop: 10,
                 padding: 10,
                 borderWidth: 1,
                 borderColor: isEmpty ? 'red' : color,
@@ -73,13 +77,14 @@ export default Input = forwardRef(
               }}>
               <TextInput
                 keyboardType={inputType}
-                multiline={multiLine}
+                multiline={multiline}
                 editable={editable}
                 style={{
                   width: '100%',
                   fontSize: 14,
-                  paddingVertical: 3,
-                  color: color
+                  paddingVertical: 5,
+                  color: color,
+                  alignSelf: 'flex-start'
                 }}
                 onFocus={() => {
                   setIsEmpty(false)

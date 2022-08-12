@@ -37,7 +37,8 @@ export const apiBase = (
     setTimeOut: TIME_OUT,
     signal: null,
     navigation: null,
-    isUpload: false
+    isUpload: false,
+    contentType: CONTENT_TYPE_JSON
   }
 ) => {
   return new Promise((resolve, reject) => {
@@ -49,13 +50,15 @@ export const apiBase = (
           const authToken = `Bearer ${token}`
           headers.append(AUTHORIZATION, authToken)
         }
-        const params = {
-          [ACCEPT]: CONTENT_TYPE_JSON,
-          [CONTENT_TYPE]: options.isUpload
-            ? CONTENT_TYPE_MULTIPART
-            : CONTENT_TYPE_JSON
-        }
-        appendHeader(params, headers)
+        headers.append(CONTENT_TYPE, options.contentType)
+
+        // const params = {
+        //   [ACCEPT]: CONTENT_TYPE_JSON,
+        //   [CONTENT_TYPE]: options.isUpload
+        //     ? CONTENT_TYPE_MULTIPART
+        //     : CONTENT_TYPE_JSON
+        // }
+        // appendHeader(params, headers)
 
         if (!options.isUpload) {
           switch (method) {
@@ -120,27 +123,27 @@ export const getQueryString = (params) => {
     .join('&')
 }
 
-export const appendHeader = (params, headers) => {
-  const keys = Object.keys(params)
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    if (headers.has(key)) {
-      headers.map[key] = params[key]
-    } else {
-      headers.append(key, params[key])
-    }
-  }
-}
+// export const appendHeader = (params, headers) => {
+//   const keys = Object.keys(params)
+//   for (let i = 0; i < keys.length; i++) {
+//     const key = keys[i]
+//     if (headers.has(key)) {
+//       headers.map[key] = params[key]
+//     } else {
+//       headers.append(key, params[key])
+//     }
+//   }
+// }
 
-export const getHeaderParams = (token) => ({
-  [AUTHORIZATION]: `Bearer ${token}`,
-  [ACCEPT]: ACCEPT_JSON,
-  [CONTENT_TYPE]: CONTENT_TYPE_JSON
-})
+// export const getHeaderParams = (token) => ({
+//   [AUTHORIZATION]: `Bearer ${token}`,
+//   [ACCEPT]: ACCEPT_JSON,
+//   [CONTENT_TYPE]: CONTENT_TYPE_JSON
+// })
 
-export const getHeaderAuthen = (token) => {
-  const headers = new Headers()
-  const params = getHeaderParams(token)
-  appendHeader(params, headers)
-  return headers
-}
+// export const getHeaderAuthen = (token) => {
+//   const headers = new Headers()
+//   const params = getHeaderParams(token)
+//   appendHeader(params, headers)
+//   return headers
+// }

@@ -1,4 +1,6 @@
+import {helper} from '@common'
 import {AnimatedDropdown, Input} from '@components'
+import {font} from '@styles'
 import React, {
   forwardRef,
   useEffect,
@@ -7,7 +9,7 @@ import React, {
   useRef,
   useState
 } from 'react'
-import {ActivityIndicator} from 'react-native'
+import {ActivityIndicator, Text} from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
 import {requestDetails} from 'src/containers/Categories/action'
 
@@ -22,6 +24,7 @@ const CategorySelection = forwardRef((props, ref) => {
   const [category, setCategory] = useState({})
   const [details, setDetails] = useState([])
   const [_details, _setDetails] = useState([])
+  const [message, setMessage] = useState('')
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -29,6 +32,9 @@ const CategorySelection = forwardRef((props, ref) => {
         category_id: category.id,
         details: _details
       }
+    },
+    alertMessage(message) {
+      setMessage(message)
     }
   }))
 
@@ -68,8 +74,20 @@ const CategorySelection = forwardRef((props, ref) => {
             }
           }) || []
         }
+        color={helper.isNonEmptyString(message) ? 'red' : undefined}
         onSelect={(itemSelected) => setCategory(itemSelected)}
       />
+      {helper.isNonEmptyString(message) && (
+        <Text
+          style={{
+            width: '80%',
+            color: 'red',
+            fontSize: font.FONT_SIZE_12,
+            padding: 5
+          }}>
+          {message}
+        </Text>
+      )}
       {stateDetails.isFetching ? (
         <ActivityIndicator />
       ) : (
