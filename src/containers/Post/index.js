@@ -47,6 +47,7 @@ class Post extends Component {
             style={style}
             theme={theme}
             postState={dataPost?.post?.post_state}
+            postId={postId}
             isOwner={dataPost?.user?.user_id === currentUser?.user_id}
           />
           <ScrollView>

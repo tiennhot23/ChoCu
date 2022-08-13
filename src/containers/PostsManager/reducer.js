@@ -25,6 +25,30 @@ const userPostsReducer = (state = userPostsState, action) => {
           isError: action.isError
         }
       }
+    case userPostsAction.END_POST: {
+      let newData = [...state.dataUserPosts]
+      if (!action.isError) {
+        const index = newData.findIndex(
+          (e) => e.post_id === action.post?.post_id
+        )
+        if (index > -1)
+          newData[index] = {
+            ...newData[index],
+            post_state: action.post?.post_state
+          }
+      }
+      return {
+        ...state,
+        dataUserPosts: newData,
+        stateUserPosts: {
+          isFetching: false,
+          isEmpty: action.isEmpty,
+          message: action.message,
+          isError: action.isError
+        }
+      }
+    }
+
     default:
       return state
   }

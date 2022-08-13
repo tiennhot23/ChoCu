@@ -1,17 +1,37 @@
+import {helper} from '@common'
 import {Icon} from '@components'
 import React from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {Divider, Menu, Provider} from 'react-native-paper'
+import {useDispatch} from 'react-redux'
+import {requestEndPost} from 'src/containers/PostsManager/action'
 
-export default function Header({navigation, style, theme, postState, isOwner}) {
+export default function Header({
+  navigation,
+  style,
+  theme,
+  postState,
+  postId,
+  isOwner
+}) {
+  const dispatch = useDispatch()
   const [visible, setVisible] = React.useState(false)
 
   const openMenu = () => setVisible(true)
 
   const closeMenu = () => setVisible(false)
+
+  const endPost = () => {
+    dispatch(requestEndPost({post_id: postId}))
+    navigation.goBack()
+  }
   return (
     <View style={style.header_container}>
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => {
+          navigation.goBack()
+        }}>
         <Icon type={'Entypo'} name="chevron-left" style={style.back_button} />
       </TouchableOpacity>
       <Menu
@@ -27,7 +47,7 @@ export default function Header({navigation, style, theme, postState, isOwner}) {
             />
           </TouchableOpacity>
         }>
-        {postState === 'expired' && (
+        {isOwner && postState === 'expired' && (
           <Menu.Item
             onPress={() => {}}
             title="Đăng lại"
@@ -42,9 +62,9 @@ export default function Header({navigation, style, theme, postState, isOwner}) {
             )}
           />
         )}
-        {postState === 'active' && (
+        {isOwner && postState === 'active' && (
           <Menu.Item
-            onPress={() => {}}
+            onPress={endPost}
             title="Ẩn tin"
             icon={() => (
               <Icon

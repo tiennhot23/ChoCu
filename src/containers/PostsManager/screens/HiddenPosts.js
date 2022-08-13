@@ -1,14 +1,19 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {FlatList, View} from 'react-native'
 import {useSelector} from 'react-redux'
 import PostItem from '../components/PostItem'
 
 export default function HiddenPosts({route, navigation}) {
   const userPosts = useSelector((state) => state.userPostsReducer.dataUserPosts)
+  const [posts, setPosts] = useState([...userPosts])
+
+  useEffect(() => {
+    setPosts(userPosts.filter((item) => item.post_state === 'expired'))
+  }, [userPosts])
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       <FlatList
-        data={userPosts.filter((item) => item.post_state === 'expired')}
+        data={posts}
         showsVerticalScrollIndicator={false}
         overScrollMode={'never'}
         renderItem={({item, index}) => (
