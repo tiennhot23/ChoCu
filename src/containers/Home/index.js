@@ -5,6 +5,8 @@ import React, {Component, PureComponent} from 'react'
 import {FlatList, StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {POST_SCR} from 'src/constants/constant'
+import {requestUserData} from '../CurrentUser/action'
 import {requestPosts} from '../Posts/action'
 import Categories from './components/Categories'
 import Header from './components/Header'
@@ -23,8 +25,8 @@ class Home extends Component {
     this.props.getPosts()
   }
 
-  onPostPress = () => {
-    this.props.navigation.navigate(POST_SCR)
+  onPostPress = (postId) => {
+    this.props.navigation.navigate(POST_SCR, {postId})
   }
 
   onSearchBarPress = () => {
@@ -73,7 +75,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getPosts: bindActionCreators(requestPosts, dispatch)
+  getPosts: bindActionCreators(requestPosts, dispatch),
+  getDataCurrentUser: bindActionCreators(requestUserData, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

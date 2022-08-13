@@ -44,7 +44,7 @@ export default function AnimatedDropdown({
       LayoutAnimation.create(300, 'easeInEaseOut', 'scaleY')
     )
     setIsShown(!isShown)
-    val.value = withSpring(isShown ? 1 : 0)
+    val.value = withSpring(isShown ? 0 : 1)
   }
   const animatedStyle = useAnimatedStyle(() => {
     return {

@@ -41,7 +41,7 @@ export const PostCard = ({
         flexDirection: 'column'
       }}
       key={id}
-      onPress={onPress}>
+      onPress={() => onPress(id)}>
       <Image source={{uri: image}} style={{width: '100%', aspectRatio: 1}} />
       <Text
         style={{

@@ -8,7 +8,7 @@ const currentUserReducer = (state = currentUserState, action) => {
     case initAppAction.INIT_STORE: {
       return {
         ...state,
-        userData: JSON.parse(action.userData ? action.userData : '{}'),
+        userData: JSON.parse(action.currentUser ? action.currentUser : '{}'),
         accessToken: action.accessToken,
         fcmToken: action.fcmToken,
         isLoggedIn: action.accessToken ? true : false

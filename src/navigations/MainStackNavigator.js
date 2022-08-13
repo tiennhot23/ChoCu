@@ -36,8 +36,16 @@ export default function MainStackNavigator() {
                 component={HomeTabNavigator}
               />
               <Stack.Group screenOptions={{headerShown: false}}>
-                <Stack.Screen name={POST_SCR} component={Post} />
-                <Stack.Screen name={SEARCH_SCR} component={Search} />
+                <Stack.Screen
+                  name={POST_SCR}
+                  component={Post}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={SEARCH_SCR}
+                  component={Search}
+                  initialParams={theme}
+                />
                 <Stack.Screen
                   name={CREATE_POST_SCR}
                   component={CreatePost}
@@ -51,8 +59,16 @@ export default function MainStackNavigator() {
                     backgroundColor: theme.primaryForeground
                   }
                 }}>
-                <Stack.Screen name={USER_INFO_SCR} component={UserInfo} />
-                <Stack.Screen name={EDIT_INFO_SCR} component={EditInfo} />
+                <Stack.Screen
+                  name={USER_INFO_SCR}
+                  component={UserInfo}
+                  initialParams={theme}
+                />
+                <Stack.Screen
+                  name={EDIT_INFO_SCR}
+                  component={EditInfo}
+                  initialParams={theme}
+                />
               </Stack.Group>
             </Stack.Navigator>
           </>
