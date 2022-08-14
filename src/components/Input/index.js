@@ -1,4 +1,9 @@
-import React, {forwardRef, useImperativeHandle, useState} from 'react'
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState
+} from 'react'
 import {
   LayoutAnimation,
   Platform,
@@ -21,7 +26,7 @@ export default Input = forwardRef(
       width = '80%',
       height = 70,
       title,
-      _text,
+      _text = '',
       required,
       placeholder = 'Select',
       message,
@@ -35,6 +40,10 @@ export default Input = forwardRef(
   ) => {
     const [isEmpty, setIsEmpty] = useState(false)
     const [text, setText] = useState('')
+
+    useEffect(() => {
+      setText(_text)
+    }, [])
 
     useImperativeHandle(ref, () => ({
       getText() {
@@ -93,7 +102,7 @@ export default Input = forwardRef(
                   if (required && text === '') setIsEmpty(true)
                 }}
                 selectionColor={color}
-                value={_text || text}
+                value={text}
                 placeholder={placeholder}
                 onChangeText={onChangeText}
               />

@@ -1,6 +1,7 @@
 import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
+  CREATE_DEAL_SCR,
   CREATE_POST_SCR,
   EDIT_INFO_SCR,
   HOME_NAV,
@@ -16,6 +17,7 @@ import Post from 'src/containers/Post'
 import {Button, StatusBar} from 'react-native'
 import Search from 'src/containers/Search'
 import CreatePost from 'src/containers/CreatePost'
+import CreateDeal from 'src/containers/CreateDeal'
 
 const Stack = createNativeStackNavigator()
 
@@ -49,6 +51,11 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={CREATE_POST_SCR}
                   component={CreatePost}
+                  initialParams={theme}
+                />
+                <Stack.Screen
+                  name={CREATE_DEAL_SCR}
+                  component={CreateDeal}
                   initialParams={theme}
                 />
               </Stack.Group>
