@@ -7,6 +7,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler'
 import WebView from 'react-native-webview'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {BUY_DEALS_MANAGER_SCR} from 'src/constants/constant'
 import {requestCreateDeal} from '../Deal/action'
 import {requestUserPayments} from '../Payment/action'
 import {requestCreatePost} from '../Post/action'
@@ -47,28 +48,33 @@ class CreateDeal extends Component {
   }
 
   onSubmit = () => {
-    this.setState({showPayPal: true})
-    // const {createDeal, currentUser, dataPost} = this.props
-    // const data = {
-    //   buyer_id: currentUser.user_id,
-    //   post_id: dataPost.post.post_id,
-    //   receive_address: this.state.address,
-    //   deal_price: dataPost.post.default_price,
-    //   online_deal: this.state.payment !== null
-    // }
-    // if (!data.receive_address || helper.isEmptyString(data.receive_address)) {
-    //   alert('Chưa chọn địa chỉ nhận')
-    //   return
-    // }
-    // createDeal({deal: data})
+    const {createDeal, currentUser, dataPost} = this.props
+    const data = {
+      buyer_id: currentUser.user_id,
+      post_id: dataPost.post.post_id,
+      receive_address: this.state.address,
+      deal_price: dataPost.post.default_price,
+      online_deal: this.state.payment !== null
+    }
+    if (!data.receive_address || helper.isEmptyString(data.receive_address)) {
+      alert('Chưa chọn địa chỉ nhận')
+      return
+    }
+    if (this.state.payment?.title === 'PAYPAL')
+      this.setState({showPayPal: true})
+    else {
+      createDeal({deal: data})
+    }
   }
 
   handlePaypalPaymentResponse = (data) => {
     console.log('PAYPAL_RESPONSE', data)
     if (data.title.includes('success')) {
       this.setState({showPayPal: false})
+      this.props.createDeal({deal: data})
     } else if (data.title.includes('cancel')) {
       this.setState({showPayPal: false})
+      alert('Payment canceled')
     } else {
       return
     }
@@ -84,13 +90,13 @@ class CreateDeal extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {goBack} = this.props.navigation
+    const {goBack, replace} = this.props.navigation
     if (
       prevProps.stateDeal.isFetching !== this.props.stateDeal.isFetching &&
       prevProps.stateDeal.isFetching &&
       !helper.isEmptyObject(this.props.dataDeal)
     )
-      goBack()
+      replace(BUY_DEALS_MANAGER_SCR)
   }
 
   render() {
