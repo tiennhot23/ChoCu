@@ -36,7 +36,7 @@ class Post extends Component {
 
   render() {
     const {theme, postId} = this.state
-    const {dataPost, currentUser} = this.props
+    const {dataPost, currentUser, isLoggedIn} = this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
@@ -47,6 +47,7 @@ class Post extends Component {
             style={style}
             theme={theme}
             postState={dataPost?.post?.post_state}
+            postId={postId}
             isOwner={dataPost?.user?.user_id === currentUser?.user_id}
           />
           <ScrollView>
@@ -103,7 +104,12 @@ class Post extends Component {
             </View>
           </ScrollView>
           {dataPost?.user?.user_id !== currentUser?.user_id ? (
-            <BottomButtons theme={theme} />
+            <BottomButtons
+              theme={theme}
+              navigate={navigate}
+              postId={postId}
+              isLoggedIn={isLoggedIn}
+            />
           ) : null}
         </View>
       </Provider>
@@ -113,6 +119,7 @@ class Post extends Component {
 
 const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer?.userData,
+  isLoggedIn: state.currentUserReducer?.isLoggedIn,
   dataPost: state.postReducer.dataPost,
   statePost: state.postReducer.statePost
 })

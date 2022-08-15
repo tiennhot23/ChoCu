@@ -14,7 +14,11 @@ import {Avatar} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {getItem} from 'src/common/storage'
-import {AUTH_NAV} from 'src/constants/constant'
+import {
+  AUTH_NAV,
+  BUY_DEALS_MANAGER_SCR,
+  SELL_DEALS_MANAGER_SCR
+} from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
 
@@ -24,6 +28,7 @@ import {
   requestUserData
 } from '../CurrentUser/action'
 import Header from './components/Header'
+import PersonalFuncItem from './components/PersonalFuncItem'
 
 class Personal extends Component {
   constructor(props) {
@@ -56,6 +61,18 @@ class Personal extends Component {
           isLoggedIn={isLoggedIn}
           handleLogin={this.handleLogin}
           handleLogout={this.handleLogout}
+        />
+        <PersonalFuncItem
+          title={'Giao dịch bán'}
+          icon={'swap-horizontal-outline'}
+          theme={theme}
+          onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
+        />
+        <PersonalFuncItem
+          title={'Giao dịch mua'}
+          icon={'swap-horizontal-outline'}
+          theme={theme}
+          onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
         />
       </ScrollView>
     )

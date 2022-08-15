@@ -1,8 +1,9 @@
 import {Icon} from '@components'
 import React from 'react'
 import {Text, TouchableOpacity, View} from 'react-native'
+import {CREATE_DEAL_SCR} from 'src/constants/constant'
 
-export default function BottomButtons({theme}) {
+export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
   return (
     <View
       style={{
@@ -100,6 +101,9 @@ export default function BottomButtons({theme}) {
           padding: 10,
           justifyContent: 'center',
           alignItems: 'center'
+        }}
+        onPress={() => {
+          if (isLoggedIn) navigate(CREATE_DEAL_SCR, {postId})
         }}>
         <Icon name="wallet-outline" size={20} color={theme.primaryForeground} />
         <Text

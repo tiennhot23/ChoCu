@@ -1,11 +1,16 @@
 import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
+  BUY_DEALS_MANAGER_SCR,
+  CREATE_DEAL_SCR,
   CREATE_POST_SCR,
+  DEALS_MANAGER_SCR,
+  DEAL_SCR,
   EDIT_INFO_SCR,
   HOME_NAV,
   POST_SCR,
   SEARCH_SCR,
+  SELL_DEALS_MANAGER_SCR,
   USER_INFO_SCR
 } from 'src/constants/constant'
 import HomeTabNavigator from './HomeTabNavigator'
@@ -16,6 +21,10 @@ import Post from 'src/containers/Post'
 import {Button, StatusBar} from 'react-native'
 import Search from 'src/containers/Search'
 import CreatePost from 'src/containers/CreatePost'
+import CreateDeal from 'src/containers/CreateDeal'
+import SellDealManager from 'src/containers/SellDealManager'
+import BuyDealManager from 'src/containers/BuyDealManager'
+import Deal from 'src/containers/Deal'
 
 const Stack = createNativeStackNavigator()
 
@@ -50,6 +59,26 @@ export default function MainStackNavigator() {
                   name={CREATE_POST_SCR}
                   component={CreatePost}
                   initialParams={theme}
+                />
+                <Stack.Screen
+                  name={CREATE_DEAL_SCR}
+                  component={CreateDeal}
+                  initialParams={theme}
+                />
+                <Stack.Screen
+                  name={SELL_DEALS_MANAGER_SCR}
+                  component={SellDealManager}
+                  initialParams={theme}
+                />
+                <Stack.Screen
+                  name={BUY_DEALS_MANAGER_SCR}
+                  component={BuyDealManager}
+                  initialParams={theme}
+                />
+                <Stack.Screen
+                  name={DEAL_SCR}
+                  component={Deal}
+                  initialParams={{theme}}
                 />
               </Stack.Group>
               <Stack.Group

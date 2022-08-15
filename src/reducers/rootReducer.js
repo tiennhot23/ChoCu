@@ -10,6 +10,9 @@ import {postsReducer} from 'src/containers/Posts/reducer'
 import {notifyReducer} from 'src/containers/Notification/reducer'
 import {postReducer} from 'src/containers/Post/reducer'
 import {userPostsReducer} from 'src/containers/PostsManager/reducer'
+import {paymentsReducer} from 'src/containers/Payment/reducer'
+import {dealReducer} from 'src/containers/Deal/reducer'
+import {userDealsReducer} from 'src/containers/DealManager/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -31,6 +34,9 @@ const rootReducer = combineReducers({
   postsReducer,
   notifyReducer,
   postReducer,
-  userPostsReducer
+  userPostsReducer,
+  paymentsReducer,
+  dealReducer,
+  userDealsReducer
 })
 export default rootReducer
