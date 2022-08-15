@@ -95,31 +95,33 @@ export default function DealItem({
             />
           )}
         </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{
-            width: 150,
-            height: 50,
-            backgroundColor: 'red',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 5,
-            alignSelf: 'center'
-          }}
-          disabled={['confirmed'].indexOf(deal.deal_state) >= 0}
-          onPress={onActionPress}>
-          <Text style={{color: 'white', textAlign: 'center'}}>
-            {deal.deal_state === 'pending'
-              ? 'Huỷ'
-              : deal.deal_state === 'confirmed'
-              ? 'Đã xác nhận'
-              : deal.deal_state === 'sending'
-              ? 'Đã nhận'
-              : deal.deal_state === 'received'
-              ? 'Đã nhận\n(Chưa đánh giá)'
-              : 'Hoàn tất'}
-          </Text>
-        </TouchableOpacity>
+        {deal.deal_state !== 'canceled' && (
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              width: 150,
+              height: 50,
+              backgroundColor: 'red',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 5,
+              alignSelf: 'center'
+            }}
+            disabled={['confirmed'].indexOf(deal.deal_state) >= 0}
+            onPress={onActionPress}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              {deal.deal_state === 'pending'
+                ? 'Huỷ'
+                : deal.deal_state === 'confirmed'
+                ? 'Đã xác nhận'
+                : deal.deal_state === 'sending'
+                ? 'Đã nhận'
+                : deal.deal_state === 'received'
+                ? 'Đã nhận\n(Chưa đánh giá)'
+                : 'Hoàn tất'}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   )

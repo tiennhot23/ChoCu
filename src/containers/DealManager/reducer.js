@@ -47,6 +47,12 @@ const userDealsReducer = (state = userDealsState, action) => {
           isError: action.isError
         }
       }
+    case userDealsAction.START_ACTION: {
+      return {
+        ...state,
+        isActionDone: false
+      }
+    }
     case userDealsAction.UPDATE_SELL_DEAL_STATE: {
       let newData = [...state.dataSellDeals]
       if (!action.isError) {
@@ -67,7 +73,8 @@ const userDealsReducer = (state = userDealsState, action) => {
           isEmpty: action.isEmpty,
           message: action.message,
           isError: action.isError
-        }
+        },
+        isActionDone: action.isError ? false : true
       }
     }
     case userDealsAction.UPDATE_BUY_DEAL_STATE: {
@@ -90,7 +97,8 @@ const userDealsReducer = (state = userDealsState, action) => {
           isEmpty: action.isEmpty,
           message: action.message,
           isError: action.isError
-        }
+        },
+        isActionDone: action.isError ? false : true
       }
     }
 

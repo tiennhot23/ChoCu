@@ -10,8 +10,9 @@ const START_GET_SELL_DEALS = 'START_GET_SELL_DEALS'
 const STOP_GET_SELL_DEALS = 'STOP_GET_SELL_DEALS'
 const START_GET_BUY_DEALS = 'START_GET_BUY_DEALS'
 const STOP_GET_BUY_DEALS = 'STOP_GET_BUY_DEALS'
-const UPDATE_SELL_DEAL_STATE = 'UPDATE_DEAL_STATE'
+const UPDATE_SELL_DEAL_STATE = 'UPDATE_SELL_DEAL_STATE'
 const UPDATE_BUY_DEAL_STATE = 'UPDATE_BUY_DEAL_STATE'
+const START_ACTION = 'START_ACTION'
 
 export const userDealsAction = {
   START_GET_SELL_DEALS,
@@ -19,7 +20,8 @@ export const userDealsAction = {
   START_GET_BUY_DEALS,
   STOP_GET_BUY_DEALS,
   UPDATE_SELL_DEAL_STATE,
-  UPDATE_BUY_DEAL_STATE
+  UPDATE_BUY_DEAL_STATE,
+  START_ACTION
 }
 
 export const requestSellDeals = () => (dispatch, getState) => {
@@ -81,16 +83,17 @@ export const requestBuyDeals = () => (dispatch, getState) => {
 }
 
 export const requestCancelDeal =
-  ({deal_id, isOwner}) =>
+  ({deal_id, isBuyer}) =>
   (dispatch, getState) => {
     const body = {
       deal_state: 'canceled'
     }
+    dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
       .then((res) => {
         const {code, message, data} = res
         if (code === 200) {
-          if (isOwner)
+          if (isBuyer)
             dispatch(
               updateBuyDealState({deal: data[0], message: message || ''})
             )
@@ -101,7 +104,7 @@ export const requestCancelDeal =
         }
       })
       .catch((err) => {
-        if (isOwner)
+        if (isBuyer)
           dispatch(
             updateBuyDealState({
               deal: {},
@@ -128,6 +131,7 @@ export const requestConfirmedDeal =
     const body = {
       deal_state: 'confirmed'
     }
+    dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
       .then((res) => {
         const {code, message, data} = res
@@ -152,6 +156,7 @@ export const requestSendingDeal =
     const body = {
       deal_state: 'sending'
     }
+    dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
       .then((res) => {
         const {code, message, data} = res
@@ -176,6 +181,7 @@ export const requestReceivedDeal =
     const body = {
       deal_state: 'received'
     }
+    dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
       .then((res) => {
         const {code, message, data} = res
@@ -221,6 +227,12 @@ export const updateBuyDealState = ({
     isEmpty,
     message,
     isError
+  }
+}
+
+export const startAction = () => {
+  return {
+    type: START_ACTION
   }
 }
 

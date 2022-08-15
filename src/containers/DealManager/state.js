@@ -12,5 +12,6 @@ export const userDealsState = {
     isEmpty: false,
     message: '',
     isError: false
-  }
+  },
+  isActionDone: true
 }

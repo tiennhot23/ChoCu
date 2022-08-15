@@ -4,12 +4,12 @@ import {useSelector} from 'react-redux'
 import {DEAL_SCR, POST_SCR} from 'src/constants/constant'
 import DealItem from '../components/DealItem'
 
-export default function SendingDeals({route, navigation}) {
-  const userDeals = useSelector((state) => state.userDealsReducer.dataBuyDeals)
+export default function CanceledDeals({route, navigation}) {
+  const userDeals = useSelector((state) => state.userDealsReducer.dataSellDeals)
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'sending'))
+    setDeals(userDeals.filter((item) => item.deal_state === 'canceled'))
   }, [userDeals])
 
   return (
@@ -22,19 +22,7 @@ export default function SendingDeals({route, navigation}) {
           <DealItem
             deal={item}
             onPress={() =>
-              navigation.navigate(DEAL_SCR, {
-                dealId: item.deal_id,
-                actions: [
-                  {
-                    label: 'Đã nhận',
-                    action: 'receive',
-                    nextState: 'received',
-                    onActionDone: () => {
-                      navigation.jumpTo('RECEIVEDDEALS')
-                    }
-                  }
-                ]
-              })
+              navigation.navigate(DEAL_SCR, {dealId: item.deal_id, actions: []})
             }
           />
         )}

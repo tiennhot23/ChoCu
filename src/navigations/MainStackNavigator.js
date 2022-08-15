@@ -5,6 +5,7 @@ import {
   CREATE_DEAL_SCR,
   CREATE_POST_SCR,
   DEALS_MANAGER_SCR,
+  DEAL_SCR,
   EDIT_INFO_SCR,
   HOME_NAV,
   POST_SCR,
@@ -23,6 +24,7 @@ import CreatePost from 'src/containers/CreatePost'
 import CreateDeal from 'src/containers/CreateDeal'
 import SellDealManager from 'src/containers/SellDealManager'
 import BuyDealManager from 'src/containers/BuyDealManager'
+import Deal from 'src/containers/Deal'
 
 const Stack = createNativeStackNavigator()
 
@@ -72,6 +74,11 @@ export default function MainStackNavigator() {
                   name={BUY_DEALS_MANAGER_SCR}
                   component={BuyDealManager}
                   initialParams={theme}
+                />
+                <Stack.Screen
+                  name={DEAL_SCR}
+                  component={Deal}
+                  initialParams={{theme}}
                 />
               </Stack.Group>
               <Stack.Group

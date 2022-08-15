@@ -113,7 +113,7 @@ export default function DealItem({
           <Text style={{color: 'white', textAlign: 'center'}}>
             {deal.deal_state === 'pending'
               ? 'Xác nhận'
-              : deal.deal_state === 'Confirmed'
+              : deal.deal_state === 'confirmed'
               ? 'Giao hàng'
               : deal.deal_state === 'sending'
               ? 'Đang giao'

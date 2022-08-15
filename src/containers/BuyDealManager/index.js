@@ -6,6 +6,7 @@ import {StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {requestBuyDeals} from '../DealManager/action'
+import CanceledDeals from './screens/CanceledDeals'
 import ConfirmedDeals from './screens/ConfirmedDeals'
 import PendingDeals from './screens/PendingDeal'
 import ReceivedDeals from './screens/ReceivedDeals'
@@ -40,10 +41,14 @@ class BuyDealsManager extends Component {
             <View style={{flex: 1, width: '100%'}}>
               <Tab.Navigator
                 screenOptions={{
+                  tabBarScrollEnabled: true,
                   tabBarActiveTintColor: theme.primaryText,
                   tabBarLabelStyle: {
                     fontSize: font.FONT_SIZE_14,
                     fontWeight: font.FONT_WEIGHT_BOLD
+                  },
+                  tabBarItemStyle: {
+                    width: 130
                   },
                   tabBarIndicatorStyle: {
                     backgroundColor: theme.primaryText
@@ -77,6 +82,11 @@ class BuyDealsManager extends Component {
                   name="RECEIVEDDEALS"
                   component={ReceivedDeals}
                   options={{title: 'Đã nhận'}}
+                />
+                <Tab.Screen
+                  name="CANCELEDDEALS"
+                  component={CanceledDeals}
+                  options={{title: 'Đã Huỷ'}}
                 />
               </Tab.Navigator>
             </View>
