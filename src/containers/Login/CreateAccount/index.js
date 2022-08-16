@@ -5,10 +5,10 @@ import {constant} from '@constants'
 import FormInput from '../components/FormInput'
 import FormButton from '../components/FormButton'
 import {KeyboardView, BaseText, BaseLoading} from '@components'
-import {OTP_SCR} from 'src/constants/constant'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {
+  requestActionCreateAccount,
   requestActionForgotPassword,
   requestGetOTP,
   requestVerifyOTP
@@ -21,17 +21,14 @@ const passwordRegex = new RegExp(
 const phoneRegex = new RegExp(/^[0]\d{9}$/)
 const otpRegex = new RegExp(/\d{6}$/)
 
-class ForgotPassword extends Component {
+class CreateAccount extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userName: '',
       phoneNumber: '',
       otpCode: '',
       newPassword: '',
-      confirmedPassword: '',
       isShowNewPassword: false,
-      isShowConfirmedPassword: false,
       isLoading: false,
       showPhoneForm: true,
       showOTPForm: false,
@@ -96,7 +93,7 @@ class ForgotPassword extends Component {
       if (helper.isNonEmptyString(this.props.stateAction.message))
         alert(this.props.stateAction.message)
       if (this.props.stateAction.isDone) goBack()
-      if (this.props.stateAction.message.includes('không tồn tại'))
+      if (this.props.stateAction.message.includes('không thể tạo tài khoản'))
         new Promise((resolve) =>
           setTimeout(() => {
             resolve
@@ -107,91 +104,17 @@ class ForgotPassword extends Component {
   }
 
   onSubmit = () => {
-    const {newPassword, confirmedPassword} = this.state
-    if (newPassword != confirmedPassword) {
-      alert('Mật khẩu không trùng khớp, vui lòng nhập lại')
-      return
-    }
-    const {resetPassword} = this.props
-    resetPassword({password: newPassword})
-    // const { userName, phoneNumber, newPassword, confirmedPassword } = this.state
-    // if (helper.isEmptyString(userName)) {
-    //   Alert.alert('', 'Vui lòng nhập tên đăng nhập')
-    // } else if (helper.isEmptyString(phoneNumber)) {
-    //   Alert.alert('', 'Vui lòng nhập số điện thoại')
-    // } else {
-    //   const isValidatePhone = regExpPhone.test(phoneNumber)
-    //   if (!isValidatePhone) {
-    //     Alert.alert('', 'Vui lòng nhập số điện thoại đúng 10 chữ số')
-    //   } else if (!helper.isValidatePhonePrefix(phoneNumber)) {
-    //     Alert.alert('', 'Vui lòng nhập đúng đầu số điện thoại')
-    //   } else if (helper.isEmptyString(newPassword)) {
-    //     Alert.alert('', 'Vui lòng nhập mật khẩu mới')
-    //   } else if (newPassword.length < 8 || !passwordRegex.test(newPassword)) {
-    //     Alert.alert(
-    //       '',
-    //       'Mật khẩu mới phải ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số'
-    //     )
-    //   } else if (newPassword != confirmedPassword) {
-    //     Alert.alert('', 'Mật khẩu không trùng khớp, vui lòng nhập lại')
-    //   } else {
-    // showBlockUI()
-    // createOTP(userName, phoneNumber)
-    //   .then((success) => {
-    //     hideBlockUI()
-    //     this.props.navigation.navigate('OtpInput', {
-    //       userName,
-    //       phoneNumber,
-    //       newPassword
-    //     })
-    //   })
-    //   .catch((msgError) => {
-    //     if (msgError == 'locked account') {
-    //       Alert.alert(
-    //         '',
-    //         'Tài khoản của bạn đã bị khóa do nhập sai mã OTP nhiều lần, liên hệ bộ phận IT để mở khóa',
-    //         [
-    //           {
-    //             text: 'OK',
-    //             style: 'cancel',
-    //             onPress: () => {
-    //               hideBlockUI()
-    //               this.props.navigation.goBack()
-    //             }
-    //           }
-    //         ]
-    //       )
-    //     } else
-    //       Alert.alert(
-    //         translate('common.notification_uppercase'),
-    //         msgError,
-    //         [
-    //           {
-    //             text: translate('common.btn_skip'),
-    //             style: 'cancel',
-    //             onPress: hideBlockUI
-    //           },
-    //           {
-    //             text: translate('common.btn_notify_try_again'),
-    //             style: 'default',
-    //             onPress: this.onSubmit
-    //           }
-    //         ]
-    //       )
-    //   })
-    //   }
-    // }
+    const {createAccount} = this.props
+    const {newPassword} = this.state
+    createAccount({password: newPassword})
   }
 
   render() {
     const {
-      userName,
       phoneNumber,
       otpCode,
       newPassword,
-      confirmedPassword,
       isShowNewPassword,
-      isShowConfirmedPassword,
       showPhoneForm,
       showOTPForm,
       showPasswordForm
@@ -229,7 +152,7 @@ class ForgotPassword extends Component {
                         paddingBottom: constant.calcHeight(5)
                       }}>
                       <BaseText
-                        text={'QUÊN MẬT KHẨU'}
+                        text={'TẠO TÀI KHOẢN'}
                         style={{
                           marginTop: constant.calcHeight(5),
                           fontWeight: 'bold'
@@ -239,7 +162,7 @@ class ForgotPassword extends Component {
 
                     <BaseText
                       text={
-                        'Nhập số điện thoại của bạn vào phía dưới và ấn xác nhận để lấy mã OTP'
+                        'Nhập số điện thoại dùng để đăng ký tài khoản và ấn xác nhận để lấy mã OTP'
                       }
                       style={{
                         marginTop: constant.calcHeight(10)
@@ -412,7 +335,7 @@ class ForgotPassword extends Component {
                         paddingBottom: constant.calcHeight(5)
                       }}>
                       <BaseText
-                        text={'ĐẶT LẠI MẬT KHẨU'}
+                        text={'ĐẶT MẬT KHẨU'}
                         style={{
                           marginTop: constant.calcHeight(5),
                           fontWeight: 'bold'
@@ -421,7 +344,7 @@ class ForgotPassword extends Component {
                     </View>
 
                     <BaseText
-                      text={'Nhập mật khẩu mới'}
+                      text={'Nhập mật khẩu'}
                       style={{
                         marginTop: constant.calcHeight(10)
                       }}
@@ -431,7 +354,7 @@ class ForgotPassword extends Component {
                       <FormInput
                         icon={{uri: 'lock-closed-outline'}}
                         _inputRef={(ref) => (this.inputNewPassword = ref)}
-                        placeholder={'Mật khẩu mới'}
+                        placeholder={'Mật khẩu'}
                         secureTextEntry={!isShowNewPassword}
                         onSubmitEditing={() =>
                           this.inputConfirmedPassword.focus()
@@ -446,29 +369,6 @@ class ForgotPassword extends Component {
                         isShowPassword={isShowNewPassword}
                         onPress={() =>
                           this.setState({isShowNewPassword: !isShowNewPassword})
-                        }
-                      />
-                      <FormInput
-                        icon={{
-                          uri: 'shield-checkmark'
-                        }}
-                        _inputRef={(ref) => (this.inputConfirmedPassword = ref)}
-                        placeholder={'Nhập lại mật khẩu mới'}
-                        secureTextEntry={!isShowConfirmedPassword}
-                        onSubmitEditing={this.onSubmit}
-                        onChangeText={(password) =>
-                          this.setState({
-                            confirmedPassword: password
-                          })
-                        }
-                        value={confirmedPassword}
-                        autoFocus={false}
-                        isPassword={true}
-                        isShowPassword={isShowConfirmedPassword}
-                        onPress={() =>
-                          this.setState({
-                            isShowConfirmedPassword: !isShowConfirmedPassword
-                          })
                         }
                       />
                     </View>
@@ -533,7 +433,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getOtp: bindActionCreators(requestGetOTP, dispatch),
   verifyOtp: bindActionCreators(requestVerifyOTP, dispatch),
-  resetPassword: bindActionCreators(requestActionForgotPassword, dispatch)
+  createAccount: bindActionCreators(requestActionCreateAccount, dispatch)
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateAccount)

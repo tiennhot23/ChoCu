@@ -3,12 +3,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
   FORGOT_PASSWORD_SCR,
   LOGIN_SCR,
+  OTP_SCR,
   SIGN_UP_SCR
 } from 'src/constants/constant'
 import SignUp from 'src/containers/SignUp'
 import Login from 'src/containers/Login'
 import ForgotPassword from 'src/containers/Login/ForgotPassword'
 import {ThemeConsumer} from 'src/context/ThemeContext'
+import OTP from 'src/containers/OTP'
+import CreateAccount from 'src/containers/Login/CreateAccount'
 
 const Stack = createNativeStackNavigator()
 
@@ -24,7 +27,7 @@ export default function AuthStackNavigator() {
           />
           <Stack.Screen
             name={SIGN_UP_SCR}
-            component={SignUp}
+            component={CreateAccount}
             initialParams={theme}
           />
           <Stack.Screen
@@ -32,6 +35,7 @@ export default function AuthStackNavigator() {
             component={ForgotPassword}
             initialParams={theme}
           />
+          <Stack.Screen name={OTP_SCR} component={OTP} initialParams={theme} />
         </Stack.Navigator>
       )}
     </ThemeConsumer>

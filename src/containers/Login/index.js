@@ -175,7 +175,11 @@ class Login extends Component {
               <BaseText
                 color={theme.blue}
                 text={'Đăng ký'}
-                onPress={() => navigate(SIGN_UP_SCR)}
+                onPress={() =>
+                  navigate(SIGN_UP_SCR, {
+                    style: style
+                  })
+                }
               />
             </BaseText>
           </View>

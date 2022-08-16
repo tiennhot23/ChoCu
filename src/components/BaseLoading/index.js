@@ -133,7 +133,7 @@ class BaseLoading extends PureComponent {
           style={{
             flex: 1
           }}>
-          {content}
+          {this.props.children}
         </View>
       )
     }
