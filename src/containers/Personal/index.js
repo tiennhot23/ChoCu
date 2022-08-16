@@ -27,6 +27,7 @@ import {
   requestLogoutUser,
   requestUserData
 } from '../CurrentUser/action'
+import FooterButton from './components/FooterButton'
 import Header from './components/Header'
 import PersonalFuncItem from './components/PersonalFuncItem'
 
@@ -54,14 +55,7 @@ class Personal extends Component {
     const {isLoggedIn} = this.props
     return (
       <ScrollView style={style.wrapper}>
-        <Header
-          theme={theme}
-          navigate={navigate}
-          style={style}
-          isLoggedIn={isLoggedIn}
-          handleLogin={this.handleLogin}
-          handleLogout={this.handleLogout}
-        />
+        <Header navigate={navigate} />
         <PersonalFuncItem
           title={'Giao dịch bán'}
           icon={'swap-horizontal-outline'}
@@ -74,6 +68,22 @@ class Personal extends Component {
           theme={theme}
           onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
         />
+        <View
+          style={[
+            {
+              flex: 1,
+              alignItems: 'center',
+              marginVertical: 20,
+              borderTopWidth: 0.5,
+              borderTopColor: theme.secondForeground,
+              paddingVertical: 20
+            }
+          ]}>
+          <FooterButton
+            title={isLoggedIn ? 'Đăng xuất' : 'Đăng nhập'}
+            onPress={isLoggedIn ? this.handleLogout : this.handleLogin}
+          />
+        </View>
       </ScrollView>
     )
   }

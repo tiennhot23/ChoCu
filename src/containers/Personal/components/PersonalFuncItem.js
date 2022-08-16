@@ -23,7 +23,7 @@ export default function PersonalFuncItem({
         <Icon
           name={icon}
           color={theme.primaryForeground}
-          size={constant.largeIcon}
+          size={constant.normalIcon}
         />
       )}
       {sourceIcon && (

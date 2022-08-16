@@ -1,5 +1,3 @@
-import {ENUM} from '@constants'
-
 export const currentUserState = {
   userData: {
     userId: '',
@@ -8,6 +6,12 @@ export const currentUserState = {
     phone: '',
     email: '',
     address: ''
+  },
+  stateUser: {
+    isFetching: false,
+    isEmpty: false,
+    message: '',
+    isError: false
   },
   accessToken: '',
   fcmToken: '',

@@ -80,6 +80,11 @@ export default function MainStackNavigator() {
                   component={Deal}
                   initialParams={{theme}}
                 />
+                <Stack.Screen
+                  name={EDIT_INFO_SCR}
+                  component={EditInfo}
+                  initialParams={theme}
+                />
               </Stack.Group>
               <Stack.Group
                 screenOptions={{
@@ -91,11 +96,6 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={USER_INFO_SCR}
                   component={UserInfo}
-                  initialParams={theme}
-                />
-                <Stack.Screen
-                  name={EDIT_INFO_SCR}
-                  component={EditInfo}
                   initialParams={theme}
                 />
               </Stack.Group>
