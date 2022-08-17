@@ -53,7 +53,7 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={SEARCH_SCR}
                   component={Search}
-                  initialParams={theme}
+                  initialParams={{theme}}
                 />
                 <Stack.Screen
                   name={CREATE_POST_SCR}

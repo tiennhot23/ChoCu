@@ -5,7 +5,7 @@ import React, {Component, PureComponent} from 'react'
 import {FlatList, StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {POST_SCR} from 'src/constants/constant'
+import {POST_SCR, SEARCH_SCR} from 'src/constants/constant'
 import {requestUserData} from '../CurrentUser/action'
 import {requestPosts} from '../Posts/action'
 import Categories from './components/Categories'
@@ -22,11 +22,20 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    this.props.getPosts()
+    this.props.getPosts({})
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.posts === []) return true
+    else return false
   }
 
   onPostPress = (postId) => {
     this.props.navigation.navigate(POST_SCR, {postId})
+  }
+
+  onCategoryPress = (category) => {
+    this.props.navigation.navigate(SEARCH_SCR, {category})
   }
 
   onSearchBarPress = () => {
@@ -45,6 +54,7 @@ class Home extends Component {
             <ListHeaderComponent
               theme={theme}
               onSearchBarPress={this.onSearchBarPress}
+              onCategoryPress={this.onCategoryPress}
             />
           }
           data={posts}
@@ -104,12 +114,12 @@ class ListHeaderComponent extends PureComponent {
     super(props)
   }
   render() {
-    const {theme, onSearchBarPress} = this.props
+    const {theme, onSearchBarPress, onCategoryPress} = this.props
     return (
       <View key={0}>
         <Header theme={theme} onSearchBarPress={onSearchBarPress} />
         <Slider />
-        <Categories theme={theme} />
+        <Categories theme={theme} onCategoryPress={onCategoryPress} />
         <PostsHeader theme={theme} />
       </View>
     )

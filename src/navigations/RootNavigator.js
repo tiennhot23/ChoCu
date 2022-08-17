@@ -91,13 +91,13 @@ export default function RootNavigator() {
   }
 
   return (
-    // <Stack.Navigator screenOptions={{headerShown: false}}>
-    //   {appNavigate.mainStack ? (
-    //     <Stack.Screen name={MAIN_NAV} component={MainStackNavigator} />
-    //   ) : (
-    //     <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
-    //   )}
-    // </Stack.Navigator>
-    <AuthStackNavigator />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      {appNavigate.mainStack ? (
+        <Stack.Screen name={MAIN_NAV} component={MainStackNavigator} />
+      ) : (
+        <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
+      )}
+    </Stack.Navigator>
+    // <AuthStackNavigator />
   )
 }

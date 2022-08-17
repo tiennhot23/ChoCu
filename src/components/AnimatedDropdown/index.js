@@ -145,6 +145,7 @@ export default function AnimatedDropdown({
                   color: color
                 }}
                 onPress={() => {
+                  onClick()
                   onSelect(item)
                   setIsShown(false)
                 }}
