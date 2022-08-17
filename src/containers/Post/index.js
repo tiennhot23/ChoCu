@@ -93,7 +93,12 @@ class Post extends Component {
                 />
               </View>
 
-              <SellerInfo style={style} user={dataPost?.user} />
+              <SellerInfo
+                style={style}
+                user={dataPost?.user}
+                navigate={navigate}
+                isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+              />
 
               <Description
                 style={style}

@@ -85,6 +85,11 @@ export default function MainStackNavigator() {
                   component={EditInfo}
                   initialParams={theme}
                 />
+                <Stack.Screen
+                  name={USER_INFO_SCR}
+                  component={UserInfo}
+                  initialParams={{theme}}
+                />
               </Stack.Group>
               <Stack.Group
                 screenOptions={{
@@ -92,13 +97,7 @@ export default function MainStackNavigator() {
                   headerStyle: {
                     backgroundColor: theme.primaryForeground
                   }
-                }}>
-                <Stack.Screen
-                  name={USER_INFO_SCR}
-                  component={UserInfo}
-                  initialParams={theme}
-                />
-              </Stack.Group>
+                }}></Stack.Group>
             </Stack.Navigator>
           </>
         )

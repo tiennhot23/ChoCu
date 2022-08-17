@@ -14,6 +14,7 @@ import {paymentsReducer} from 'src/containers/Payment/reducer'
 import {dealReducer} from 'src/containers/Deal/reducer'
 import {userDealsReducer} from 'src/containers/DealManager/reducer'
 import {otpReducer} from 'src/containers/OTP/reducer'
+import {userInfoReducer} from 'src/containers/UserInfo/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
   paymentsReducer,
   dealReducer,
   userDealsReducer,
-  otpReducer
+  otpReducer,
+  userInfoReducer
 })
 export default rootReducer
