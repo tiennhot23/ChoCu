@@ -25,21 +25,23 @@ class Home extends Component {
     this.props.getPosts({})
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.posts === []) return true
-    else return false
-  }
-
   onPostPress = (postId) => {
-    this.props.navigation.navigate(POST_SCR, {postId})
+    this.props.navigation.navigate(POST_SCR, {postId, onGoBack: this.onRefresh})
   }
 
   onCategoryPress = (category) => {
-    this.props.navigation.navigate(SEARCH_SCR, {category})
+    this.props.navigation.navigate(SEARCH_SCR, {
+      category,
+      onGoBack: this.onRefresh
+    })
   }
 
   onSearchBarPress = () => {
-    this.props.navigation.navigate(SEARCH_SCR)
+    this.props.navigation.navigate(SEARCH_SCR, {onGoBack: this.onRefresh})
+  }
+
+  onRefresh = () => {
+    this.props.getPosts({})
   }
 
   render() {

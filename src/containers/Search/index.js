@@ -18,7 +18,8 @@ class Search extends Component {
     this.state = {
       theme: this.props.route.params.theme,
       address: '',
-      category: this.props.route.params.category
+      category: this.props.route.params.category,
+      onGoBack: this.props.route.params.onGoBack
     }
     this.categorySelectionRef = createRef()
     this.locationSelectionRef = createRef()
@@ -45,7 +46,7 @@ class Search extends Component {
   }
 
   render() {
-    const {theme} = this.state
+    const {theme, onGoBack} = this.state
     const {navigate} = this.props.navigation
     const {posts} = this.props
     const style = initStyle(theme)
@@ -56,6 +57,7 @@ class Search extends Component {
             theme={theme}
             navigation={this.props.navigation}
             onSearch={this.onSearch}
+            onGoBack={onGoBack}
           />
           <LocationSelection ref={this.locationSelectionRef} />
           <CategorySelection ref={this.categorySelectionRef} />

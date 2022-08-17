@@ -6,7 +6,8 @@ export default function Header({
   color = 'black',
   backgroundColor = 'white',
   navigation,
-  onSearch
+  onSearch,
+  onGoBack
 }) {
   const searchRef = useRef(null)
   const [isSeaching, setIsSearching] = useState(true)
@@ -20,7 +21,10 @@ export default function Header({
     if (searchRef && searchRef.current.isFocused()) {
       searchRef.current.blur()
       setIsSearching(false)
-    } else navigation.goBack()
+    } else {
+      navigation.goBack()
+      onGoBack()
+    }
   }
 
   return (

@@ -58,34 +58,32 @@ class Notification extends Component {
           isError={false}
           isEmpty={false}
           textLoadingError={'loading error from compo notification'}
-          onPressTryAgains={() => {}}
-          content={
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              style={style.wrapper}
-              data={dataNotify}
-              renderItem={({item, index}) => (
-                <RowItem
-                  item={item}
-                  index={index}
-                  theme={theme}
-                  onDelete={this.onDelete}
-                  onRead={this.onRead}
-                />
-              )}
-              ListFooterComponent={
-                <ListFooter
-                  isLoadMore={isLoadMore}
-                  stateLoadMore={stateLoadMore}
-                  style={style.load_more}
-                />
-              }
-              keyExtractor={(item, index) => item.time_created}
-              onEndReachedThreshold={0.5}
-              onEndReached={() => {}}
-            />
-          }
-        />
+          onPressTryAgains={() => {}}>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            style={style.wrapper}
+            data={dataNotify}
+            renderItem={({item, index}) => (
+              <RowItem
+                item={item}
+                index={index}
+                theme={theme}
+                onDelete={this.onDelete}
+                onRead={this.onRead}
+              />
+            )}
+            ListFooterComponent={
+              <ListFooter
+                isLoadMore={isLoadMore}
+                stateLoadMore={stateLoadMore}
+                style={style.load_more}
+              />
+            }
+            keyExtractor={(item, index) => item.time_created}
+            onEndReachedThreshold={0.5}
+            onEndReached={() => {}}
+          />
+        </BaseLoading>
       </>
     )
   }
