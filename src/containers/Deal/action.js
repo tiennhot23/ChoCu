@@ -14,14 +14,14 @@ import {
 
 const START_GET_DEAL = 'START_GET_DEAL'
 const STOP_GET_DEAL = 'STOP_GET_DEAL'
-const START_GET_RATING = 'START_GET_RATING'
-const STOP_GET_RATING = 'STOP_GET_RATING'
+const START_RATE_DEAL = 'START_RATE_DEAL'
+const STOP_RATE_DEAL = 'STOP_RATE_DEAL'
 
 export const dealAction = {
   START_GET_DEAL,
   STOP_GET_DEAL,
-  START_GET_RATING,
-  STOP_GET_RATING
+  START_RATE_DEAL,
+  STOP_RATE_DEAL
 }
 
 export const requestGetDeal =
@@ -93,6 +93,41 @@ export const requestCreateDeal =
       })
   }
 
+export const requestRateDeal =
+  ({deal_id, rate_numb, rate_content}) =>
+  (dispatch, getState) => {
+    const body = {
+      rate_numb,
+      rate_content
+    }
+    dispatch(startRateDeal())
+    apiBase(API_REQUEST_RATE_DEAL + `/${deal_id}`, METHOD_POST, body)
+      .then((res) => {
+        const {code, message, data} = res
+        if (code === 200) {
+          dispatch(stopRateDeal({dataRating: data[0], message: message}))
+        } else {
+          dispatch(
+            stopRateDeal({
+              dataRating: {},
+              message: message || '',
+              isEmpty: true
+            })
+          )
+        }
+      })
+      .catch((err) => {
+        dispatch(
+          stopRateDeal({
+            dataRating: {},
+            isEmpty: true,
+            message: err.message,
+            isError: true
+          })
+        )
+      })
+  }
+
 export const startGetDeal = () => {
   return {
     type: START_GET_DEAL
@@ -108,6 +143,27 @@ export const stopGetDeal = ({
   return {
     type: STOP_GET_DEAL,
     dataDeal,
+    isEmpty,
+    message,
+    isError
+  }
+}
+
+export const startRateDeal = () => {
+  return {
+    type: START_RATE_DEAL
+  }
+}
+
+export const stopRateDeal = ({
+  dataRating,
+  isEmpty = false,
+  message = '',
+  isError = false
+}) => {
+  return {
+    type: STOP_RATE_DEAL,
+    dataRating,
     isEmpty,
     message,
     isError
