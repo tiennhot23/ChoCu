@@ -4,10 +4,15 @@ import React from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {Divider, Menu, Provider} from 'react-native-paper'
 import {useDispatch} from 'react-redux'
-import {requestEndPost} from 'src/containers/PostsManager/action'
+import {
+  requestEndPost,
+  requestRepostPost
+} from 'src/containers/PostsManager/action'
 
 export default function Header({
   navigation,
+  onGoBack,
+  onReport,
   style,
   theme,
   postState,
@@ -23,8 +28,16 @@ export default function Header({
 
   const endPost = () => {
     dispatch(requestEndPost({post_id: postId}))
+    if (helper.isFunction(onGoBack)) onGoBack()
     navigation.goBack()
   }
+
+  const repostPost = () => {
+    dispatch(requestRepostPost({post_id: postId}))
+    if (helper.isFunction(onGoBack)) onGoBack()
+    navigation.goBack()
+  }
+
   return (
     <View style={style.header_container}>
       <TouchableOpacity
@@ -49,7 +62,7 @@ export default function Header({
         }>
         {isOwner && postState === 'expired' && (
           <Menu.Item
-            onPress={() => {}}
+            onPress={repostPost}
             title="Đăng lại"
             icon={() => (
               <Icon
@@ -79,7 +92,7 @@ export default function Header({
         <Divider />
         {!isOwner && (
           <Menu.Item
-            onPress={() => {}}
+            onPress={onReport}
             title="Báo cáo"
             icon={() => (
               <Icon

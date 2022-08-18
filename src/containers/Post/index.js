@@ -1,8 +1,10 @@
-import {BaseText, Icon} from '@components'
+import {BaseText, Icon, Input} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
-import React, {Component} from 'react'
+import React, {Component, createRef} from 'react'
 import {
+  ActivityIndicator,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,11 +14,14 @@ import {
 import {Provider} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {baseUrl} from 'src/constants/api'
 import {requestPost} from './action'
 import Address from './components/Address'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
+import FormButton from './components/FormButton'
 import Header from './components/Header'
+import Report from './components/Report'
 import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
 
@@ -25,8 +30,12 @@ class Post extends Component {
     super(props)
     this.state = {
       theme: this.props.route.params.theme,
-      postId: this.props.route.params.postId
+      postId: this.props.route.params.postId,
+      onGoBack: this.props.route.params.onGoBack,
+      showReport: false
     }
+    this.reportContentRef = createRef()
+    this.reportInfoRef = createRef()
   }
 
   componentDidMount() {
@@ -35,15 +44,23 @@ class Post extends Component {
   }
 
   render() {
-    const {theme, postId} = this.state
+    const {theme, postId, onGoBack, showReport} = this.state
     const {dataPost, currentUser, isLoggedIn} = this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
       <Provider>
         <View style={style.wrapper}>
+          <Modal visible={showReport} transparent>
+            <Report
+              postId={postId}
+              onCancelReport={() => this.setState({showReport: false})}
+            />
+          </Modal>
           <Header
             navigation={this.props.navigation}
+            onGoBack={onGoBack}
+            onReport={() => this.setState({showReport: true})}
             style={style}
             theme={theme}
             postState={dataPost?.post?.post_state}
