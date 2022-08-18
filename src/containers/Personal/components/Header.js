@@ -7,6 +7,7 @@ import {Avatar} from 'react-native-paper'
 import {Rating} from 'react-native-ratings'
 import {useDispatch, useSelector} from 'react-redux'
 import {getItem} from 'src/common/storage'
+import {baseUrl} from 'src/constants/api'
 import {EDIT_INFO_SCR, USER_INFO_SCR} from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import {requestUserData} from 'src/containers/CurrentUser/action'
@@ -19,9 +20,19 @@ export default Header = ({
 }) => {
   const user = useSelector((state) => state.currentUserReducer?.userData)
   const dispatch = useDispatch()
+  const [follows, setFollows] = useState({
+    user_follower: 0,
+    user_following: 0
+  })
 
   useEffect(() => {
     dispatch(requestUserData())
+    fetch(baseUrl + '/user/user-follow' + `/${user.user_id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setFollows(res.data[0])
+      })
+      .catch((err) => console.log(err))
   }, [])
 
   return (
@@ -42,12 +53,12 @@ export default Header = ({
               justifyContent: 'space-around'
             }}>
             <BaseText
-              text={`${0} Người theo dõi`}
+              text={`${follows.user_follower} Người theo dõi`}
               style={style.nor_text}
               onPress={() => {}}
             />
             <BaseText
-              text={`${0} Đang theo dõi`}
+              text={`${follows.user_following} Đang theo dõi`}
               style={style.nor_text}
               onPress={() => {}}
             />

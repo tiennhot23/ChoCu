@@ -1,6 +1,7 @@
 import {helper, storageHelper} from '@common'
 import {STORAGE_CONST} from '@constants'
-import {getItem} from 'src/common/storage'
+import {getItem, setItem} from 'src/common/storage'
+import {NOTIFICATIONS} from 'src/constants/storage'
 
 const START_GET_LIST_NOTIFICATION = 'START_GET_LIST_NOTIFICATION'
 const STOP_GET_LIST_NOTIFICATION = 'STOP_GET_LIST_NOTIFICATION'
@@ -11,6 +12,7 @@ const MARK_ALL_NOTIFY_AS_READ = 'MARK_ALL_NOTIFY_AS_READ'
 const ADD_NOTIFY = 'ADD_NOTIFY'
 const DELETE_NOTIFY = 'DELETE_NOTIFY'
 const CLEAR_ALL_NOTIFY = 'CLEAR_ALL_NOTIFY'
+const UPDATE_DATA_NOTIFY = 'UPDATE_DATA_NOTIFY'
 
 export const notifyAction = {
   START_GET_LIST_NOTIFICATION,
@@ -21,7 +23,8 @@ export const notifyAction = {
   MARK_ALL_NOTIFY_AS_READ,
   ADD_NOTIFY,
   DELETE_NOTIFY,
-  CLEAR_ALL_NOTIFY
+  CLEAR_ALL_NOTIFY,
+  UPDATE_DATA_NOTIFY
 }
 
 export const add_notify = ({
@@ -154,11 +157,14 @@ const stop_load_more_notification = ({
   }
 }
 
-export const mark_notify_as_read = (notifyIndex) => {
-  return {
-    type: MARK_NOTIFY_AS_READ,
-    notifyIndex
-  }
+export const mark_notify_as_read = (notifyIndex) => (dispatch, getState) => {
+  let dataNotify = getState().notifyReducer.dataNotify
+  dataNotify[notifyIndex].isRead = true
+  setItem(NOTIFICATIONS, JSON.stringify(dataNotify.reverse()))
+  dispatch({
+    type: UPDATE_DATA_NOTIFY,
+    dataNotify
+  })
 }
 
 export const mark_all_notify_as_read = () => {
@@ -167,15 +173,20 @@ export const mark_all_notify_as_read = () => {
   }
 }
 
-export const delete_notify = (notifyIndex) => {
-  return {
-    type: DELETE_NOTIFY,
-    notifyIndex
-  }
+export const delete_notify = (notifyIndex) => (dispatch, getState) => {
+  let dataNotify = getState().notifyReducer.dataNotify
+  dataNotify.splice(notifyIndex, 1)
+  setItem(NOTIFICATIONS, JSON.stringify(dataNotify.reverse()))
+  dispatch({
+    type: UPDATE_DATA_NOTIFY,
+    dataNotify
+  })
 }
 
-export const clear_all_notify = () => {
-  return {
-    type: CLEAR_ALL_NOTIFY
-  }
+export const clear_all_notify = () => (dispatch, getState) => {
+  setItem(NOTIFICATIONS, JSON.stringify([]))
+  dispatch({
+    type: UPDATE_DATA_NOTIFY,
+    dataNotify: []
+  })
 }

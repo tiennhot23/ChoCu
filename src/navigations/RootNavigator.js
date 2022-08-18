@@ -9,6 +9,7 @@ import {firebase} from '@react-native-firebase/messaging'
 import {helper} from '@common'
 import {add_notify} from 'src/containers/Notification/action'
 import {NOTIFICATIONS} from 'src/constants/storage'
+import {getItem, setItem} from 'src/common/storage'
 
 const Stack = createNativeStackNavigator()
 
@@ -48,16 +49,16 @@ export default function RootNavigator() {
       title: notification.title,
       message: notification.body
     })
-    if (helper.isNonEmptyString(data?.custom_notification)) {
-      dispatch(add_notify(JSON.parse(data?.custom_notification)))
-      await addNotifyToStorage(JSON.parse(data?.custom_notification))
+    if (helper.isValidObject(data)) {
+      dispatch(add_notify(data))
+      await addNotifyToStorage(data)
     }
   }
 
   const onReceiveBackground = async (remoteMessage) => {
     const {data} = remoteMessage
-    if (helper.isValidObject(data?.custom_notification)) {
-      await addNotifyToStorage(JSON.parse(data?.custom_notification))
+    if (helper.isValidObject(data)) {
+      await addNotifyToStorage(data)
     }
   }
 

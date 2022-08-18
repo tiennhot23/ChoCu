@@ -31,8 +31,8 @@ class Notification extends Component {
   }
 
   componentDidMount() {
-    const {actionNotify} = this.props
-    actionNotify.getDataNotification()
+    // const {actionNotify} = this.props
+    // actionNotify.getDataNotification()
   }
 
   onDelete = (notifyIndex) => {

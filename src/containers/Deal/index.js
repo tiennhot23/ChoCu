@@ -48,7 +48,7 @@ class Deal extends Component {
 
   onAction({action, nextState, onActionDone}) {
     const {rate_numb} = this.state
-    const rate_content = this.rateRef.current.getText()
+    const rate_content = this.rateRef?.current?.getText()
     const {dataDeal, currentUser} = this.props
     const deal_id = this.state.dealId
     const isBuyer = currentUser.user_id === dataDeal?.buyer?.user_id
@@ -146,27 +146,29 @@ class Deal extends Component {
                   height={150}
                   ref={this.rateRef}
                 />
-                <View style={{flexDirection: 'row-reverse', width: '80%'}}>
-                  {actions.map((e, i) => {
-                    return (
-                      <FormButton
-                        color={i && 1 ? 'black' : 'white'}
-                        backgroundColor={i && 1 ? 'white' : 'black'}
-                        styleContainer={{flex: 1, alignSelf: 'center'}}
-                        title={e.label}
-                        onPress={() =>
-                          this.onAction({
-                            action: e.action,
-                            nextState: e.nextState,
-                            onActionDone: e.onActionDone
-                          })
-                        }
-                      />
-                    )
-                  })}
-                </View>
               </>
             )}
+          {dataDeal?.deal?.deal_state !== 'done' && (
+            <View style={{flexDirection: 'row-reverse', width: '80%'}}>
+              {actions.map((e, i) => {
+                return (
+                  <FormButton
+                    color={i && 1 ? 'black' : 'white'}
+                    backgroundColor={i && 1 ? 'white' : 'black'}
+                    styleContainer={{flex: 1, alignSelf: 'center'}}
+                    title={e.label}
+                    onPress={() =>
+                      this.onAction({
+                        action: e.action,
+                        nextState: e.nextState,
+                        onActionDone: e.onActionDone
+                      })
+                    }
+                  />
+                )
+              })}
+            </View>
+          )}
         </View>
       </ScrollView>
     )
