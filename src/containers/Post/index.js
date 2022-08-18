@@ -15,12 +15,14 @@ import {Provider} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {baseUrl} from 'src/constants/api'
+import {width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
 import FormButton from './components/FormButton'
 import Header from './components/Header'
+import PostRating from './components/PostRating'
 import Report from './components/Report'
 import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
@@ -83,7 +85,10 @@ class Post extends Component {
                   alignItems: 'center',
                   justifyContent: 'space-between'
                 }}>
-                <BaseText style={style.title} text={dataPost?.post?.title} />
+                <BaseText
+                  style={[style.title, {width: '80%'}]}
+                  text={dataPost?.post?.title}
+                />
                 <TouchableOpacity>
                   <Icon name="bookmark-outline" style={style.follow_buton} />
                 </TouchableOpacity>
@@ -123,6 +128,7 @@ class Post extends Component {
                 details={dataPost?.details}
               />
               <Address theme={theme} address={dataPost?.post?.sell_address} />
+              <PostRating postId={postId} />
             </View>
           </ScrollView>
           {dataPost?.user?.user_id !== currentUser?.user_id ? (
@@ -156,8 +162,6 @@ const initStyle = (theme) => {
   return StyleSheet.create({
     sub_container: {
       marginVertical: 10,
-      borderBottomColor: theme.primaryForeground,
-      borderBottomWidth: 1,
       paddingBottom: 10
     },
     wrapper: {
