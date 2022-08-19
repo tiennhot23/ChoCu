@@ -125,7 +125,7 @@ export default function BottomButtons({
         onPress={() => {
           if (isLoggedIn) navigate(CREATE_DEAL_SCR, {postId})
         }}>
-        <Icon name="wallet-outline" size={20} color={theme.primaryForeground} />
+        <Icon name="wallet-outline" size={20} color={theme.primaryBackground} />
         <Text
           style={{
             textAlign: 'center',

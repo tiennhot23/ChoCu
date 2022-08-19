@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import AuthStackNavigator from './AuthStackNavigator'
 import MainStackNavigator from './MainStackNavigator'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import {AUTH_NAV, MAIN_NAV} from 'src/constants/constant'
+import {ADMIN_NAV, AUTH_NAV, MAIN_NAV} from 'src/constants/constant'
 import {useDispatch, useSelector} from 'react-redux'
 import NotifService from 'src/common/notify/NotifService'
 import {firebase} from '@react-native-firebase/messaging'
@@ -10,14 +10,20 @@ import {helper} from '@common'
 import {add_notify} from 'src/containers/Notification/action'
 import {NOTIFICATIONS} from 'src/constants/storage'
 import {getItem, setItem} from 'src/common/storage'
+import AdminStackNavigator from './AdminStackNavigator'
+import {navigateToAdminScreen} from 'src/containers/AppNavigate/action'
 
 const Stack = createNativeStackNavigator()
 
 export default function RootNavigator() {
   const appNavigate = useSelector((state) => state.appNavigateReducer)
+  const currentUser = useSelector((state) => state.currentUserReducer.userData)
 
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(navigateToAdminScreen())
+  }, [currentUser])
   const onRegister = (token) => {
     console.log('onRegister', token)
   }
@@ -95,6 +101,8 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {appNavigate.mainStack ? (
         <Stack.Screen name={MAIN_NAV} component={MainStackNavigator} />
+      ) : appNavigate.adminStack ? (
+        <Stack.Screen name={ADMIN_NAV} component={AdminStackNavigator} />
       ) : (
         <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
       )}

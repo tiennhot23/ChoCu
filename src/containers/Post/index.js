@@ -18,6 +18,7 @@ import {baseUrl} from 'src/constants/api'
 import {width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
+import BottomAdminButtons from './components/BottomAdminButtons'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
 import FormButton from './components/FormButton'
@@ -59,16 +60,18 @@ class Post extends Component {
               onCancelReport={() => this.setState({showReport: false})}
             />
           </Modal>
-          <Header
-            navigation={this.props.navigation}
-            onGoBack={onGoBack}
-            onReport={() => this.setState({showReport: true})}
-            style={style}
-            theme={theme}
-            postState={dataPost?.post?.post_state}
-            postId={postId}
-            isOwner={dataPost?.user?.user_id === currentUser?.user_id}
-          />
+          {!global.adminLogin && (
+            <Header
+              navigation={this.props.navigation}
+              onGoBack={onGoBack}
+              onReport={() => this.setState({showReport: true})}
+              style={style}
+              theme={theme}
+              postState={dataPost?.post?.post_state}
+              postId={postId}
+              isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+            />
+          )}
           <ScrollView>
             <View style={style.slider_container}>
               <Slider theme={theme} pictures={dataPost?.post?.picture} />
@@ -131,7 +134,8 @@ class Post extends Component {
               <PostRating postId={postId} />
             </View>
           </ScrollView>
-          {dataPost?.user?.user_id !== currentUser?.user_id ? (
+          {dataPost?.user?.user_id !== currentUser?.user_id &&
+          !global.adminLogin ? (
             <BottomButtons
               theme={theme}
               navigate={navigate}
@@ -140,6 +144,12 @@ class Post extends Component {
               seller={dataPost?.user}
             />
           ) : null}
+          {global.adminLogin && (
+            <BottomAdminButtons
+              theme={theme}
+              navigation={this.props.navigation}
+            />
+          )}
         </View>
       </Provider>
     )

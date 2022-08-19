@@ -1,6 +1,7 @@
 import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
+  ADMIN_LOGIN_SCR,
   FORGOT_PASSWORD_SCR,
   LOGIN_SCR,
   OTP_SCR,

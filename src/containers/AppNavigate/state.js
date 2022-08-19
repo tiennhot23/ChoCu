@@ -1,5 +1,5 @@
 export const appNavigateState = {
-  isAdmin: true,
+  adminStack: false,
   mainStack: true,
   authStack: false
 }

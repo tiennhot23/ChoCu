@@ -11,6 +11,7 @@ import FormMessage from './components/FormMessage'
 import FormInput from './components/FormInput'
 import FormButton from './components/FormButton'
 import {
+  ADMIN_LOGIN_SCR,
   FORGOT_PASSWORD_SCR,
   HOME_SCR,
   SIGN_UP_SCR
@@ -29,6 +30,7 @@ class Login extends Component {
       isShowPassword: false,
       rememberAccount: false
     }
+    this.adminLogin = false
   }
 
   initFocus = () => {
@@ -56,10 +58,21 @@ class Login extends Component {
     }
     Keyboard.dismiss()
     // showBlockUI()
-    loginAction.requestAuthToken({
-      username: userName.trim(),
-      password: passWord
-    })
+    const phoneRegex = new RegExp(/^[0]\d{9}$/)
+    if (phoneRegex.test(userName)) {
+      this.adminLogin = true
+      loginAction.requestAuthToken({
+        username: userName.trim(),
+        password: passWord
+      })
+    } else {
+      this.adminLogin = true
+      global.adminLogin = true
+      loginAction.requestAuthTokenAdmin({
+        username: userName.trim(),
+        password: passWord
+      })
+    }
   }
 
   backToHome = () => {
@@ -81,7 +94,10 @@ class Login extends Component {
           this.setState({messageErrorLogin: message})
         } else {
           // hideBlockUI()
-          this.props.appNavigate.navigateToMainScreen()
+          console.log(this.adminLogin)
+          if (this.adminLogin) {
+            this.props.appNavigate.navigateToAdminScreen()
+          } else this.props.appNavigate.navigateToMainScreen()
         }
       }
     }
@@ -180,6 +196,21 @@ class Login extends Component {
                     style: style
                   })
                 }
+              />
+            </BaseText>
+          </View>
+
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              paddingVertical: 4
+            }}>
+            <BaseText color={theme.primaryText} text={''}>
+              <BaseText
+                color={theme.blue}
+                text={'Quản trị viên'}
+                onPress={() => navigate(ADMIN_LOGIN_SCR)}
               />
             </BaseText>
           </View>
