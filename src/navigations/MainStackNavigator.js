@@ -2,6 +2,8 @@ import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
   BUY_DEALS_MANAGER_SCR,
+  CHAT_BOX_SCR,
+  CHAT_SCR,
   CREATE_DEAL_SCR,
   CREATE_POST_SCR,
   DEALS_MANAGER_SCR,
@@ -25,6 +27,8 @@ import CreateDeal from 'src/containers/CreateDeal'
 import SellDealManager from 'src/containers/SellDealManager'
 import BuyDealManager from 'src/containers/BuyDealManager'
 import Deal from 'src/containers/Deal'
+import Chat from 'src/containers/Chat'
+import ChatBox from 'src/containers/ChatBox'
 
 const Stack = createNativeStackNavigator()
 
@@ -45,6 +49,16 @@ export default function MainStackNavigator() {
                 component={HomeTabNavigator}
               />
               <Stack.Group screenOptions={{headerShown: false}}>
+                <Stack.Screen
+                  name={CHAT_SCR}
+                  component={Chat}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={CHAT_BOX_SCR}
+                  component={ChatBox}
+                  initialParams={{theme}}
+                />
                 <Stack.Screen
                   name={POST_SCR}
                   component={Post}

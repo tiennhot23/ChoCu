@@ -2,10 +2,15 @@ import {AnimatedImageSlide, AnimatedImageSlide2} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, PureComponent} from 'react'
-import {FlatList, StyleSheet, Text, View} from 'react-native'
+import {AppState, FlatList, StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {POST_SCR, SEARCH_SCR} from 'src/constants/constant'
+import {
+  CHAT_BOX_SCR,
+  CHAT_SCR,
+  POST_SCR,
+  SEARCH_SCR
+} from 'src/constants/constant'
 import {requestUserData} from '../CurrentUser/action'
 import {requestPosts} from '../Posts/action'
 import Categories from './components/Categories'
@@ -44,6 +49,11 @@ class Home extends Component {
     this.props.getPosts({})
   }
 
+  onChatBoxPress = () => {
+    if (this.props.isLoggedIn)
+      this.props.navigation.navigate(CHAT_SCR, {onGoBack: this.onRefresh})
+  }
+
   render() {
     const {theme} = this.state
     const {navigate} = this.props.navigation
@@ -57,6 +67,7 @@ class Home extends Component {
               theme={theme}
               onSearchBarPress={this.onSearchBarPress}
               onCategoryPress={this.onCategoryPress}
+              onChatBoxPress={this.onChatBoxPress}
             />
           }
           data={posts}
@@ -83,7 +94,8 @@ class Home extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  posts: state.postsReducer.dataPosts
+  posts: state.postsReducer.dataPosts,
+  isLoggedIn: state.currentUserReducer.isLoggedIn
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -116,10 +128,15 @@ class ListHeaderComponent extends PureComponent {
     super(props)
   }
   render() {
-    const {theme, onSearchBarPress, onCategoryPress} = this.props
+    const {theme, onSearchBarPress, onCategoryPress, onChatBoxPress} =
+      this.props
     return (
       <View key={0}>
-        <Header theme={theme} onSearchBarPress={onSearchBarPress} />
+        <Header
+          theme={theme}
+          onSearchBarPress={onSearchBarPress}
+          onChatBoxPress={onChatBoxPress}
+        />
         <Slider />
         <Categories theme={theme} onCategoryPress={onCategoryPress} />
         <PostsHeader theme={theme} />

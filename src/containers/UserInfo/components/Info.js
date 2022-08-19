@@ -1,11 +1,12 @@
 import {BaseText, Icon} from '@components'
 import {constant} from '@constants'
 import {font} from '@styles'
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {StyleSheet, TouchableOpacity, View} from 'react-native'
 import {Avatar} from 'react-native-paper'
 import {Rating} from 'react-native-ratings'
 import {useDispatch, useSelector} from 'react-redux'
+import database from '@react-native-firebase/database'
 import {baseUrl} from 'src/constants/api'
 import {getItem} from 'src/common/storage'
 import {EDIT_INFO_SCR, USER_INFO_SCR} from 'src/constants/constant'
@@ -24,6 +25,7 @@ export default Info = ({
     user_follower: 0,
     user_following: 0
   })
+  const [status, setStatus] = useState(false)
 
   useEffect(() => {
     dispatch(requestUserData())
@@ -33,6 +35,30 @@ export default Info = ({
         setFollows(res.data[0])
       })
       .catch((err) => console.log(err))
+  }, [])
+
+  useEffect(() => {
+    const loadData = async () => {
+      const mUser = await fetchUser()
+
+      setStatus(mUser?.isOnline)
+    }
+
+    loadData()
+
+    const onValueChange = database()
+      .ref(`/users/${user.user_id}`)
+      .on('value', (snapshot) => {
+        const mUser = snapshot.val()
+        setStatus(mUser?.isOnline)
+      })
+
+    return () =>
+      database().ref(`/users/${user.user_id}`).off('value', onValueChange)
+  }, [fetchUser])
+
+  const fetchUser = useCallback(async () => {
+    return (await database().ref(`/users/${user.user_id}`).once('value')).val()
   }, [])
 
   return (
@@ -69,7 +95,7 @@ export default Info = ({
         <View style={style.detail_item}>
           <View
             style={{
-              backgroundColor: 'gray', // '#57f542',
+              backgroundColor: status ? '#57f542' : 'gray', // '#57f542',
               borderRadius: 20,
               width: 18,
               height: 18,
@@ -78,7 +104,10 @@ export default Info = ({
             }}
           />
           <BaseText text={`Trạng thái: `} style={style.bold_text} />
-          <BaseText text={`Đang hoạt động`} style={style.nor_text} />
+          <BaseText
+            text={`${status ? 'Đang hoạt động' : 'Chưa hoạt động'}`}
+            style={style.nor_text}
+          />
         </View>
         <View style={style.detail_item}>
           <Icon name="star-outline" size={20} style={style.nor_text} />

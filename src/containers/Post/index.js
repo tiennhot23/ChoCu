@@ -137,6 +137,7 @@ class Post extends Component {
               navigate={navigate}
               postId={postId}
               isLoggedIn={isLoggedIn}
+              seller={dataPost?.user}
             />
           ) : null}
         </View>

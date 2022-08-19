@@ -115,6 +115,7 @@ class Deal extends Component {
                 ? dataDeal?.buyer
                 : dataDeal?.seller
             }
+            navigate={navigate}
           />
           <PaymentInfo deal={dataDeal?.deal} />
           {dataDeal?.deal?.deal_state === 'done' && (
