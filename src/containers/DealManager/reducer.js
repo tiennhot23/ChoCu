@@ -1,3 +1,4 @@
+import {dealAction} from '../Deal/action'
 import {userDealsAction} from './action'
 import {userDealsState} from './state'
 
@@ -101,7 +102,23 @@ const userDealsReducer = (state = userDealsState, action) => {
         isActionDone: action.isError ? false : true
       }
     }
-
+    case dealAction.STOP_RATE_DEAL:
+      let newData = [...state.dataBuyDeals]
+      if (!action.isError) {
+        const index = newData.findIndex(
+          (e) => e.deal_id === action.dataRating?.deal_id
+        )
+        if (index > -1)
+          newData[index] = {
+            ...newData[index],
+            rate_numb: action.dataRating?.rate_numb,
+            deal_state: 'done'
+          }
+      }
+      return {
+        ...state,
+        dataBuyDeals: newData
+      }
     default:
       return state
   }

@@ -219,11 +219,7 @@ class CreatePost extends Component {
               onPress={this.openAddressSeletion}
             />
             <OnlinePaymentCheckBox onCheck={this.onOnlinePaymentChecked} />
-            <FormButton
-              title={'Đăng bài'}
-              styleContainer={{flex: 1}}
-              onPress={this.onSubmit}
-            />
+            <FormButton title={'Đăng bài'} onPress={this.onSubmit} />
           </View>
         </KeyboardView>
         <AddressSelection

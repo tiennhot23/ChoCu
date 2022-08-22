@@ -14,7 +14,7 @@ export const postsAction = {
   STOP_LOAD_MORE_POSTS
 }
 
-export const requestPosts = () => (dispatch, getState) => {
+export const requestPosts = (body) => (dispatch, getState) => {
   /**
    * body: {
    *  page,
@@ -31,7 +31,6 @@ export const requestPosts = () => (dispatch, getState) => {
    *  }
    * }
    */
-  const body = {}
   dispatch(startGetPosts())
   apiBase(API_REQUEST_POSTS, METHOD_POST, body)
     .then((res) => {

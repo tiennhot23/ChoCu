@@ -25,6 +25,33 @@ const dealReducer = (state = dealState, action) => {
           isError: action.isError
         }
       }
+    case dealAction.START_RATE_DEAL:
+      return {
+        ...state,
+        dataRating: {},
+        stateRating: {
+          isFetching: true,
+          isEmpty: false,
+          message: '',
+          isError: false
+        }
+      }
+    case dealAction.STOP_RATE_DEAL:
+      return {
+        ...state,
+        dataDeal: {
+          ...state.dataDeal,
+          deal: {...state.dataDeal?.deal, deal_state: 'done'},
+          rating: action.dataRating
+        },
+        dataRating: action.dataRating,
+        stateRating: {
+          isFetching: false,
+          isEmpty: action.isEmpty,
+          message: action.message,
+          isError: action.isError
+        }
+      }
     default:
       return state
   }

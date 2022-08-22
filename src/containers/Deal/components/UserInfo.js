@@ -2,12 +2,14 @@ import {BaseText, Icon} from '@components'
 import React from 'react'
 import {TouchableOpacity, View, Text} from 'react-native'
 import {Avatar} from 'react-native-paper'
+import {CHAT_BOX_SCR} from 'src/constants/constant'
 
 export default function UserInfo({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
-  user
+  user,
+  navigate
 }) {
   return (
     <>
@@ -60,7 +62,7 @@ export default function UserInfo({
             />
           </View>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigate(CHAT_BOX_SCR, {user})}>
           <Icon
             name="chatbox-outline"
             style={{

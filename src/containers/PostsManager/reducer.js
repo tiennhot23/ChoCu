@@ -25,7 +25,7 @@ const userPostsReducer = (state = userPostsState, action) => {
           isError: action.isError
         }
       }
-    case userPostsAction.END_POST: {
+    case userPostsAction.UPDATE_POST: {
       let newData = [...state.dataUserPosts]
       if (!action.isError) {
         const index = newData.findIndex(

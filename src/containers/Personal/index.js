@@ -15,6 +15,7 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {getItem} from 'src/common/storage'
 import {
+  ADMIN_CATEGORY_SCR,
   AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
   SELL_DEALS_MANAGER_SCR
@@ -24,9 +25,12 @@ import * as AppNavigateActionCreator from '../AppNavigate/action'
 
 import {
   removeUser,
+  requestLogoutAdmin,
   requestLogoutUser,
   requestUserData
 } from '../CurrentUser/action'
+import AdminHeader from './components/AdminHeader'
+import FooterButton from './components/FooterButton'
 import Header from './components/Header'
 import PersonalFuncItem from './components/PersonalFuncItem'
 
@@ -52,28 +56,51 @@ class Personal extends Component {
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     const {isLoggedIn} = this.props
+    const adminLogin = global.adminLogin
     return (
       <ScrollView style={style.wrapper}>
-        <Header
-          theme={theme}
-          navigate={navigate}
-          style={style}
-          isLoggedIn={isLoggedIn}
-          handleLogin={this.handleLogin}
-          handleLogout={this.handleLogout}
-        />
-        <PersonalFuncItem
-          title={'Giao dịch bán'}
-          icon={'swap-horizontal-outline'}
-          theme={theme}
-          onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
-        />
-        <PersonalFuncItem
-          title={'Giao dịch mua'}
-          icon={'swap-horizontal-outline'}
-          theme={theme}
-          onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
-        />
+        {isLoggedIn && !adminLogin && (
+          <>
+            <Header navigate={navigate} />
+            <PersonalFuncItem
+              title={'Giao dịch bán'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
+            />
+            <PersonalFuncItem
+              title={'Giao dịch mua'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
+            />
+          </>
+        )}
+        {isLoggedIn && adminLogin && (
+          <>
+            <AdminHeader navigate={navigate} />
+            <PersonalFuncItem
+              title={'Quản lí danh mục'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() => navigate(ADMIN_CATEGORY_SCR)}
+            />
+          </>
+        )}
+        <View
+          style={[
+            {
+              flex: 1,
+              alignItems: 'center',
+              marginVertical: 20,
+              paddingVertical: 20
+            }
+          ]}>
+          <FooterButton
+            title={isLoggedIn ? 'Đăng xuất' : 'Đăng nhập'}
+            onPress={isLoggedIn ? this.handleLogout : this.handleLogin}
+          />
+        </View>
       </ScrollView>
     )
   }
@@ -85,7 +112,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getDataCurrentUser: bindActionCreators(requestUserData, dispatch),
-  removeCurrentUser: bindActionCreators(requestLogoutUser, dispatch),
+  removeCurrentUser: bindActionCreators(
+    global.adminLogin ? requestLogoutAdmin : requestLogoutUser,
+    dispatch
+  ),
   appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 

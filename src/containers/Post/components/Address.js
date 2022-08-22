@@ -10,8 +10,6 @@ export default function Address({theme, address}) {
         alignItems: 'center',
         justifyContent: 'space-between',
         marginVertical: 14,
-        borderBottomColor: theme.primaryForeground,
-        borderBottomWidth: 1,
         paddingBottom: 20
       }}>
       <View

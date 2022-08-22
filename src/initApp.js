@@ -1,5 +1,10 @@
 import {storageHelper} from '@common'
-import {ACCESS_TOKEN, CURRENT_THEME, CURRENT_USER} from './constants/storage'
+import {
+  ACCESS_TOKEN,
+  CURRENT_THEME,
+  CURRENT_USER,
+  NOTIFICATIONS
+} from './constants/storage'
 
 /* ======== STORE ========== */
 
@@ -14,7 +19,8 @@ export const initStore = (storageData) => {
     type: INIT_STORE,
     currentTheme: storageData.currentTheme,
     currentUser: storageData.currentUser,
-    accessToken: storageData.accessToken
+    accessToken: storageData.accessToken,
+    notifications: storageData.notifications
   }
 }
 
@@ -31,6 +37,9 @@ export const getAsyncStorage = () => (dispatch) => {
           break
         case ACCESS_TOKEN:
           storageData.accessToken = item[1]
+          break
+        case NOTIFICATIONS:
+          storageData.notifications = item[1]
           break
         default:
           break

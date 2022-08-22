@@ -1,14 +1,23 @@
 import {notifyState} from './state'
 import {notifyAction} from './action'
 import {helper} from '@common'
+import {initAppAction} from 'src/initApp'
 
 const notifyReducer = function (state = notifyState, action) {
   let newDataNotify
   switch (action.type) {
+    case initAppAction.INIT_STORE:
+      let dataNotify = [
+        ...JSON.parse(action.notifications ? action.notifications : '[]')
+      ].reverse()
+      return {
+        ...state,
+        dataNotify: dataNotify
+      }
     case notifyAction.ADD_NOTIFY:
       return {
         ...state,
-        dataNotify: [...state.dataNotify, action.notify]
+        dataNotify: [action.notify, ...state.dataNotify]
       }
 
     case notifyAction.START_GET_LIST_NOTIFICATION:
@@ -54,24 +63,10 @@ const notifyReducer = function (state = notifyState, action) {
         },
         isLoadMore: action.isLoadMore
       }
-    case notifyAction.MARK_NOTIFY_AS_READ:
-      newDataNotify = state.dataNotify
-      newDataNotify[action.notifyIndex].isRead = true
+    case notifyAction.UPDATE_DATA_NOTIFY:
       return {
         ...state,
-        dataNotify: [...newDataNotify]
-      }
-    case notifyAction.DELETE_NOTIFY:
-      newDataNotify = state.dataNotify
-      newDataNotify.splice(action.notifyIndex, 1)
-      return {
-        ...state,
-        dataNotify: [...newDataNotify]
-      }
-    case notifyAction.CLEAR_ALL_NOTIFY:
-      return {
-        ...state,
-        dataNotify: []
+        dataNotify: [...action.dataNotify]
       }
     default:
       return state

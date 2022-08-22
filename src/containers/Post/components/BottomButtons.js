@@ -1,9 +1,19 @@
 import {Icon} from '@components'
 import React from 'react'
-import {Text, TouchableOpacity, View} from 'react-native'
-import {CREATE_DEAL_SCR} from 'src/constants/constant'
+import {Platform, Text, TouchableOpacity, View} from 'react-native'
+import {CHAT_BOX_SCR, CREATE_DEAL_SCR, LOGIN_SCR} from 'src/constants/constant'
+import {Linking} from 'react-native'
+import {useDispatch, useSelector} from 'react-redux'
 
-export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
+export default function BottomButtons({
+  theme,
+  navigate,
+  postId,
+  isLoggedIn,
+  seller,
+  navigateToLoginScreen
+}) {
+  const post = useSelector((state) => state.postReducer.dataPost.post)
   return (
     <View
       style={{
@@ -24,7 +34,8 @@ export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
           padding: 10,
           justifyContent: 'center',
           alignItems: 'center'
-        }}>
+        }}
+        onPress={() => Linking.openURL(`tel:${seller.phone}`)}>
         <Icon name="call-outline" size={20} color={theme.primaryText} />
         <Text
           style={{
@@ -48,7 +59,14 @@ export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
           padding: 10,
           justifyContent: 'center',
           alignItems: 'center'
-        }}>
+        }}
+        onPress={() =>
+          Linking.openURL(
+            `sms:${seller.phone}${Platform.OS === 'ios' ? '&' : '?'}body=Ê, ${
+              post.title
+            } còn hàng không mày`
+          )
+        }>
         <Icon
           type="MaterialCommunityIcons"
           name="message-text"
@@ -77,6 +95,10 @@ export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
           padding: 10,
           justifyContent: 'center',
           alignItems: 'center'
+        }}
+        onPress={() => {
+          if (isLoggedIn) navigate(CHAT_BOX_SCR, {user: seller})
+          else navigateToLoginScreen()
         }}>
         <Icon name="chatbox-ellipses-outline" size={20} color={'white'} />
         <Text
@@ -104,8 +126,9 @@ export default function BottomButtons({theme, navigate, postId, isLoggedIn}) {
         }}
         onPress={() => {
           if (isLoggedIn) navigate(CREATE_DEAL_SCR, {postId})
+          else navigateToLoginScreen()
         }}>
-        <Icon name="wallet-outline" size={20} color={theme.primaryForeground} />
+        <Icon name="wallet-outline" size={20} color={theme.primaryBackground} />
         <Text
           style={{
             textAlign: 'center',

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {FlatList, View} from 'react-native'
 import {useSelector} from 'react-redux'
+import {POST_SCR} from 'src/constants/constant'
 import PostItem from '../components/PostItem'
 
 export default function PendingPosts({route, navigation}) {

@@ -1,8 +1,10 @@
-import {BaseText, Icon} from '@components'
+import {BaseText, Icon, Input} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
-import React, {Component} from 'react'
+import React, {Component, createRef} from 'react'
 import {
+  ActivityIndicator,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,21 +14,33 @@ import {
 import {Provider} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
+import {baseUrl} from 'src/constants/api'
+import {width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
+import BottomAdminButtons from './components/BottomAdminButtons'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
+import FormButton from './components/FormButton'
 import Header from './components/Header'
+import PostRating from './components/PostRating'
+import Report from './components/Report'
 import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
+
+import * as AppNavigateActionCreator from '../AppNavigate/action'
 
 class Post extends Component {
   constructor(props) {
     super(props)
     this.state = {
       theme: this.props.route.params.theme,
-      postId: this.props.route.params.postId
+      postId: this.props.route.params.postId,
+      onGoBack: this.props.route.params.onGoBack,
+      showReport: false
     }
+    this.reportContentRef = createRef()
+    this.reportInfoRef = createRef()
   }
 
   componentDidMount() {
@@ -35,21 +49,31 @@ class Post extends Component {
   }
 
   render() {
-    const {theme, postId} = this.state
+    const {theme, postId, onGoBack, showReport} = this.state
     const {dataPost, currentUser, isLoggedIn} = this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
       <Provider>
         <View style={style.wrapper}>
-          <Header
-            navigation={this.props.navigation}
-            style={style}
-            theme={theme}
-            postState={dataPost?.post?.post_state}
-            postId={postId}
-            isOwner={dataPost?.user?.user_id === currentUser?.user_id}
-          />
+          <Modal visible={showReport} transparent>
+            <Report
+              postId={postId}
+              onCancelReport={() => this.setState({showReport: false})}
+            />
+          </Modal>
+          {!global.adminLogin && (
+            <Header
+              navigation={this.props.navigation}
+              onGoBack={onGoBack}
+              onReport={() => this.setState({showReport: true})}
+              style={style}
+              theme={theme}
+              postState={dataPost?.post?.post_state}
+              postId={postId}
+              isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+            />
+          )}
           <ScrollView>
             <View style={style.slider_container}>
               <Slider theme={theme} pictures={dataPost?.post?.picture} />
@@ -66,10 +90,13 @@ class Post extends Component {
                   alignItems: 'center',
                   justifyContent: 'space-between'
                 }}>
-                <BaseText style={style.title} text={dataPost?.post?.title} />
-                <TouchableOpacity>
+                <BaseText
+                  style={[style.title, {width: '80%'}]}
+                  text={dataPost?.post?.title}
+                />
+                {/* <TouchableOpacity>
                   <Icon name="bookmark-outline" style={style.follow_buton} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <View style={{marginVertical: 5}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -93,7 +120,12 @@ class Post extends Component {
                 />
               </View>
 
-              <SellerInfo style={style} user={dataPost?.user} />
+              <SellerInfo
+                style={style}
+                user={dataPost?.user}
+                navigate={navigate}
+                isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+              />
 
               <Description
                 style={style}
@@ -101,16 +133,29 @@ class Post extends Component {
                 details={dataPost?.details}
               />
               <Address theme={theme} address={dataPost?.post?.sell_address} />
+              <PostRating postId={postId} navigate={navigate} />
             </View>
           </ScrollView>
-          {dataPost?.user?.user_id !== currentUser?.user_id ? (
+          {dataPost?.user?.user_id !== currentUser?.user_id &&
+          dataPost?.post?.post_state === 'active' &&
+          !global.adminLogin ? (
             <BottomButtons
               theme={theme}
               navigate={navigate}
               postId={postId}
               isLoggedIn={isLoggedIn}
+              seller={dataPost?.user}
+              navigateToLoginScreen={
+                this.props.appNavigate.navigateToLoginScreen
+              }
             />
           ) : null}
+          {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
+            <BottomAdminButtons
+              theme={theme}
+              navigation={this.props.navigation}
+            />
+          )}
         </View>
       </Provider>
     )
@@ -125,7 +170,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getPost: bindActionCreators(requestPost, dispatch)
+  getPost: bindActionCreators(requestPost, dispatch),
+  appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post)
@@ -134,8 +180,6 @@ const initStyle = (theme) => {
   return StyleSheet.create({
     sub_container: {
       marginVertical: 10,
-      borderBottomColor: theme.primaryForeground,
-      borderBottomWidth: 1,
       paddingBottom: 10
     },
     wrapper: {

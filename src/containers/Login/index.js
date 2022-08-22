@@ -4,13 +4,14 @@ import React, {Component} from 'react'
 import {I18nManager, Keyboard, StyleSheet, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {saveUser} from '../CurrentUser/action'
+import {requestUserData, saveUser} from '../CurrentUser/action'
 import * as LoginActionCreator from './action'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
 import FormMessage from './components/FormMessage'
 import FormInput from './components/FormInput'
 import FormButton from './components/FormButton'
 import {
+  ADMIN_LOGIN_SCR,
   FORGOT_PASSWORD_SCR,
   HOME_SCR,
   SIGN_UP_SCR
@@ -29,6 +30,7 @@ class Login extends Component {
       isShowPassword: false,
       rememberAccount: false
     }
+    this.adminLogin = false
   }
 
   initFocus = () => {
@@ -56,14 +58,28 @@ class Login extends Component {
     }
     Keyboard.dismiss()
     // showBlockUI()
-    loginAction.requestAuthToken({
-      username: userName.trim(),
-      password: passWord
-    })
+    const phoneRegex = new RegExp(/^[0]\d{9}$/)
+    if (phoneRegex.test(userName)) {
+      this.adminLogin = false
+      global.adminLogin = false
+
+      loginAction.requestAuthToken({
+        username: userName.trim(),
+        password: passWord
+      })
+    } else {
+      this.adminLogin = true
+      global.adminLogin = true
+      loginAction.requestAuthTokenAdmin({
+        username: userName.trim(),
+        password: passWord
+      })
+    }
   }
 
   backToHome = () => {
-    this.props.appNavigate.navigateToMainScreen()
+    if (this.props.mainStack) this.props.navigation.goBack()
+    else this.props.appNavigate.navigateToMainScreen()
   }
 
   componentDidMount() {
@@ -81,7 +97,17 @@ class Login extends Component {
           this.setState({messageErrorLogin: message})
         } else {
           // hideBlockUI()
+
+          const {getDataCurrentUser} = this.props
+          getDataCurrentUser()
           this.props.appNavigate.navigateToMainScreen()
+          // if (this.adminLogin) {
+          //   this.props.appNavigate.navigateToAdminScreen()
+          // } else {
+          //   const {getDataCurrentUser} = this.props
+          //   getDataCurrentUser()
+          //   this.props.appNavigate.navigateToMainScreen()
+          // }
         }
       }
     }
@@ -159,7 +185,7 @@ class Login extends Component {
           />
 
           <FormButton
-            title="Quay lại trang chủ"
+            title="Quay lại"
             color={theme.secondaryText}
             textColor={theme.primaryButtonText}
             onPress={this.backToHome}
@@ -175,7 +201,11 @@ class Login extends Component {
               <BaseText
                 color={theme.blue}
                 text={'Đăng ký'}
-                onPress={() => navigate(SIGN_UP_SCR)}
+                onPress={() =>
+                  navigate(SIGN_UP_SCR, {
+                    style: style
+                  })
+                }
               />
             </BaseText>
           </View>
@@ -187,11 +217,14 @@ class Login extends Component {
 const mapStateToProps = (state) => ({
   isFetching: state.loginReducer.isFetching,
   message: state.loginReducer.message,
-  isError: state.loginReducer.isError
+  isError: state.loginReducer.isError,
+  mainStack: state.appNavigateReducer.mainStack
 })
 
 const mapDispatchToProps = (dispatch) => ({
   loginAction: bindActionCreators(LoginActionCreator, dispatch),
+
+  getDataCurrentUser: bindActionCreators(requestUserData, dispatch),
   appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 
