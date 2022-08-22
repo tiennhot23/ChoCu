@@ -76,7 +76,7 @@ export default Header = ({
         <View style={style.detail_item}>
           <View
             style={{
-              backgroundColor: 'gray', // '#57f542',
+              backgroundColor: '#57f542', // '#57f542',
               borderRadius: 20,
               width: 18,
               height: 18,

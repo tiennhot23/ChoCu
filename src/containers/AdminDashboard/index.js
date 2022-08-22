@@ -1,6 +1,6 @@
 import React from 'react'
 import {Text, TouchableOpacity, View} from 'react-native'
-import {ADMIN_POST_SCR} from 'src/constants/constant'
+import {ADMIN_CATEGORY_SCR, ADMIN_POST_SCR} from 'src/constants/constant'
 
 export default function AddminDashboard({route, navigation, ...props}) {
   const {theme} = route.params
@@ -52,7 +52,8 @@ export default function AddminDashboard({route, navigation, ...props}) {
             alignItems: 'center',
             backgroundColor: theme.primaryBackground,
             borderRadius: 25
-          }}>
+          }}
+          onPress={() => navigation.navigate(ADMIN_CATEGORY_SCR)}>
           <Text>Quản lí danh mục</Text>
         </TouchableOpacity>
         <TouchableOpacity

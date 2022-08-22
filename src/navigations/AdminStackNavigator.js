@@ -12,10 +12,14 @@ import {ThemeConsumer} from 'src/context/ThemeContext'
 import {Button, StatusBar, Text} from 'react-native'
 import AddminDashboard from 'src/containers/AdminDashboard'
 import {useDispatch, useSelector} from 'react-redux'
-import {requestLogoutUser} from 'src/containers/CurrentUser/action'
+import {
+  requestLogoutAdmin,
+  requestLogoutUser
+} from 'src/containers/CurrentUser/action'
 import {navigateToLoginScreen} from 'src/containers/AppNavigate/action'
 import AdminPostManager from 'src/containers/AdminPostManager'
 import Post from 'src/containers/Post'
+import AdminCategoryManager from 'src/containers/AdminCategoryManager'
 
 const Stack = createNativeStackNavigator()
 
@@ -31,27 +35,27 @@ export default function AdminStackNavigator() {
               backgroundColor={theme.primaryBackground}
               barStyle="dark-content"
             />
-            <Stack.Navigator>
-              <Stack.Group
-                screenOptions={{
-                  headerTitle: admin.name,
-                  headerShadowVisible: false,
-                  headerRight: () => (
-                    <Text
-                      style={{
-                        padding: 10,
-                        borderRadius: 10,
-                        borderWidth: 1,
-                        marginVertical: 10
-                      }}
-                      onPress={() => {
-                        dispatch(requestLogoutUser())
-                        dispatch(navigateToLoginScreen())
-                      }}>
-                      Đăng xuất
-                    </Text>
-                  )
-                }}>
+            <Stack.Navigator
+              screenOptions={{
+                headerTitle: admin.name,
+                headerShadowVisible: false,
+                headerRight: () => (
+                  <Text
+                    style={{
+                      padding: 10,
+                      borderRadius: 10,
+                      borderWidth: 1,
+                      marginVertical: 10
+                    }}
+                    onPress={() => {
+                      dispatch(requestLogoutAdmin())
+                      dispatch(navigateToLoginScreen())
+                    }}>
+                    Đăng xuất
+                  </Text>
+                )
+              }}>
+              <Stack.Group>
                 <Stack.Screen
                   name={ADMIN_DASHBOARD_SCR}
                   component={AddminDashboard}
@@ -59,8 +63,9 @@ export default function AdminStackNavigator() {
                 />
                 <Stack.Screen
                   name={ADMIN_CATEGORY_SCR}
-                  component={AdminPostManager}
+                  component={AdminCategoryManager}
                   initialParams={{theme}}
+                  options={{headerShown: false}}
                 />
                 <Stack.Screen
                   name={ADMIN_ACCOUNT_SCR}

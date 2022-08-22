@@ -4,7 +4,7 @@ import React, {Component} from 'react'
 import {I18nManager, Keyboard, StyleSheet, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {saveUser} from '../CurrentUser/action'
+import {requestUserData, saveUser} from '../CurrentUser/action'
 import * as LoginActionCreator from './action'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
 import FormMessage from './components/FormMessage'
@@ -60,7 +60,9 @@ class Login extends Component {
     // showBlockUI()
     const phoneRegex = new RegExp(/^[0]\d{9}$/)
     if (phoneRegex.test(userName)) {
-      this.adminLogin = true
+      this.adminLogin = false
+      global.adminLogin = false
+
       loginAction.requestAuthToken({
         username: userName.trim(),
         password: passWord
@@ -97,7 +99,11 @@ class Login extends Component {
           console.log(this.adminLogin)
           if (this.adminLogin) {
             this.props.appNavigate.navigateToAdminScreen()
-          } else this.props.appNavigate.navigateToMainScreen()
+          } else {
+            const {getDataCurrentUser} = this.props
+            getDataCurrentUser()
+            this.props.appNavigate.navigateToMainScreen()
+          }
         }
       }
     }
@@ -199,21 +205,6 @@ class Login extends Component {
               />
             </BaseText>
           </View>
-
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              paddingVertical: 4
-            }}>
-            <BaseText color={theme.primaryText} text={''}>
-              <BaseText
-                color={theme.blue}
-                text={'Quản trị viên'}
-                onPress={() => navigate(ADMIN_LOGIN_SCR)}
-              />
-            </BaseText>
-          </View>
         </View>
       </View>
     )
@@ -227,6 +218,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   loginAction: bindActionCreators(LoginActionCreator, dispatch),
+
+  getDataCurrentUser: bindActionCreators(requestUserData, dispatch),
   appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 

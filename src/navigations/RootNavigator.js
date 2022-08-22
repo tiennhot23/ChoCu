@@ -22,7 +22,7 @@ export default function RootNavigator() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(navigateToAdminScreen())
+    if (currentUser.role_id === 'admin') dispatch(navigateToAdminScreen())
   }, [currentUser])
   const onRegister = (token) => {
     console.log('onRegister', token)

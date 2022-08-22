@@ -28,6 +28,8 @@ import Report from './components/Report'
 import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
 
+import * as AppNavigateActionCreator from '../AppNavigate/action'
+
 class Post extends Component {
   constructor(props) {
     super(props)
@@ -135,6 +137,7 @@ class Post extends Component {
             </View>
           </ScrollView>
           {dataPost?.user?.user_id !== currentUser?.user_id &&
+          dataPost?.post?.post_state === 'active' &&
           !global.adminLogin ? (
             <BottomButtons
               theme={theme}
@@ -142,6 +145,9 @@ class Post extends Component {
               postId={postId}
               isLoggedIn={isLoggedIn}
               seller={dataPost?.user}
+              navigateToLoginScreen={
+                this.props.appNavigate.navigateToLoginScreen
+              }
             />
           ) : null}
           {global.adminLogin && (
@@ -164,7 +170,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getPost: bindActionCreators(requestPost, dispatch)
+  getPost: bindActionCreators(requestPost, dispatch),
+  appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post)

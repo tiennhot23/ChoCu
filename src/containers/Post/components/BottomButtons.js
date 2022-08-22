@@ -1,16 +1,17 @@
 import {Icon} from '@components'
 import React from 'react'
 import {Platform, Text, TouchableOpacity, View} from 'react-native'
-import {CHAT_BOX_SCR, CREATE_DEAL_SCR} from 'src/constants/constant'
+import {CHAT_BOX_SCR, CREATE_DEAL_SCR, LOGIN_SCR} from 'src/constants/constant'
 import {Linking} from 'react-native'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 
 export default function BottomButtons({
   theme,
   navigate,
   postId,
   isLoggedIn,
-  seller
+  seller,
+  navigateToLoginScreen
 }) {
   const post = useSelector((state) => state.postReducer.dataPost.post)
   return (
@@ -97,6 +98,7 @@ export default function BottomButtons({
         }}
         onPress={() => {
           if (isLoggedIn) navigate(CHAT_BOX_SCR, {user: seller})
+          else navigateToLoginScreen()
         }}>
         <Icon name="chatbox-ellipses-outline" size={20} color={'white'} />
         <Text
@@ -124,6 +126,7 @@ export default function BottomButtons({
         }}
         onPress={() => {
           if (isLoggedIn) navigate(CREATE_DEAL_SCR, {postId})
+          else navigateToLoginScreen()
         }}>
         <Icon name="wallet-outline" size={20} color={theme.primaryBackground} />
         <Text

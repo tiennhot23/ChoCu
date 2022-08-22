@@ -71,7 +71,7 @@ export const requestAuthTokenAdmin =
             await setItem(ACCESS_TOKEN, access_token)
             dispatch(stopRequestAuthToken({message: '', isError: false}))
             if (admin) dispatch(saveUser({userData: admin}))
-            await setItem(CURRENT_USER, admin)
+            await setItem(CURRENT_USER, JSON.stringify(admin))
           } else {
             dispatch(
               stopRequestAuthToken({

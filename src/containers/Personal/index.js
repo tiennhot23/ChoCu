@@ -55,19 +55,23 @@ class Personal extends Component {
     const {isLoggedIn} = this.props
     return (
       <ScrollView style={style.wrapper}>
-        <Header navigate={navigate} />
-        <PersonalFuncItem
-          title={'Giao dịch bán'}
-          icon={'swap-horizontal-outline'}
-          theme={theme}
-          onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
-        />
-        <PersonalFuncItem
-          title={'Giao dịch mua'}
-          icon={'swap-horizontal-outline'}
-          theme={theme}
-          onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
-        />
+        {isLoggedIn && (
+          <>
+            <Header navigate={navigate} />
+            <PersonalFuncItem
+              title={'Giao dịch bán'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
+            />
+            <PersonalFuncItem
+              title={'Giao dịch mua'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
+            />
+          </>
+        )}
         <View
           style={[
             {

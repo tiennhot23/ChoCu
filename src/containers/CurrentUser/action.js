@@ -9,6 +9,7 @@ import {getTokenNotification} from 'src/common/notify'
 import {getItem, removeMulti, setItem} from 'src/common/storage'
 import {
   API_LOGOUT,
+  API_LOGOUT_ADMIN,
   API_REQUEST_UPDATE_USER_INFO,
   API_REQUEST_USER_DATA
 } from 'src/constants/api'
@@ -105,6 +106,16 @@ export const requestLogoutUser = () => async (dispatch, getState) => {
   const fcm_token = await getTokenNotification()
   const body = {fcm_token}
   apiBase(API_LOGOUT, METHOD_POST, body).then(async (response) => {
+    if (helper.isNonEmptyArray(response.data)) {
+      dispatch(removeUser())
+    }
+  })
+}
+
+export const requestLogoutAdmin = () => async (dispatch, getState) => {
+  const fcm_token = await getTokenNotification()
+  const body = {fcm_token}
+  apiBase(API_LOGOUT_ADMIN, METHOD_POST, body).then(async (response) => {
     if (helper.isNonEmptyArray(response.data)) {
       dispatch(removeUser())
     }
