@@ -5,11 +5,13 @@ import {TouchableOpacity, View, Text} from 'react-native'
 import {Avatar} from 'react-native-paper'
 import {Rating} from 'react-native-ratings'
 import {baseUrl} from 'src/constants/api'
+import {USER_INFO_SCR} from 'src/constants/constant'
 
 export default function PostRating({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
+  navigate,
   postId
 }) {
   const [data, setData] = useState([])
@@ -66,12 +68,19 @@ export default function PostRating({
                   style={{
                     flexDirection: 'row'
                   }}>
-                  <Avatar.Image
-                    source={{
-                      uri: e.user?.avatar
-                    }}
-                    size={30}
-                  />
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() =>
+                      navigate(USER_INFO_SCR, {userId: e.user?.user_id})
+                    }>
+                    <Avatar.Image
+                      source={{
+                        uri: e.user?.avatar
+                      }}
+                      size={30}
+                    />
+                  </TouchableOpacity>
+
                   <View style={{marginStart: 10, flex: 1}}>
                     <BaseText
                       style={[

@@ -16,8 +16,10 @@ import {
 import {
   ACCESS_TOKEN,
   CURRENT_USER,
+  NOTIFICATIONS,
   NOTIFY_TOKEN_FCM
 } from 'src/constants/storage'
+import database from '@react-native-firebase/database'
 
 const SAVE_USER = 'SAVE_USER'
 const REMOVE_USER = 'REMOVE_USER'
@@ -107,6 +109,14 @@ export const requestLogoutUser = () => async (dispatch, getState) => {
   const body = {fcm_token}
   apiBase(API_LOGOUT, METHOD_POST, body).then(async (response) => {
     if (helper.isNonEmptyArray(response.data)) {
+      let user = await getItem(CURRENT_USER)
+      database()
+        .ref(`/users/${user.user_id}`)
+        .update({
+          ...user,
+          isOnline: false
+        })
+        .then((val) => console.log(val))
       dispatch(removeUser())
     }
   })
@@ -117,6 +127,14 @@ export const requestLogoutAdmin = () => async (dispatch, getState) => {
   const body = {fcm_token}
   apiBase(API_LOGOUT_ADMIN, METHOD_POST, body).then(async (response) => {
     if (helper.isNonEmptyArray(response.data)) {
+      let admin = await getItem(CURRENT_USER)
+      database()
+        .ref(`/users/${admin.admin_id}`)
+        .update({
+          ...admin,
+          isOnline: false
+        })
+        .then((val) => console.log(val))
       dispatch(removeUser())
     }
   })
@@ -144,7 +162,7 @@ export const saveUser = ({
 }
 
 export const removeUser = () => {
-  removeMulti([CURRENT_USER, NOTIFY_TOKEN_FCM, ACCESS_TOKEN])
+  removeMulti([CURRENT_USER, NOTIFY_TOKEN_FCM, ACCESS_TOKEN, NOTIFICATIONS])
   return {
     type: REMOVE_USER
   }

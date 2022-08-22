@@ -37,7 +37,7 @@ export default function AddminDashboard({route, navigation, ...props}) {
             backgroundColor: theme.primaryBackground,
             borderRadius: 25
           }}>
-          <Text>Tin đăng vi phạm</Text>
+          <Text>Báo cáo vi phạm</Text>
         </TouchableOpacity>
       </View>
 

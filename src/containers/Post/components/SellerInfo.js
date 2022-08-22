@@ -21,7 +21,6 @@ export default function SellerInfo({style, user, navigate, isOwner}) {
         />
         <View style={{marginStart: 10}}>
           <BaseText style={[style.title, {fontSize: 20}]} text={user?.name} />
-          <BaseText style={style.small_text} text={'Trạng thái hoạt động'} />
         </View>
       </View>
       {!isOwner && (

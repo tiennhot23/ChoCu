@@ -2,24 +2,32 @@ import {BaseText, Icon} from '@components'
 import {constant} from '@constants'
 import {font} from '@styles'
 import React, {useCallback, useEffect, useState} from 'react'
-import {StyleSheet, TouchableOpacity, View} from 'react-native'
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {Avatar} from 'react-native-paper'
 import {Rating} from 'react-native-ratings'
 import {useDispatch, useSelector} from 'react-redux'
 import database from '@react-native-firebase/database'
 import {baseUrl} from 'src/constants/api'
 import {getItem} from 'src/common/storage'
-import {EDIT_INFO_SCR, USER_INFO_SCR} from 'src/constants/constant'
+import {
+  AUTH_NAV,
+  CHAT_BOX_SCR,
+  EDIT_INFO_SCR,
+  USER_INFO_SCR
+} from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import {requestUserData} from 'src/containers/CurrentUser/action'
+import {lockAccount} from 'src/containers/AdminAccountManager/action'
 
 export default Info = ({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
-  navigate
+  navigate,
+  onLockAccount
 }) => {
   const user = useSelector((state) => state.userInfoReducer?.userData)
+  const isLoggedIn = useSelector((state) => state.currentUserReducer.isLoggedIn)
   const dispatch = useDispatch()
   const [follows, setFollows] = useState({
     user_follower: 0,
@@ -105,7 +113,9 @@ export default Info = ({
           />
           <BaseText text={`Trạng thái: `} style={style.bold_text} />
           <BaseText
-            text={`${status ? 'Đang hoạt động' : 'Chưa hoạt động'}`}
+            text={`${
+              status && user?.active ? 'Đang hoạt động' : 'Chưa hoạt động'
+            }`}
             style={style.nor_text}
           />
         </View>
@@ -138,6 +148,78 @@ export default Info = ({
           <Icon name="mail-outline" size={20} style={style.nor_text} />
           <BaseText text={`Email: `} style={style.bold_text} />
           <BaseText text={user?.email} style={style.nor_text} />
+        </View>
+
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'row',
+            marginTop: 10,
+            backgroundColor: 'white'
+          }}>
+          <TouchableOpacity
+            style={{
+              flexDirection: 'row',
+              flex: 1,
+              height: '100%',
+              borderColor: color,
+              borderWidth: 2,
+              padding: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              margin: 5
+            }}
+            onPress={() => {
+              if (isLoggedIn) navigate(CHAT_BOX_SCR, {user})
+              else navigate(AUTH_NAV)
+            }}>
+            <Icon name="chatbox-ellipses-outline" size={20} color={color} />
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 12,
+                fontWeight: '800',
+                letterSpacing: 1,
+                marginLeft: 5,
+                color: color,
+                textTransform: 'uppercase'
+              }}>
+              {'Chat'}
+            </Text>
+          </TouchableOpacity>
+          {global.adminLogin && (
+            <TouchableOpacity
+              disabled={!user?.active}
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                height: '100%',
+                opacity: user?.active ? 1 : 0.5,
+                borderColor: color,
+                borderWidth: 2,
+                padding: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 5
+              }}
+              onPress={onLockAccount}>
+              <Icon name="lock-closed-outline" size={20} color={color} />
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 12,
+                  fontWeight: '800',
+                  letterSpacing: 1,
+                  marginLeft: 5,
+                  color: color,
+                  textTransform: 'uppercase'
+                }}>
+                {user?.active ? 'Khoá tài khoản' : 'Đã khoá'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </>

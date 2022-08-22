@@ -22,6 +22,7 @@ import {helper} from '@common'
 import {add_notify} from 'src/containers/Notification/action'
 import {getItem, removeItem, setItem} from 'src/common/storage'
 import {NOTIFICATIONS} from 'src/constants/storage'
+import AdminPostManager from 'src/containers/AdminPostManager'
 
 const Tab = createBottomTabNavigator()
 
@@ -65,7 +66,7 @@ export default function HomeTabNavigator() {
               )
             }}
             name={POSTS_MANAGER_SCR}
-            component={PostsManager}
+            component={global.adminLogin ? AdminPostManager : PostsManager}
             initialParams={theme}
           />
           {/* <Tab.Screen

@@ -94,9 +94,9 @@ class Post extends Component {
                   style={[style.title, {width: '80%'}]}
                   text={dataPost?.post?.title}
                 />
-                <TouchableOpacity>
+                {/* <TouchableOpacity>
                   <Icon name="bookmark-outline" style={style.follow_buton} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               <View style={{marginVertical: 5}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -133,7 +133,7 @@ class Post extends Component {
                 details={dataPost?.details}
               />
               <Address theme={theme} address={dataPost?.post?.sell_address} />
-              <PostRating postId={postId} />
+              <PostRating postId={postId} navigate={navigate} />
             </View>
           </ScrollView>
           {dataPost?.user?.user_id !== currentUser?.user_id &&
@@ -150,7 +150,7 @@ class Post extends Component {
               }
             />
           ) : null}
-          {global.adminLogin && (
+          {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
             <BottomAdminButtons
               theme={theme}
               navigation={this.props.navigation}

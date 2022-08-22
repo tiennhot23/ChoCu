@@ -146,7 +146,7 @@ const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
   const {isFetching, isError} = stateLoadMore
   return (
     <View style={{margin: 10, alignItems: 'center'}}>
-      {isLoadMore ? (
+      {/* {isLoadMore ? (
         isFetching ? (
           <ActivityIndicator size={'large'} color={style.color} />
         ) : (
@@ -170,7 +170,7 @@ const ListFooter = ({isLoadMore, stateLoadMore, style}) => {
         )
       ) : (
         <BaseText text="End" style={style} />
-      )}
+      )} */}
     </View>
   )
 }

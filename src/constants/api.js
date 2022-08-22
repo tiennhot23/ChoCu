@@ -8,6 +8,7 @@ export const API_REQUEST_AUTH_ADMIN = baseUrl + '/admin/login'
 export const API_REQUEST_PENDING_POST = baseUrl + '/admin/pending-post'
 export const API_REQUEST_APPROVE_POST = baseUrl + '/admin/approve-post'
 export const API_REQUEST_DENY_POST = baseUrl + '/admin/deny-post'
+export const API_REQUEST_LOCK_ACCOUNT = baseUrl + '/admin/lock-account'
 export const API_LOGOUT_ADMIN = baseUrl + '/admin/logout'
 
 export const API_REQUEST_USER_DATA = baseUrl + '/user'

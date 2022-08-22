@@ -78,7 +78,8 @@ class Login extends Component {
   }
 
   backToHome = () => {
-    this.props.appNavigate.navigateToMainScreen()
+    if (this.props.mainStack) this.props.navigation.goBack()
+    else this.props.appNavigate.navigateToMainScreen()
   }
 
   componentDidMount() {
@@ -96,14 +97,17 @@ class Login extends Component {
           this.setState({messageErrorLogin: message})
         } else {
           // hideBlockUI()
-          console.log(this.adminLogin)
-          if (this.adminLogin) {
-            this.props.appNavigate.navigateToAdminScreen()
-          } else {
-            const {getDataCurrentUser} = this.props
-            getDataCurrentUser()
-            this.props.appNavigate.navigateToMainScreen()
-          }
+
+          const {getDataCurrentUser} = this.props
+          getDataCurrentUser()
+          this.props.appNavigate.navigateToMainScreen()
+          // if (this.adminLogin) {
+          //   this.props.appNavigate.navigateToAdminScreen()
+          // } else {
+          //   const {getDataCurrentUser} = this.props
+          //   getDataCurrentUser()
+          //   this.props.appNavigate.navigateToMainScreen()
+          // }
         }
       }
     }
@@ -181,7 +185,7 @@ class Login extends Component {
           />
 
           <FormButton
-            title="Quay lại trang chủ"
+            title="Quay lại"
             color={theme.secondaryText}
             textColor={theme.primaryButtonText}
             onPress={this.backToHome}
@@ -213,7 +217,8 @@ class Login extends Component {
 const mapStateToProps = (state) => ({
   isFetching: state.loginReducer.isFetching,
   message: state.loginReducer.message,
-  isError: state.loginReducer.isError
+  isError: state.loginReducer.isError,
+  mainStack: state.appNavigateReducer.mainStack
 })
 
 const mapDispatchToProps = (dispatch) => ({

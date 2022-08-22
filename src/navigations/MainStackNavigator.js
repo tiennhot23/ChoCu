@@ -1,6 +1,8 @@
 import React from 'react'
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import {
+  ADMIN_CATEGORY_SCR,
+  AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
   CHAT_BOX_SCR,
   CHAT_SCR,
@@ -29,6 +31,8 @@ import BuyDealManager from 'src/containers/BuyDealManager'
 import Deal from 'src/containers/Deal'
 import Chat from 'src/containers/Chat'
 import ChatBox from 'src/containers/ChatBox'
+import AdminCategoryManager from 'src/containers/AdminCategoryManager'
+import AuthStackNavigator from './AuthStackNavigator'
 
 const Stack = createNativeStackNavigator()
 
@@ -102,6 +106,16 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={USER_INFO_SCR}
                   component={UserInfo}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={ADMIN_CATEGORY_SCR}
+                  component={AdminCategoryManager}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={AUTH_NAV}
+                  component={AuthStackNavigator}
                   initialParams={{theme}}
                 />
               </Stack.Group>

@@ -4,6 +4,7 @@ import {constant} from '@constants'
 import {dimen} from '@styles'
 import React, {Component, useEffect, useState} from 'react'
 import {
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -24,13 +25,15 @@ import {requestUserInfo, requestUserPosts} from './action'
 import ActivePosts from './components/ActivePosts'
 import ExpiredPosts from './components/ExpiredPosts'
 import Info from './components/Info'
+import LockAccount from './components/LockAccount'
 
 class UserInfo extends Component {
   constructor(props) {
     super(props)
     this.state = {
       theme: props.route.params.theme,
-      userId: props.route.params.userId
+      userId: props.route.params.userId,
+      showLockModal: false
     }
   }
 
@@ -42,13 +45,18 @@ class UserInfo extends Component {
   }
 
   render() {
-    const {theme} = this.state
+    const {theme, userId, showLockModal} = this.state
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
-    const {isLoggedIn} = this.props
     return (
       <ScrollView style={style.wrapper}>
-        <Info navigate={navigate} />
+        <Modal visible={showLockModal} transparent>
+          <LockAccount onCancel={() => this.setState({showLockModal: false})} />
+        </Modal>
+        <Info
+          navigate={navigate}
+          onLockAccount={() => this.setState({showLockModal: true})}
+        />
         <ActivePosts navigate={navigate} />
         <ExpiredPosts navigate={navigate} />
       </ScrollView>
