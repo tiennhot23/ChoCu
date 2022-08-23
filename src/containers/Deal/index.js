@@ -1,10 +1,18 @@
 import React, {Component, createRef} from 'react'
-import {ScrollView, StyleSheet, Text, View} from 'react-native'
+import {
+  ActivityIndicator,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {
   requestCancelDeal,
   requestConfirmedDeal,
+  requestPaidDeal,
   requestReceivedDeal,
   requestSendingDeal
 } from '../DealManager/action'
@@ -17,6 +25,8 @@ import PaymentInfo from './components/PaymentInfo'
 import DealRating from './components/DealRating'
 import {Input} from '@components'
 import {Rating} from 'react-native-ratings'
+import WebView from 'react-native-webview'
+import {baseUrl} from 'src/constants/api'
 
 class Deal extends Component {
   constructor(props) {
@@ -25,6 +35,8 @@ class Deal extends Component {
       theme: this.props.route.params.theme,
       dealId: this.props.route.params.dealId,
       actions: this.props.route.params.actions,
+      payment: null,
+      showPayPal: false,
       onActionDone: () => {},
       rate_numb: 0
     }
@@ -46,14 +58,24 @@ class Deal extends Component {
     }
   }
 
+  onPaymentChecked = (payment) => {
+    this.setState({payment: payment})
+  }
+
   onAction({action, nextState, onActionDone}) {
     const {rate_numb} = this.state
     const rate_content = this.rateRef?.current?.getText()
     const {dataDeal, currentUser} = this.props
     const deal_id = this.state.dealId
     const isBuyer = currentUser.user_id === dataDeal?.buyer?.user_id
-    const {cancelDeal, confirmDeal, sendingDeal, receivedDeal, rateDeal} =
-      this.props
+    const {
+      cancelDeal,
+      confirmDeal,
+      payDeal,
+      sendingDeal,
+      receivedDeal,
+      rateDeal
+    } = this.props
     this.setState({onActionDone: onActionDone})
     switch (action) {
       case 'cancel':
@@ -61,6 +83,10 @@ class Deal extends Component {
         return
       case 'confirm':
         confirmDeal({deal_id})
+        return
+      case 'pay':
+        if (this.state.payment?.payment_id === 'paypal')
+          this.setState({showPayPal: true})
         return
       case 'send':
         sendingDeal({deal_id})
@@ -80,6 +106,19 @@ class Deal extends Component {
     this.setState({rate_numb: rate_numb})
   }
 
+  handlePaypalPaymentResponse = (data) => {
+    console.log('PAYPAL_RESPONSE', data)
+    if (data.title.includes('success')) {
+      this.setState({showPayPal: false})
+      this.props.payDeal({deal_id: this.state.dealId})
+    } else if (data.title.includes('cancel')) {
+      this.setState({showPayPal: false})
+      alert('Payment canceled')
+    } else {
+      return
+    }
+  }
+
   render() {
     const {theme, dealId, actions} = this.state
     const {dataDeal, currentUser, isLoggedIn} = this.props
@@ -95,6 +134,42 @@ class Deal extends Component {
               alignItems: 'center'
             }
           ]}>
+          <Modal
+            visible={this.state.showPayPal}
+            onRequestClose={() => this.setState({showPayPal: false})}>
+            <WebView
+              source={{
+                uri:
+                  baseUrl +
+                  `/paypal?item_name=${dataDeal?.deal?.title}&price=${dataDeal?.deal?.deal_price}&recipient_name=${dataDeal?.seller?.name}&address=${dataDeal?.deal?.receive_address}`
+              }}
+              onNavigationStateChange={(data) =>
+                this.handlePaypalPaymentResponse(data)
+              }
+            />
+
+            <Modal visible={this.state.showPayPal} transparent>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)'
+                }}>
+                <View
+                  style={{
+                    width: 100,
+                    height: 100,
+                    backgroundColor: 'white',
+                    borderRadius: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                  <ActivityIndicator color={'black'} />
+                </View>
+              </View>
+            </Modal>
+          </Modal>
           <DealInfo deal={dataDeal?.deal} />
           <Address theme={theme} address={dataDeal?.deal?.receive_address} />
 
@@ -117,7 +192,7 @@ class Deal extends Component {
             }
             navigate={navigate}
           />
-          <PaymentInfo deal={dataDeal?.deal} />
+          <PaymentInfo deal={dataDeal?.deal} onCheck={this.onPaymentChecked} />
           {dataDeal?.deal?.deal_state === 'done' && (
             <DealRating
               deal={dataDeal?.deal}
@@ -190,6 +265,7 @@ const mapDispatchToProps = (dispatch) => ({
   getDeal: bindActionCreators(requestGetDeal, dispatch),
   cancelDeal: bindActionCreators(requestCancelDeal, dispatch),
   confirmDeal: bindActionCreators(requestConfirmedDeal, dispatch),
+  payDeal: bindActionCreators(requestPaidDeal, dispatch),
   sendingDeal: bindActionCreators(requestSendingDeal, dispatch),
   receivedDeal: bindActionCreators(requestReceivedDeal, dispatch),
   rateDeal: bindActionCreators(requestRateDeal, dispatch)

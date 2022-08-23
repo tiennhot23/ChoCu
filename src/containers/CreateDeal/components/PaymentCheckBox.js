@@ -8,17 +8,14 @@ export default function PaymentCheckBox({
   color = 'black',
   width = '80%',
   height = 50,
-  onCheck
+  onOnlinePayment
 }) {
-  const userPayments = useSelector(
-    (state) => state.paymentsReducer.dataUserPayments
-  )
-  const [checked, setChecked] = useState(-1)
+  const dataPost = useSelector((state) => state.postReducer.dataPost)
+  const [checked, setChecked] = useState(0)
   const onOptionCheck = (index) => {
     setChecked(index)
-    if (helper.isFunction(onCheck)) {
-      if (index !== -1) onCheck(userPayments[index])
-      else onCheck(null)
+    if (helper.isFunction(onOnlinePayment)) {
+      onOnlinePayment(index === 1)
     }
   }
   return (
@@ -33,30 +30,28 @@ export default function PaymentCheckBox({
         }}>
         <Checkbox
           color={color}
-          status={checked === -1 ? 'checked' : 'unchecked'}
-          onPress={() => onOptionCheck(-1)}
+          status={checked === 0 ? 'checked' : 'unchecked'}
+          onPress={() => onOptionCheck(0)}
         />
         <Text style={{color: color}}>Thanh toán trực tiếp</Text>
       </View>
-      {userPayments.map((item, index) => {
-        return (
-          <View
-            style={{
-              width,
-              height,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start'
-            }}>
-            <Checkbox
-              color={color}
-              status={checked === index ? 'checked' : 'unchecked'}
-              onPress={() => onOptionCheck(index)}
-            />
-            <Text style={{color: color}}>{item.title}</Text>
-          </View>
-        )
-      })}
+      {dataPost?.post?.online_payment && (
+        <View
+          style={{
+            width,
+            height,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'flex-start'
+          }}>
+          <Checkbox
+            color={color}
+            status={checked === 1 ? 'checked' : 'unchecked'}
+            onPress={() => onOptionCheck(1)}
+          />
+          <Text style={{color: color}}>Thanh toán trực tuyến</Text>
+        </View>
+      )}
     </>
   )
 }

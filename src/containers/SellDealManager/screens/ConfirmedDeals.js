@@ -28,16 +28,18 @@ export default function ConfirmedDeals({route, navigation}) {
             onPress={() =>
               navigation.navigate(DEAL_SCR, {
                 dealId: item.deal_id,
-                actions: [
-                  {
-                    label: 'Gửi hàng',
-                    action: 'send',
-                    nextState: 'sending',
-                    onActionDone: () => {
-                      navigation.jumpTo('SENDINGDEALS')
-                    }
-                  }
-                ]
+                actions: item.online_deal
+                  ? []
+                  : [
+                      {
+                        label: 'Gửi hàng',
+                        action: 'send',
+                        nextState: 'sending',
+                        onActionDone: () => {
+                          navigation.jumpTo('SENDINGDEALS')
+                        }
+                      }
+                    ]
               })
             }
           />

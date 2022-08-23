@@ -114,6 +114,8 @@ export default function DealItem({
             {deal.deal_state === 'pending'
               ? 'Xác nhận'
               : deal.deal_state === 'confirmed'
+              ? `${deal.online_deal ? 'Chờ thanh toán' : 'Giao hàng'}`
+              : deal.deal_state === 'paid'
               ? 'Giao hàng'
               : deal.deal_state === 'sending'
               ? 'Đang giao'

@@ -113,7 +113,11 @@ export default function DealItem({
               {deal.deal_state === 'pending'
                 ? 'Huỷ'
                 : deal.deal_state === 'confirmed'
-                ? 'Đã xác nhận'
+                ? `${
+                    deal.online_deal ? 'Chưa thanh toán' : 'Đang chờ giao hàng'
+                  }`
+                : deal.deal_state === 'paid'
+                ? 'Đang chờ giao hàng'
                 : deal.deal_state === 'sending'
                 ? 'Đã nhận'
                 : deal.deal_state === 'received'
