@@ -47,6 +47,25 @@ const paymentsReducer = (state = paymentsState, action) => {
           isError: action.isError
         }
       }
+    case paymentsAction.START_ACTION_USER_PAYMENT:
+      return {
+        ...state,
+        stateUserPayments: {
+          ...state.stateUserPayments,
+          isActionDone: false
+        }
+      }
+    case paymentsAction.STOP_ACTION_USER_PAYMENT:
+      return {
+        ...state,
+        stateUserPayments: {
+          isActionDone: action.isError ? false : true,
+          isFetching: false,
+          isEmpty: action.isEmpty,
+          message: action.message,
+          isError: action.isError
+        }
+      }
     default:
       return state
   }

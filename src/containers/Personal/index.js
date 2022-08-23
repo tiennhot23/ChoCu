@@ -18,7 +18,8 @@ import {
   ADMIN_CATEGORY_SCR,
   AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
-  SELL_DEALS_MANAGER_SCR
+  SELL_DEALS_MANAGER_SCR,
+  USER_PAYMENT_SCR
 } from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
@@ -55,7 +56,7 @@ class Personal extends Component {
     const {theme} = this.state
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
-    const {isLoggedIn} = this.props
+    const {isLoggedIn, currentUser} = this.props
     const adminLogin = global.adminLogin
     return (
       <ScrollView style={style.wrapper}>
@@ -73,6 +74,14 @@ class Personal extends Component {
               icon={'swap-horizontal-outline'}
               theme={theme}
               onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
+            />
+            <PersonalFuncItem
+              title={'Hình thức thanh toán'}
+              icon={'swap-horizontal-outline'}
+              theme={theme}
+              onPress={() =>
+                navigate(USER_PAYMENT_SCR, {user_id: currentUser?.user_id})
+              }
             />
           </>
         )}
@@ -107,7 +116,8 @@ class Personal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.currentUserReducer.isLoggedIn
+  isLoggedIn: state.currentUserReducer.isLoggedIn,
+  currentUser: state.currentUserReducer.userData
 })
 
 const mapDispatchToProps = (dispatch) => ({

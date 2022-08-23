@@ -15,7 +15,8 @@ import {
   POST_SCR,
   SEARCH_SCR,
   SELL_DEALS_MANAGER_SCR,
-  USER_INFO_SCR
+  USER_INFO_SCR,
+  USER_PAYMENT_SCR
 } from 'src/constants/constant'
 import HomeTabNavigator from './HomeTabNavigator'
 import UserInfo from 'src/containers/UserInfo'
@@ -33,6 +34,7 @@ import Chat from 'src/containers/Chat'
 import ChatBox from 'src/containers/ChatBox'
 import AdminCategoryManager from 'src/containers/AdminCategoryManager'
 import AuthStackNavigator from './AuthStackNavigator'
+import UserPayments from 'src/containers/UserPayments'
 
 const Stack = createNativeStackNavigator()
 
@@ -116,6 +118,11 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={AUTH_NAV}
                   component={AuthStackNavigator}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={USER_PAYMENT_SCR}
+                  component={UserPayments}
                   initialParams={{theme}}
                 />
               </Stack.Group>
