@@ -18,6 +18,7 @@ import {
   ADMIN_CATEGORY_SCR,
   AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
+  POST_TURN_SERVICES_SCR,
   SELL_DEALS_MANAGER_SCR,
   USER_PAYMENT_SCR
 } from 'src/constants/constant'
@@ -71,7 +72,7 @@ class Personal extends Component {
             />
             <PersonalFuncItem
               title={'Giao dịch mua'}
-              icon={'swap-horizontal-outline'}
+              icon={'cart-outline'}
               theme={theme}
               onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
             />
@@ -81,6 +82,16 @@ class Personal extends Component {
               theme={theme}
               onPress={() =>
                 navigate(USER_PAYMENT_SCR, {user_id: currentUser?.user_id})
+              }
+            />
+            <PersonalFuncItem
+              title={'Mua lượt đăng bài'}
+              icon={'cash-outline'}
+              theme={theme}
+              onPress={() =>
+                navigate(POST_TURN_SERVICES_SCR, {
+                  user_id: currentUser?.user_id
+                })
               }
             />
           </>

@@ -13,6 +13,7 @@ import {
   EDIT_INFO_SCR,
   HOME_NAV,
   POST_SCR,
+  POST_TURN_SERVICES_SCR,
   SEARCH_SCR,
   SELL_DEALS_MANAGER_SCR,
   USER_INFO_SCR,
@@ -35,6 +36,7 @@ import ChatBox from 'src/containers/ChatBox'
 import AdminCategoryManager from 'src/containers/AdminCategoryManager'
 import AuthStackNavigator from './AuthStackNavigator'
 import UserPayments from 'src/containers/UserPayments'
+import PostTurnServices from 'src/containers/PostTurnServices'
 
 const Stack = createNativeStackNavigator()
 
@@ -123,6 +125,11 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={USER_PAYMENT_SCR}
                   component={UserPayments}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={POST_TURN_SERVICES_SCR}
+                  component={PostTurnServices}
                   initialParams={{theme}}
                 />
               </Stack.Group>

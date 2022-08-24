@@ -117,6 +117,11 @@ export default Header = ({
           <BaseText text={`Email: `} style={style.bold_text} />
           <BaseText text={user?.email} style={style.nor_text} />
         </View>
+        <View style={style.detail_item}>
+          <Icon name="pencil-outline" size={20} style={style.nor_text} />
+          <BaseText text={`Lượt đăng bài: `} style={style.bold_text} />
+          <BaseText text={user?.post_turn} style={style.nor_text} />
+        </View>
       </View>
     </>
   )

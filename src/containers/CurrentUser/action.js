@@ -33,40 +33,40 @@ export const currentUserAction = {
 }
 
 export const requestUserData = () => async (dispatch, getState) => {
-  const user = await getItem(CURRENT_USER)
-  if (user && helper.isNonEmptyString(user))
-    dispatch(
-      saveUser({
-        userData: JSON.parse(user)
-      })
-    )
-  else {
-    dispatch(startRequest())
-    apiBase(API_REQUEST_USER_DATA, METHOD_GET)
-      .then(async (response) => {
-        if (helper.isNonEmptyArray(response.data)) {
-          const userData = response.data[0]
-          if (helper.isValidObject(userData)) {
-            await setItem(CURRENT_USER, JSON.stringify(userData))
-            dispatch(
-              saveUser({
-                userData: userData
-              })
-            )
-          }
+  // const user = await getItem(CURRENT_USER)
+  // if (user && helper.isNonEmptyString(user))
+  //   dispatch(
+  //     saveUser({
+  //       userData: JSON.parse(user)
+  //     })
+  //   )
+  // else {
+  dispatch(startRequest())
+  apiBase(API_REQUEST_USER_DATA, METHOD_GET)
+    .then(async (response) => {
+      if (helper.isNonEmptyArray(response.data)) {
+        const userData = response.data[0]
+        if (helper.isValidObject(userData)) {
+          await setItem(CURRENT_USER, JSON.stringify(userData))
+          dispatch(
+            saveUser({
+              userData: userData
+            })
+          )
         }
-      })
-      .catch((err) => {
-        dispatch(
-          saveUser({
-            userData: {},
-            isEmpty: true,
-            message: err.message,
-            isError: true
-          })
-        )
-      })
-  }
+      }
+    })
+    .catch((err) => {
+      dispatch(
+        saveUser({
+          userData: {},
+          isEmpty: true,
+          message: err.message,
+          isError: true
+        })
+      )
+    })
+  // }
 }
 
 export const requestUpdateUserInfo =

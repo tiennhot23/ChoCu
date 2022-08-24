@@ -1,5 +1,8 @@
 import {ENUM} from '@constants'
 import {initAppAction} from 'src/initApp'
+import {postAction} from '../Post/action'
+import {userPostsAction} from '../PostsManager/action'
+import {postTurnServicesAction} from '../PostTurnServices/action'
 import {currentUserAction} from './action'
 import {currentUserState} from './state'
 
@@ -72,6 +75,24 @@ const currentUserReducer = (state = currentUserState, action) => {
         accessToken: '',
         fcmToken: '',
         isLoggedIn: false
+      }
+    }
+    case postTurnServicesAction.STOP_ACTION_ADD_USER_SERVICE: {
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          post_turn: state.userData.post_turn + action.post_turn
+        }
+      }
+    }
+    case userPostsAction.START_ACTION_POST: {
+      return {
+        ...state,
+        userData: {
+          ...state.userData,
+          post_turn: state.userData.post_turn - 1
+        }
       }
     }
     default:

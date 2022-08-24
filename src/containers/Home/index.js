@@ -28,6 +28,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.props.getPosts({})
+    this.props.getDataCurrentUser()
   }
 
   onPostPress = (postId) => {

@@ -30,9 +30,11 @@ class PostsManager extends Component {
 
   handleButtonCreatePost = () => {
     const {navigate} = this.props.navigation
-    const {isLoggedIn} = this.props
-    if (isLoggedIn) navigate(CREATE_POST_SCR)
-    else alert('Cần đăng nhập để thực hiện chức năng này')
+    const {isLoggedIn, currentUser} = this.props
+    if (isLoggedIn) {
+      if (currentUser?.post_turn === 0) alert('Bạn đã hết lượt đăng bài')
+      else navigate(CREATE_POST_SCR)
+    } else alert('Cần đăng nhập để thực hiện chức năng này')
   }
 
   render() {
@@ -99,6 +101,7 @@ class PostsManager extends Component {
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.currentUserReducer.isLoggedIn,
+  currentUser: state.currentUserReducer.userData,
   statePost: state.postReducer.statePost
 })
 

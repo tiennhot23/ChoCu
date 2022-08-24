@@ -15,6 +15,7 @@ export const API_REQUEST_USER_DATA = baseUrl + '/user'
 export const API_REQUEST_UPDATE_USER_INFO = baseUrl + '/user/update-info'
 export const API_REQUEST_USER_PAYMENTS = baseUrl + '/user/user-payments'
 export const API_REQUEST_ADD_USER_PAYMENTS = baseUrl + '/user/add-user-payment'
+export const API_REQUEST_ADD_USER_SERVICE = baseUrl + '/user/add-user-service'
 export const API_REQUEST_REMOVE_USER_PAYMENTS =
   baseUrl + '/user/remove-user-payment'
 export const API_REQUEST_USER_POSTS = baseUrl + '/user/user-posts'

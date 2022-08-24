@@ -5,6 +5,7 @@ import PostsManager from 'src/containers/PostsManager'
 import CreatePost from 'src/containers/CreatePost'
 import Personal from 'src/containers/Personal'
 import {
+  ADMIN_DASHBOARD_SCR,
   CREATE_POST_SCR,
   HOME_SCR,
   NOTIFICATION_SCR,
@@ -23,6 +24,7 @@ import {add_notify} from 'src/containers/Notification/action'
 import {getItem, removeItem, setItem} from 'src/common/storage'
 import {NOTIFICATIONS} from 'src/constants/storage'
 import AdminPostManager from 'src/containers/AdminPostManager'
+import AddminDashboard from 'src/containers/AdminDashboard'
 
 const Tab = createBottomTabNavigator()
 
@@ -83,21 +85,39 @@ export default function HomeTabNavigator() {
             component={CreatePost}
             initialParams={theme}
           /> */}
-          <Tab.Screen
-            options={{
-              tabBarBadge: unreadNotify.length > 0 ? unreadNotify.length : null,
-              tabBarIcon: ({color}) => (
-                <Icon
-                  name="notifications-outline"
-                  color={theme.primaryForeground}
-                  size={constant.normalIcon}
-                />
-              )
-            }}
-            name={NOTIFICATION_SCR}
-            component={Notification}
-            initialParams={theme}
-          />
+          {!global.adminLogin ? (
+            <Tab.Screen
+              options={{
+                tabBarBadge:
+                  unreadNotify.length > 0 ? unreadNotify.length : null,
+                tabBarIcon: ({color}) => (
+                  <Icon
+                    name="notifications-outline"
+                    color={theme.primaryForeground}
+                    size={constant.normalIcon}
+                  />
+                )
+              }}
+              name={NOTIFICATION_SCR}
+              component={Notification}
+              initialParams={theme}
+            />
+          ) : (
+            <Tab.Screen
+              options={{
+                tabBarIcon: ({color}) => (
+                  <Icon
+                    name="person-outline"
+                    color={theme.primaryForeground}
+                    size={constant.normalIcon}
+                  />
+                )
+              }}
+              name={ADMIN_DASHBOARD_SCR}
+              component={AddminDashboard}
+              initialParams={{theme}}
+            />
+          )}
           <Tab.Screen
             options={{
               tabBarIcon: ({color}) => (
