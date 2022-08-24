@@ -1,4 +1,4 @@
-import {BaseText, Icon} from '@components'
+import {BaseText, Icon, ModalLoading} from '@components'
 import {font} from '@styles'
 import React, {useEffect, useState} from 'react'
 import {
@@ -24,6 +24,9 @@ export default function ListUserPayments({route, navigation}) {
   const payments = useSelector((state) => state.paymentsReducer.dataPayments)
   const userpayments = useSelector(
     (state) => state.paymentsReducer.dataUserPayments
+  )
+  const stateUserPayments = useSelector(
+    (state) => state.paymentsReducer.stateUserPayments
   )
   const [mPayments, setPayments] = useState([])
   let [showModal, setShowModal] = useState([])
@@ -51,6 +54,7 @@ export default function ListUserPayments({route, navigation}) {
   return (
     <View style={{flex: 1, backgroundColor: theme.primaryBackground}}>
       <ScrollView>
+        <ModalLoading loading={stateUserPayments.isActioning} />
         <Modal visible={showModal} transparent>
           <PaymentInfo
             payment_id={paymentId}

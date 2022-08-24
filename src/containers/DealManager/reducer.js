@@ -51,6 +51,7 @@ const userDealsReducer = (state = userDealsState, action) => {
     case userDealsAction.START_ACTION: {
       return {
         ...state,
+        isActioning: true,
         isActionDone: false
       }
     }
@@ -75,6 +76,7 @@ const userDealsReducer = (state = userDealsState, action) => {
           message: action.message,
           isError: action.isError
         },
+        isActioning: false,
         isActionDone: action.isError ? false : true
       }
     }

@@ -11,6 +11,9 @@ export default function UserOPayments({route, navigation}) {
       screenOptions={{headerShown: true, headerShadowVisible: false}}>
       <Stack.Screen
         name={'userpayments'}
+        options={{
+          headerTitle: 'Liên kết thanh toán'
+        }}
         component={ListUserPayments}
         initialParams={{theme, user_id}}
       />

@@ -82,14 +82,14 @@ class CreateDeal extends Component {
   }
 
   render() {
-    const {statePost, dataPost} = this.props
+    const {statePost, dataPost, stateDeal} = this.props
     const {theme, address} = this.state
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <Modal visible={statePost.isFetching} transparent>
+          <Modal visible={stateDeal.isActioning} transparent>
             <View
               style={{
                 flex: 1,
@@ -128,7 +128,10 @@ class CreateDeal extends Component {
             />
             <PaymentInfo post={dataPost.post} />
             <PaymentCheckBox onOnlinePayment={this.onPaymentChecked} />
-            <FormButton title={'Tiến hành giao dịch'} onPress={this.onSubmit} />
+            <FormButton
+              title={'Gửi yêu cầu giao dịch'}
+              onPress={this.onSubmit}
+            />
           </View>
         </KeyboardView>
         <AddressSelection

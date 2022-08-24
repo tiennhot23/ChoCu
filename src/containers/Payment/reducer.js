@@ -52,6 +52,7 @@ const paymentsReducer = (state = paymentsState, action) => {
         ...state,
         stateUserPayments: {
           ...state.stateUserPayments,
+          isActioning: true,
           isActionDone: false
         }
       }
@@ -59,6 +60,7 @@ const paymentsReducer = (state = paymentsState, action) => {
       return {
         ...state,
         stateUserPayments: {
+          isActioning: false,
           isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: action.isEmpty,

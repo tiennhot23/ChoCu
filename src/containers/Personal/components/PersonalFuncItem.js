@@ -31,7 +31,7 @@ export default function PersonalFuncItem({
       )}
       <TouchableOpacity
         activeOpacity={1}
-        style={{justifyContent: 'center', padding: 5}}
+        style={{justifyContent: 'center', padding: 10}}
         onPress={onPress}>
         <BaseText
           text={title}

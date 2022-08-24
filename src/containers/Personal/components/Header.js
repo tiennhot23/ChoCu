@@ -47,7 +47,7 @@ export default Header = ({
         />
         <View style={style.posts_container}>
           <BaseText text={user?.name} style={[style.bold_text]} />
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around'
@@ -62,7 +62,7 @@ export default Header = ({
               style={style.nor_text}
               onPress={() => {}}
             />
-          </View>
+          </View> */}
           <BaseText
             text="Chỉnh sửa thông tin cá nhân"
             style={[style.nor_text, style.thin_border]}

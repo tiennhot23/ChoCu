@@ -1,6 +1,7 @@
 export const paymentsState = {
   dataPayments: [],
   statePayments: {
+    isActioning: false,
     isActionDone: false,
     isFetching: false,
     isEmpty: false,
@@ -9,6 +10,7 @@ export const paymentsState = {
   },
   dataUserPayments: [],
   stateUserPayments: {
+    isActioning: false,
     isActionDone: false,
     isFetching: false,
     isEmpty: false,

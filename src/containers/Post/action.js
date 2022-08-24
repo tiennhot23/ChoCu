@@ -46,39 +46,6 @@ export const requestPost =
       })
   }
 
-export const requestCreatePost =
-  ({formData}) =>
-  (dispatch, getState) => {
-    dispatch(startGetPost())
-    apiBase(API_REQUEST_CREATE_POST, METHOD_POST, formData, {
-      contentType: CONTENT_TYPE_MULTIPART
-    })
-      .then((res) => {
-        const {data} = res
-        if (helper.isNonEmptyArray(data) && helper.isValidObject(data[0])) {
-          dispatch(stopGetPost({post: data[0]}))
-        } else {
-          dispatch(
-            stopGetPost({
-              post: {},
-              message: res.message || '',
-              isEmpty: true
-            })
-          )
-        }
-      })
-      .catch((err) => {
-        dispatch(
-          stopGetPost({
-            post: {},
-            isEmpty: true,
-            message: err.message,
-            isError: true
-          })
-        )
-      })
-  }
-
 export const startGetPost = () => {
   return {
     type: START_GET_POST

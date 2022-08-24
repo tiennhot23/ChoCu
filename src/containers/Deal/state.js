@@ -1,6 +1,8 @@
 export const dealState = {
   dataDeal: {},
   stateDeal: {
+    isActioning: false,
+    isActionDone: false,
     isFetching: false,
     isEmpty: false,
     message: '',
@@ -8,6 +10,8 @@ export const dealState = {
   },
   dataRating: {},
   stateRating: {
+    isActioning: false,
+    isActionDone: false,
     isFetching: false,
     isEmpty: false,
     message: '',

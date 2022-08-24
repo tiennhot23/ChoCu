@@ -1,4 +1,4 @@
-import {BaseText, Icon, Input} from '@components'
+import {BaseLoading, BaseText, Icon, Input} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, createRef} from 'react'
@@ -15,7 +15,7 @@ import {Provider} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {baseUrl} from 'src/constants/api'
-import {width} from 'src/constants/constant'
+import {AUTH_NAV, width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
 import BottomAdminButtons from './components/BottomAdminButtons'
@@ -50,113 +50,115 @@ class Post extends Component {
 
   render() {
     const {theme, postId, onGoBack, showReport} = this.state
-    const {dataPost, currentUser, isLoggedIn} = this.props
+    const {dataPost, currentUser, isLoggedIn, statePost} = this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
       <Provider>
-        <View style={style.wrapper}>
-          <Modal visible={showReport} transparent>
-            <Report
-              postId={postId}
-              onCancelReport={() => this.setState({showReport: false})}
-            />
-          </Modal>
-          {!global.adminLogin && (
-            <Header
-              navigation={this.props.navigation}
-              onGoBack={onGoBack}
-              onReport={() => this.setState({showReport: true})}
-              style={style}
-              theme={theme}
-              postState={dataPost?.post?.post_state}
-              postId={postId}
-              isOwner={dataPost?.user?.user_id === currentUser?.user_id}
-            />
-          )}
-          <ScrollView>
-            <View style={style.slider_container}>
-              <Slider theme={theme} pictures={dataPost?.post?.picture} />
-            </View>
-            <View
-              style={{
-                paddingHorizontal: 15,
-                paddingBottom: 20
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  marginVertical: 4,
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}>
-                <BaseText
-                  style={[style.title, {width: '80%'}]}
-                  text={dataPost?.post?.title}
-                />
-                {/* <TouchableOpacity>
-                  <Icon name="bookmark-outline" style={style.follow_buton} />
-                </TouchableOpacity> */}
-              </View>
-              <View style={{marginVertical: 5}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Icon
-                    type="Entypo"
-                    name="shopping-cart"
-                    style={{
-                      fontSize: 18,
-                      color: theme.primaryForeground,
-                      marginRight: 6
-                    }}
-                  />
-                  <BaseText
-                    style={style.price}
-                    text={dataPost?.post?.default_price + ' đ'}
-                  />
-                </View>
-                <BaseText
-                  style={style.small_text}
-                  text={moment(dataPost?.post?.time_updated).fromNow()}
-                />
-              </View>
-
-              <SellerInfo
+        <BaseLoading isLoading={statePost.isFetching}>
+          <View style={style.wrapper}>
+            <Modal visible={showReport} transparent>
+              <Report
+                postId={postId}
+                onCancelReport={() => this.setState({showReport: false})}
+              />
+            </Modal>
+            {!global.adminLogin && (
+              <Header
+                navigation={this.props.navigation}
+                onGoBack={onGoBack}
+                onReport={() => this.setState({showReport: true})}
                 style={style}
-                user={dataPost?.user}
-                navigate={navigate}
+                theme={theme}
+                postState={dataPost?.post?.post_state}
+                postId={postId}
                 isOwner={dataPost?.user?.user_id === currentUser?.user_id}
               />
+            )}
+            <ScrollView>
+              <View style={style.slider_container}>
+                <Slider theme={theme} pictures={dataPost?.post?.picture} />
+              </View>
+              <View
+                style={{
+                  paddingHorizontal: 15,
+                  paddingBottom: 20
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    marginVertical: 4,
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}>
+                  <BaseText
+                    style={[style.title, {width: '80%'}]}
+                    text={dataPost?.post?.title}
+                  />
+                  {/* <TouchableOpacity>
+                  <Icon name="bookmark-outline" style={style.follow_buton} />
+                </TouchableOpacity> */}
+                </View>
+                <View style={{marginVertical: 5}}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Icon
+                      type="Entypo"
+                      name="shopping-cart"
+                      style={{
+                        fontSize: 18,
+                        color: theme.primaryForeground,
+                        marginRight: 6
+                      }}
+                    />
+                    <BaseText
+                      style={style.price}
+                      text={dataPost?.post?.default_price + ' đ'}
+                    />
+                  </View>
+                  <BaseText
+                    style={style.small_text}
+                    text={moment(dataPost?.post?.time_updated).fromNow()}
+                  />
+                </View>
 
-              <Description
-                style={style}
-                description={dataPost?.post?.description}
-                details={dataPost?.details}
+                <SellerInfo
+                  style={style}
+                  user={dataPost?.user}
+                  navigate={navigate}
+                  isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+                />
+
+                <Description
+                  style={style}
+                  description={dataPost?.post?.description}
+                  details={dataPost?.details}
+                />
+                <Address theme={theme} address={dataPost?.post?.sell_address} />
+                <PostRating postId={postId} navigate={navigate} />
+              </View>
+            </ScrollView>
+            {dataPost?.user?.user_id !== currentUser?.user_id &&
+            dataPost?.post?.post_state === 'active' &&
+            !global.adminLogin ? (
+              <BottomButtons
+                theme={theme}
+                navigate={navigate}
+                postId={postId}
+                isLoggedIn={isLoggedIn}
+                seller={dataPost?.user}
+                navigateToLoginScreen={() =>
+                  this.props.navigation.navigate(AUTH_NAV)
+                }
               />
-              <Address theme={theme} address={dataPost?.post?.sell_address} />
-              <PostRating postId={postId} navigate={navigate} />
-            </View>
-          </ScrollView>
-          {dataPost?.user?.user_id !== currentUser?.user_id &&
-          dataPost?.post?.post_state === 'active' &&
-          !global.adminLogin ? (
-            <BottomButtons
-              theme={theme}
-              navigate={navigate}
-              postId={postId}
-              isLoggedIn={isLoggedIn}
-              seller={dataPost?.user}
-              navigateToLoginScreen={
-                this.props.appNavigate.navigateToLoginScreen
-              }
-            />
-          ) : null}
-          {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
-            <BottomAdminButtons
-              theme={theme}
-              navigation={this.props.navigation}
-            />
-          )}
-        </View>
+            ) : null}
+            {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
+              <BottomAdminButtons
+                theme={theme}
+                navigation={this.props.navigation}
+              />
+            )}
+          </View>
+        </BaseLoading>
       </Provider>
     )
   }

@@ -48,6 +48,29 @@ const userPostsReducer = (state = userPostsState, action) => {
         }
       }
     }
+    case userPostsAction.START_ACTION_POST:
+      return {
+        ...state,
+        stateUserPosts: {
+          ...state.stateUserPosts,
+          isActioning: true,
+          isActionDone: false
+        }
+      }
+    case userPostsAction.STOP_ACTION_POST: {
+      return {
+        ...state,
+        dataUserPosts: action.userPosts,
+        stateUserPosts: {
+          ...state.stateUserPosts,
+          isActioning: false,
+          isActionDone: action.isError ? false : true,
+          isEmpty: action.isEmpty,
+          message: action.message,
+          isError: action.isError
+        }
+      }
+    }
 
     default:
       return state

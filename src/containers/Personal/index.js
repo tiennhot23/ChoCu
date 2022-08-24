@@ -65,7 +65,7 @@ class Personal extends Component {
             <Header navigate={navigate} />
             <PersonalFuncItem
               title={'Giao dịch bán'}
-              icon={'swap-horizontal-outline'}
+              icon={'receipt-outline'}
               theme={theme}
               onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
             />
@@ -77,7 +77,7 @@ class Personal extends Component {
             />
             <PersonalFuncItem
               title={'Hình thức thanh toán'}
-              icon={'swap-horizontal-outline'}
+              icon={'wallet-outline'}
               theme={theme}
               onPress={() =>
                 navigate(USER_PAYMENT_SCR, {user_id: currentUser?.user_id})

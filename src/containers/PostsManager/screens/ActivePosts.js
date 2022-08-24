@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {FlatList, View} from 'react-native'
+import {FlatList, Image, View} from 'react-native'
 import {useSelector} from 'react-redux'
 import {POST_SCR} from 'src/constants/constant'
 import PostItem from '../components/PostItem'
@@ -15,19 +15,34 @@ export default function ActivePosts({route, navigation}) {
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <FlatList
-        data={posts}
-        showsVerticalScrollIndicator={false}
-        overScrollMode={'never'}
-        renderItem={({item, index}) => (
-          <PostItem
-            post={item}
-            onPress={() =>
-              navigation.navigate(POST_SCR, {postId: item.post_id})
-            }
-          />
-        )}
-      />
+      {posts.length === 0 ? (
+        <Image
+          source={{
+            uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREGQUxg5bo2JPoK87B8lN9hrwXGYAHVNmvO8nryc56N8YrVms-dI403_VM5ZQ2pnRcvuw&usqp=CAU'
+          }}
+          style={{
+            width: '50%',
+            height: '50%',
+            alignSelf: 'center',
+            justifyContent: 'center'
+          }}
+          resizeMode="contain"
+        />
+      ) : (
+        <FlatList
+          data={posts}
+          showsVerticalScrollIndicator={false}
+          overScrollMode={'never'}
+          renderItem={({item, index}) => (
+            <PostItem
+              post={item}
+              onPress={() =>
+                navigation.navigate(POST_SCR, {postId: item.post_id})
+              }
+            />
+          )}
+        />
+      )}
     </View>
   )
 }

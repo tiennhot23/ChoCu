@@ -8,6 +8,8 @@ export const currentUserState = {
     address: ''
   },
   stateUser: {
+    isActioning: false,
+    isActionDone: false,
     isFetching: false,
     isEmpty: false,
     message: '',

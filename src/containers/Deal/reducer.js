@@ -8,6 +8,8 @@ const dealReducer = (state = dealState, action) => {
         ...state,
         dataDeal: {},
         stateDeal: {
+          isActioning: true,
+          isActionDone: false,
           isFetching: true,
           isEmpty: false,
           message: '',
@@ -19,6 +21,8 @@ const dealReducer = (state = dealState, action) => {
         ...state,
         dataDeal: action.dataDeal,
         stateDeal: {
+          isActioning: false,
+          isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: action.isEmpty,
           message: action.message,
@@ -30,6 +34,8 @@ const dealReducer = (state = dealState, action) => {
         ...state,
         dataRating: {},
         stateRating: {
+          isActioning: true,
+          isActionDone: false,
           isFetching: true,
           isEmpty: false,
           message: '',
@@ -46,6 +52,8 @@ const dealReducer = (state = dealState, action) => {
         },
         dataRating: action.dataRating,
         stateRating: {
+          isActioning: true,
+          isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: action.isEmpty,
           message: action.message,

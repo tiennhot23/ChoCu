@@ -25,12 +25,24 @@ const currentUserReducer = (state = currentUserState, action) => {
         }
       }
     }
+    case currentUserAction.START_ACTION_USER_DATA: {
+      return {
+        ...state,
+        stateUser: {
+          ...state.state,
+          isActioning: true,
+          isActionDone: false
+        }
+      }
+    }
     case currentUserAction.SAVE_USER: {
       return {
         ...state,
         userData: action.userData,
         isLoggedIn: true,
         stateUser: {
+          isActioning: false,
+          isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: action.isEmpty,
           message: action.message,
@@ -50,6 +62,8 @@ const currentUserReducer = (state = currentUserState, action) => {
           address: ''
         },
         stateUser: {
+          isActioning: false,
+          isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: false,
           message: '',

@@ -9,7 +9,8 @@ import PostItem from './PostItem'
 export default function ActivePosts({
   color = 'black',
   backgroundColor = 'white',
-  navigate
+  navigate,
+  push
 }) {
   const posts = useSelector((state) => state.userInfoReducer.userPosts)
   const activePosts = posts.filter((e) => e.post_state === 'active')
@@ -43,7 +44,7 @@ export default function ActivePosts({
         />
       )}
       {activePosts?.map((item) => (
-        <PostItem post={item} navigate={navigate} />
+        <PostItem post={item} navigate={navigate} push={push} />
       ))}
     </View>
   )

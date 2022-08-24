@@ -36,7 +36,7 @@ export default Info = ({
   const [status, setStatus] = useState(false)
 
   useEffect(() => {
-    dispatch(requestUserData())
+    // dispatch(requestUserData())
     fetch(baseUrl + '/user/user-follow' + `/${user.user_id}`)
       .then((res) => res.json())
       .then((res) => {
@@ -81,7 +81,7 @@ export default Info = ({
         />
         <View style={style.posts_container}>
           <BaseText text={user?.name} style={[style.bold_text]} />
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around'
@@ -96,7 +96,7 @@ export default Info = ({
               style={style.nor_text}
               onPress={() => {}}
             />
-          </View>
+          </View> */}
         </View>
       </View>
       <View style={style.detail_container}>

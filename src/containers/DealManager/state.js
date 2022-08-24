@@ -13,5 +13,6 @@ export const userDealsState = {
     message: '',
     isError: false
   },
+  isActioning: false,
   isActionDone: true
 }

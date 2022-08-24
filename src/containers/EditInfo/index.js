@@ -1,5 +1,12 @@
 import {helper} from '@common'
-import {AnimatedDropdown, BottomSheet, Input, KeyboardView} from '@components'
+import {
+  AnimatedDropdown,
+  BaseLoading,
+  BottomSheet,
+  Input,
+  KeyboardView,
+  ModalLoading
+} from '@components'
 import {constant} from '@constants'
 import {dimen} from '@styles'
 import React, {
@@ -86,9 +93,10 @@ class EditInfo extends Component {
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
     if (
-      prevProps.stateUser.isFetching !== this.props.stateUser.isFetching &&
-      prevProps.stateUser.isFetching &&
-      !this.props.stateUser.isError
+      // prevProps.stateUser.isFetching !== this.props.stateUser.isFetching &&
+      // prevProps.stateUser.isFetching &&
+      // !this.props.stateUser.isError
+      this.props.stateUser.isActionDone
     )
       goBack()
   }
@@ -102,49 +110,56 @@ class EditInfo extends Component {
   }
 
   render() {
-    const {currentUser} = this.props
+    const {currentUser, stateUser} = this.props
     const {theme, address} = this.state
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <View
-            style={[
-              {
-                backgroundColor: theme.primaryBackground,
-                flex: 1,
-                alignItems: 'center'
-              }
-            ]}>
-            <FilePicker
-              title={'Choose avatar'}
-              icon={'image-outline'}
-              onPicked={this.onFilePicked}
-              defaultFileUrl={currentUser?.avatar}
-            />
-            <Input
-              title={'Họ và tên'}
-              required
-              _text={currentUser?.name}
-              ref={this.nameRef}
-              placeholder={'Họ tên'}
-            />
-            <Input
-              title={'Số điện thoại'}
-              editable={false}
-              placeholder={currentUser?.phone}
-            />
-            <Input title={'Email'} ref={this.emailRef} placeholder={'Email'} />
-            <Input
-              title={'Địa chỉ'}
-              _text={address}
-              placeholder={currentUser?.address}
-              editable={false}
-              onPress={this.openAddressSeletion}
-            />
-            <FormButton title={'Lưu thay đổi'} onPress={this.onSubmit} />
-          </View>
+          <BaseLoading isLoading={stateUser.isFetching}>
+            <ModalLoading loading={stateUser.isActioning} />
+            <View
+              style={[
+                {
+                  backgroundColor: theme.primaryBackground,
+                  flex: 1,
+                  alignItems: 'center'
+                }
+              ]}>
+              <FilePicker
+                title={'Choose avatar'}
+                icon={'image-outline'}
+                onPicked={this.onFilePicked}
+                defaultFileUrl={currentUser?.avatar}
+              />
+              <Input
+                title={'Họ và tên'}
+                required
+                _text={currentUser?.name}
+                ref={this.nameRef}
+                placeholder={'Họ tên'}
+              />
+              <Input
+                title={'Số điện thoại'}
+                editable={false}
+                placeholder={currentUser?.phone}
+              />
+              <Input
+                title={'Email'}
+                ref={this.emailRef}
+                placeholder={'Email'}
+              />
+              <Input
+                title={'Địa chỉ'}
+                _text={address}
+                placeholder={currentUser?.address}
+                editable={false}
+                onPress={this.openAddressSeletion}
+              />
+              <FormButton title={'Lưu thay đổi'} onPress={this.onSubmit} />
+            </View>
+          </BaseLoading>
         </KeyboardView>
         <AddressSelection
           bindCallbackRef={this.bindCallbackRef}

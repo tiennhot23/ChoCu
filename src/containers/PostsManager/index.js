@@ -43,7 +43,9 @@ class PostsManager extends Component {
     return (
       <View style={[style.wrapper]}>
         {!isLoggedIn ? (
-          <Text>Cần đăng nhập để thực hiện chức năng này</Text>
+          <View style={{flex: 1, justifyContent: 'center'}}>
+            <Text>Cần đăng nhập để quản lí bài đăng của mình</Text>
+          </View>
         ) : (
           <>
             <FormButton
@@ -96,7 +98,8 @@ class PostsManager extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.currentUserReducer.isLoggedIn
+  isLoggedIn: state.currentUserReducer.isLoggedIn,
+  statePost: state.postReducer.statePost
 })
 
 const mapDispatchToProps = (dispatch) => ({
