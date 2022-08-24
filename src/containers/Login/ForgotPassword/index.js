@@ -95,7 +95,10 @@ class ForgotPassword extends Component {
     ) {
       if (helper.isNonEmptyString(this.props.stateAction.message))
         alert(this.props.stateAction.message)
-      if (this.props.stateAction.isDone) goBack()
+      if (this.props.stateAction.isDone) {
+        alert('Đổi mật khẩu thành công')
+        goBack()
+      }
       if (this.props.stateAction.message.includes('không tồn tại'))
         new Promise((resolve) =>
           setTimeout(() => {

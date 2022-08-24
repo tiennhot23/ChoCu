@@ -9,6 +9,7 @@ export default function PostItem({
   backgroundColor = 'white',
   post,
   navigate,
+  push,
   onPress
 }) {
   return (
@@ -24,7 +25,7 @@ export default function PostItem({
           flexDirection: 'row',
           alignItems: 'center'
         }}
-        onPress={() => navigate(POST_SCR, {postId: post.post_id})}>
+        onPress={() => push(POST_SCR, {postId: post.post_id})}>
         <Image
           source={{uri: post.picture[0], width: 70, height: 70}}
           style={{aspectRatio: 1, margin: 5}}

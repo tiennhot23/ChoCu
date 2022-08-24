@@ -150,6 +150,31 @@ export const requestConfirmedDeal =
       })
   }
 
+export const requestPaidDeal =
+  ({deal_id}) =>
+  (dispatch, getState) => {
+    const body = {
+      deal_state: 'paid'
+    }
+    dispatch(startAction())
+    apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
+      .then((res) => {
+        const {code, message, data} = res
+        if (code === 200)
+          dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+      })
+      .catch((err) => {
+        dispatch(
+          updateBuyDealState({
+            deal: {},
+            isEmpty: true,
+            message: err.message,
+            isError: true
+          })
+        )
+      })
+  }
+
 export const requestSendingDeal =
   ({deal_id}) =>
   (dispatch, getState) => {

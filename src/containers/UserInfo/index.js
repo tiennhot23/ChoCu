@@ -1,5 +1,5 @@
 import {helper} from '@common'
-import {BaseText, Icon} from '@components'
+import {BaseLoading, BaseText, Icon} from '@components'
 import {constant} from '@constants'
 import {dimen} from '@styles'
 import React, {Component, useEffect, useState} from 'react'
@@ -46,27 +46,35 @@ class UserInfo extends Component {
 
   render() {
     const {theme, userId, showLockModal} = this.state
-    const {navigate} = this.props.navigation
+    const {navigate, push} = this.props.navigation
     const style = initStyle(theme)
+    const {stateUserPosts, stateUser} = this.props
     return (
-      <ScrollView style={style.wrapper}>
-        <Modal visible={showLockModal} transparent>
-          <LockAccount onCancel={() => this.setState({showLockModal: false})} />
-        </Modal>
-        <Info
-          navigate={navigate}
-          onLockAccount={() => this.setState({showLockModal: true})}
-        />
-        <ActivePosts navigate={navigate} />
-        <ExpiredPosts navigate={navigate} />
-      </ScrollView>
+      <BaseLoading
+        isLoading={stateUserPosts.isFetching || stateUser.isFetching}>
+        <ScrollView style={style.wrapper}>
+          <Modal visible={showLockModal} transparent>
+            <LockAccount
+              onCancel={() => this.setState({showLockModal: false})}
+            />
+          </Modal>
+          <Info
+            navigate={navigate}
+            onLockAccount={() => this.setState({showLockModal: true})}
+          />
+          <ActivePosts navigate={navigate} push={push} />
+          <ExpiredPosts navigate={navigate} push={push} />
+        </ScrollView>
+      </BaseLoading>
     )
   }
 }
 
 const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer.userData,
-  userInfo: state.userInfoReducer.userData
+  userInfo: state.userInfoReducer.userData,
+  stateUser: state.userInfoReducer.stateUser,
+  stateUserPosts: state.userInfoReducer.stateUserPosts
 })
 
 const mapDispatchToProps = (dispatch) => ({

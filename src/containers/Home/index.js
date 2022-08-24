@@ -28,6 +28,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.props.getPosts({})
+    this.props.getDataCurrentUser()
   }
 
   onPostPress = (postId) => {
@@ -52,6 +53,7 @@ class Home extends Component {
   onChatBoxPress = () => {
     if (this.props.isLoggedIn)
       this.props.navigation.navigate(CHAT_SCR, {onGoBack: this.onRefresh})
+    else alert('Cần đăng nhập để xem lịch sử nhắn tin')
   }
 
   render() {

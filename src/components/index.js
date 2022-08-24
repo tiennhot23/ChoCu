@@ -7,6 +7,8 @@ import BaseLoading from './BaseLoading'
 import AnimatedDropdown from './AnimatedDropdown'
 import Input from './Input'
 import BottomSheet from './BottomSheet'
+import ComponentLoading from './ComponentLoading'
+import ModalLoading from './ModalLoading'
 
 export {
   Icon,
@@ -17,5 +19,7 @@ export {
   BaseLoading,
   AnimatedDropdown,
   Input,
-  BottomSheet
+  BottomSheet,
+  ComponentLoading,
+  ModalLoading
 }

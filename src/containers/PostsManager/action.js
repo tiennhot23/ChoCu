@@ -1,6 +1,12 @@
 import {helper} from '@common'
-import {apiBase, METHOD_GET, METHOD_POST} from 'src/common/api'
 import {
+  apiBase,
+  CONTENT_TYPE_MULTIPART,
+  METHOD_GET,
+  METHOD_POST
+} from 'src/common/api'
+import {
+  API_REQUEST_CREATE_POST,
   API_REQUEST_END_POST,
   API_REQUEST_POSTS,
   API_REQUEST_REPOST_POST
@@ -9,11 +15,15 @@ import {
 const START_GET_USER_POSTS = 'START_GET_USER_POSTS'
 const STOP_GET_USER_POSTS = 'STOP_GET_USER_POSTS'
 const UPDATE_POST = 'UPDATE_POST'
+const START_ACTION_POST = 'START_ACTION_POST'
+const STOP_ACTION_POST = 'STOP_ACTION_POST'
 
 export const userPostsAction = {
   START_GET_USER_POSTS,
   STOP_GET_USER_POSTS,
-  UPDATE_POST
+  UPDATE_POST,
+  START_ACTION_POST,
+  STOP_ACTION_POST
 }
 
 export const requestUserPosts = () => (dispatch, getState) => {
@@ -44,6 +54,41 @@ export const requestUserPosts = () => (dispatch, getState) => {
       )
     })
 }
+
+export const requestCreatePost =
+  ({formData}) =>
+  (dispatch, getState) => {
+    dispatch(startAcion())
+    apiBase(API_REQUEST_CREATE_POST, METHOD_POST, formData, {
+      contentType: CONTENT_TYPE_MULTIPART
+    })
+      .then((res) => {
+        const {data} = res
+        let userPosts = [...getState().userPostsReducer.dataUserPosts]
+        if (helper.isNonEmptyArray(data) && helper.isValidObject(data[0])) {
+          userPosts.push(data[0])
+          dispatch(stopAction({userPosts}))
+        } else {
+          dispatch(
+            stopAction({
+              userPosts: userPosts,
+              message: res.message || '',
+              isEmpty: true
+            })
+          )
+        }
+      })
+      .catch((err) => {
+        dispatch(
+          stopAction({
+            userPosts: userPosts,
+            isEmpty: true,
+            message: err.message,
+            isError: true
+          })
+        )
+      })
+  }
 
 export const requestEndPost =
   ({post_id}) =>
@@ -118,6 +163,27 @@ export const stopGetUserPosts = ({
 }) => {
   return {
     type: STOP_GET_USER_POSTS,
+    userPosts,
+    isEmpty,
+    message,
+    isError
+  }
+}
+
+export const startAcion = () => {
+  return {
+    type: START_ACTION_POST
+  }
+}
+
+export const stopAction = ({
+  userPosts,
+  isEmpty = false,
+  message = '',
+  isError = false
+}) => {
+  return {
+    type: STOP_ACTION_POST,
     userPosts,
     isEmpty,
     message,

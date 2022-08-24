@@ -18,7 +18,9 @@ import {
   ADMIN_CATEGORY_SCR,
   AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
-  SELL_DEALS_MANAGER_SCR
+  POST_TURN_SERVICES_SCR,
+  SELL_DEALS_MANAGER_SCR,
+  USER_PAYMENT_SCR
 } from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
@@ -55,7 +57,7 @@ class Personal extends Component {
     const {theme} = this.state
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
-    const {isLoggedIn} = this.props
+    const {isLoggedIn, currentUser} = this.props
     const adminLogin = global.adminLogin
     return (
       <ScrollView style={style.wrapper}>
@@ -64,15 +66,33 @@ class Personal extends Component {
             <Header navigate={navigate} />
             <PersonalFuncItem
               title={'Giao dịch bán'}
-              icon={'swap-horizontal-outline'}
+              icon={'receipt-outline'}
               theme={theme}
               onPress={() => navigate(SELL_DEALS_MANAGER_SCR)}
             />
             <PersonalFuncItem
               title={'Giao dịch mua'}
-              icon={'swap-horizontal-outline'}
+              icon={'cart-outline'}
               theme={theme}
               onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
+            />
+            <PersonalFuncItem
+              title={'Hình thức thanh toán'}
+              icon={'wallet-outline'}
+              theme={theme}
+              onPress={() =>
+                navigate(USER_PAYMENT_SCR, {user_id: currentUser?.user_id})
+              }
+            />
+            <PersonalFuncItem
+              title={'Mua lượt đăng bài'}
+              icon={'cash-outline'}
+              theme={theme}
+              onPress={() =>
+                navigate(POST_TURN_SERVICES_SCR, {
+                  user_id: currentUser?.user_id
+                })
+              }
             />
           </>
         )}
@@ -107,7 +127,8 @@ class Personal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isLoggedIn: state.currentUserReducer.isLoggedIn
+  isLoggedIn: state.currentUserReducer.isLoggedIn,
+  currentUser: state.currentUserReducer.userData
 })
 
 const mapDispatchToProps = (dispatch) => ({

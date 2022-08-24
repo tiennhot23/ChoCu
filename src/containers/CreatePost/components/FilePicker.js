@@ -12,7 +12,7 @@ export default function FilePicker({
   icon,
   onPicked
 }) {
-  const [file, setFile] = useState(null)
+  const [files, setFiles] = useState([null])
 
   const options = {
     title: 'Select image',
@@ -26,59 +26,62 @@ export default function FilePicker({
     }
   }
 
-  const pickImage = async () => {
+  const pickImage = async (index) => {
     try {
       const res = (await launchImageLibrary(options)).assets
-      setFile(res[0])
-      onPicked(res[0])
+      if (res[0]) {
+        let a = [...files]
+        if (a[index] === null && a.length < 5) a.push(null)
+        a[index] = res[0]
+        setFiles(a)
+        onPicked(a)
+      }
     } catch (ignored) {}
   }
 
   return (
-    <View
-      style={{
-        width,
-        height,
-        margin: 5
-      }}>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={{
-          flex: 1,
-          padding: 10,
-          borderWidth: 1,
-          borderColor: color,
-          backgroundColor: backgroundColor,
-          borderStyle: 'dashed',
-          borderRadius: 5
-        }}
-        onPress={pickImage}>
-        <View
+    <View style={{width}}>
+      {files.map((file, index) => (
+        <TouchableOpacity
+          activeOpacity={1}
           style={{
-            flex: 1,
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-          {file ? (
-            <Image
-              source={{uri: file.uri, width: '100%', height: '100%'}}
-              resizeMode={'contain'}
-            />
-          ) : (
-            <>
-              <Icon name={icon} size={40} color={color} />
-              <Text
-                style={{
-                  marginEnd: 5,
-                  color: color
-                }}>
-                {title}
-              </Text>
-            </>
-          )}
-        </View>
-      </TouchableOpacity>
+            padding: 10,
+            borderWidth: 1,
+            borderColor: color,
+            backgroundColor: backgroundColor,
+            borderStyle: 'dashed',
+            borderRadius: 5,
+            height,
+            margin: 5
+          }}
+          onPress={() => pickImage(index)}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+            {file ? (
+              <Image
+                source={{uri: file.uri, width: '100%', height: '100%'}}
+                resizeMode={'contain'}
+              />
+            ) : (
+              <>
+                <Icon name={icon} size={40} color={color} />
+                <Text
+                  style={{
+                    marginEnd: 5,
+                    color: color
+                  }}>
+                  {title}
+                </Text>
+              </>
+            )}
+          </View>
+        </TouchableOpacity>
+      ))}
     </View>
   )
 }

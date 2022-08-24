@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux'
 import {requestBuyDeals} from '../DealManager/action'
 import CanceledDeals from './screens/CanceledDeals'
 import ConfirmedDeals from './screens/ConfirmedDeals'
+import PaidDeals from './screens/PaidDeals'
 import PendingDeals from './screens/PendingDeal'
 import ReceivedDeals from './screens/ReceivedDeals'
 import SendingDeals from './screens/SendingDeals'
@@ -48,7 +49,7 @@ class BuyDealsManager extends Component {
                     fontWeight: font.FONT_WEIGHT_BOLD
                   },
                   tabBarItemStyle: {
-                    width: 130
+                    width: 150
                   },
                   tabBarIndicatorStyle: {
                     backgroundColor: theme.primaryText
@@ -72,6 +73,11 @@ class BuyDealsManager extends Component {
                   name="CONFIRMEDDEALS"
                   component={ConfirmedDeals}
                   options={{title: 'Đã xác nhận'}}
+                />
+                <Tab.Screen
+                  name="PAIDDEALS"
+                  component={PaidDeals}
+                  options={{title: 'Đã thanh toán'}}
                 />
                 <Tab.Screen
                   name="SENDINGDEALS"

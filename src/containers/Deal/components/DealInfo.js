@@ -43,7 +43,7 @@ export default function DealInfo({
           }}
           ellipsizeMode={'tail'}
           numberOfLines={2}>
-          {moment(deal?.time_updated).fromNow()}
+          {moment(deal?.time_created).fromNow()}
         </Text>
       </View>
     </View>

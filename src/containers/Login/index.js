@@ -79,7 +79,10 @@ class Login extends Component {
 
   backToHome = () => {
     if (this.props.mainStack) this.props.navigation.goBack()
-    else this.props.appNavigate.navigateToMainScreen()
+    else {
+      global.adminLogin = false
+      this.props.appNavigate.navigateToMainScreen()
+    }
   }
 
   componentDidMount() {
@@ -100,7 +103,8 @@ class Login extends Component {
 
           const {getDataCurrentUser} = this.props
           getDataCurrentUser()
-          this.props.appNavigate.navigateToMainScreen()
+          if (this.props.mainStack) this.props.navigation.goBack()
+          else this.props.appNavigate.navigateToMainScreen()
           // if (this.adminLogin) {
           //   this.props.appNavigate.navigateToAdminScreen()
           // } else {

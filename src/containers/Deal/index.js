@@ -1,10 +1,18 @@
 import React, {Component, createRef} from 'react'
-import {ScrollView, StyleSheet, Text, View} from 'react-native'
+import {
+  ActivityIndicator,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {
   requestCancelDeal,
   requestConfirmedDeal,
+  requestPaidDeal,
   requestReceivedDeal,
   requestSendingDeal
 } from '../DealManager/action'
@@ -15,8 +23,10 @@ import DealInfo from './components/DealInfo'
 import FormButton from './components/FormButton'
 import PaymentInfo from './components/PaymentInfo'
 import DealRating from './components/DealRating'
-import {Input} from '@components'
+import {BaseLoading, Input, ModalLoading} from '@components'
 import {Rating} from 'react-native-ratings'
+import WebView from 'react-native-webview'
+import {baseUrl} from 'src/constants/api'
 
 class Deal extends Component {
   constructor(props) {
@@ -25,6 +35,8 @@ class Deal extends Component {
       theme: this.props.route.params.theme,
       dealId: this.props.route.params.dealId,
       actions: this.props.route.params.actions,
+      payment: null,
+      showPayPal: false,
       onActionDone: () => {},
       rate_numb: 0
     }
@@ -46,14 +58,24 @@ class Deal extends Component {
     }
   }
 
+  onPaymentChecked = (payment) => {
+    this.setState({payment: payment})
+  }
+
   onAction({action, nextState, onActionDone}) {
     const {rate_numb} = this.state
     const rate_content = this.rateRef?.current?.getText()
     const {dataDeal, currentUser} = this.props
     const deal_id = this.state.dealId
     const isBuyer = currentUser.user_id === dataDeal?.buyer?.user_id
-    const {cancelDeal, confirmDeal, sendingDeal, receivedDeal, rateDeal} =
-      this.props
+    const {
+      cancelDeal,
+      confirmDeal,
+      payDeal,
+      sendingDeal,
+      receivedDeal,
+      rateDeal
+    } = this.props
     this.setState({onActionDone: onActionDone})
     switch (action) {
       case 'cancel':
@@ -61,6 +83,10 @@ class Deal extends Component {
         return
       case 'confirm':
         confirmDeal({deal_id})
+        return
+      case 'pay':
+        if (this.state.payment?.payment_id === 'paypal')
+          this.setState({showPayPal: true})
         return
       case 'send':
         sendingDeal({deal_id})
@@ -80,98 +106,132 @@ class Deal extends Component {
     this.setState({rate_numb: rate_numb})
   }
 
+  handlePaypalPaymentResponse = (data) => {
+    console.log('PAYPAL_RESPONSE', data)
+    if (data.title.includes('success')) {
+      this.setState({showPayPal: false})
+      this.props.payDeal({deal_id: this.state.dealId})
+    } else if (data.title.includes('cancel')) {
+      this.setState({showPayPal: false})
+      alert('Payment canceled')
+    } else {
+      return
+    }
+  }
+
   render() {
     const {theme, dealId, actions} = this.state
-    const {dataDeal, currentUser, isLoggedIn} = this.props
+    const {dataDeal, currentUser, isLoggedIn, stateDeal, isActioning} =
+      this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
-      <ScrollView style={{backgroundColor: theme.primaryBackground}}>
-        <View
-          style={[
-            {
-              backgroundColor: theme.primaryBackground,
-              flex: 1,
-              alignItems: 'center'
-            }
-          ]}>
-          <DealInfo deal={dataDeal?.deal} />
-          <Address theme={theme} address={dataDeal?.deal?.receive_address} />
+      <BaseLoading isLoading={stateDeal?.isFetching}>
+        <ScrollView style={{backgroundColor: theme.primaryBackground}}>
+          <View
+            style={[
+              {
+                backgroundColor: theme.primaryBackground,
+                flex: 1,
+                alignItems: 'center'
+              }
+            ]}>
+            <ModalLoading loading={this.state.showPayPal || isActioning} />
+            <Modal
+              visible={this.state.showPayPal}
+              onRequestClose={() => this.setState({showPayPal: false})}>
+              <WebView
+                source={{
+                  uri:
+                    baseUrl +
+                    `/paypal?item_name=${dataDeal?.deal?.title}&price=${dataDeal?.deal?.deal_price}&recipient_name=${dataDeal?.seller?.name}&address=${dataDeal?.deal?.receive_address}`
+                }}
+                onNavigationStateChange={(data) =>
+                  this.handlePaypalPaymentResponse(data)
+                }
+              />
+            </Modal>
+            <DealInfo deal={dataDeal?.deal} />
+            <Address theme={theme} address={dataDeal?.deal?.receive_address} />
 
-          <Text
-            style={{
-              width: '90%',
-              color: theme.primaryForeground,
-              fontWeight: '500',
-              fontSize: 16
-            }}>
-            {currentUser.user_id === dataDeal?.seller?.user_id
-              ? 'Thông tin người mua'
-              : 'Thông tin người bán'}
-          </Text>
-          <UserInfo
-            user={
-              currentUser.user_id === dataDeal?.seller?.user_id
-                ? dataDeal?.buyer
-                : dataDeal?.seller
-            }
-            navigate={navigate}
-          />
-          <PaymentInfo deal={dataDeal?.deal} />
-          {dataDeal?.deal?.deal_state === 'done' && (
-            <DealRating
-              deal={dataDeal?.deal}
-              rating={dataDeal?.rating}
-              user={dataDeal?.buyer}
+            <Text
+              style={{
+                width: '90%',
+                color: theme.primaryForeground,
+                fontWeight: '500',
+                fontSize: 16
+              }}>
+              {currentUser.user_id === dataDeal?.seller?.user_id
+                ? 'Thông tin người mua'
+                : 'Thông tin người bán'}
+            </Text>
+            <UserInfo
+              user={
+                currentUser.user_id === dataDeal?.seller?.user_id
+                  ? dataDeal?.buyer
+                  : dataDeal?.seller
+              }
+              navigate={navigate}
             />
-          )}
-          {dataDeal?.deal?.deal_state === 'received' &&
-            currentUser.user_id === dataDeal?.buyer?.user_id && (
-              <>
-                <Rating
-                  type="star"
-                  startingValue={0}
-                  ratingCount={5}
-                  imageSize={25}
-                  onFinishRating={this.onFinishRating}
-                  style={{
-                    alignSelf: 'center',
-                    marginVertical: 10
-                  }}
-                />
-                <Input
-                  title={'Nội dung'}
-                  multiline={true}
-                  placeholder={'Nội dung đánh giá'}
-                  required
-                  height={150}
-                  ref={this.rateRef}
-                />
-              </>
+            <PaymentInfo
+              deal={dataDeal?.deal}
+              onCheck={this.onPaymentChecked}
+            />
+            {dataDeal?.deal?.deal_state === 'done' && (
+              <DealRating
+                deal={dataDeal?.deal}
+                rating={dataDeal?.rating}
+                user={dataDeal?.buyer}
+              />
             )}
-          {dataDeal?.deal?.deal_state !== 'done' && (
-            <View style={{flexDirection: 'row-reverse', width: '80%'}}>
-              {actions.map((e, i) => {
-                return (
-                  <FormButton
-                    color={i && 1 ? 'black' : 'white'}
-                    backgroundColor={i && 1 ? 'white' : 'black'}
-                    styleContainer={{flex: 1, alignSelf: 'center'}}
-                    title={e.label}
-                    onPress={() =>
-                      this.onAction({
-                        action: e.action,
-                        nextState: e.nextState,
-                        onActionDone: e.onActionDone
-                      })
-                    }
+            {dataDeal?.deal?.deal_state === 'received' &&
+              currentUser.user_id === dataDeal?.buyer?.user_id && (
+                <>
+                  <Rating
+                    type="star"
+                    startingValue={0}
+                    ratingCount={5}
+                    imageSize={25}
+                    onFinishRating={this.onFinishRating}
+                    style={{
+                      alignSelf: 'center',
+                      marginVertical: 10
+                    }}
                   />
-                )
-              })}
-            </View>
-          )}
-        </View>
-      </ScrollView>
+                  <Input
+                    title={'Nội dung'}
+                    multiline={true}
+                    placeholder={'Nội dung đánh giá'}
+                    required
+                    height={150}
+                    ref={this.rateRef}
+                  />
+                </>
+              )}
+            {dataDeal?.deal?.deal_state !== 'done' && (
+              <View style={{flexDirection: 'row-reverse', width: '80%'}}>
+                {actions.map((e, i) => {
+                  return (
+                    <FormButton
+                      color={i && 1 ? 'black' : 'white'}
+                      backgroundColor={i && 1 ? 'white' : 'black'}
+                      styleContainer={{flex: 1, alignSelf: 'center'}}
+                      title={e.label}
+                      onPress={() =>
+                        this.onAction({
+                          action: e.action,
+                          nextState: e.nextState,
+                          onActionDone: e.onActionDone
+                        })
+                      }
+                    />
+                  )
+                })}
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </BaseLoading>
     )
   }
 }
@@ -180,16 +240,18 @@ const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer?.userData,
   isLoggedIn: state.currentUserReducer?.isLoggedIn,
   dataDeal: state.dealReducer.dataDeal,
-  stateDeal: state.postReducer.stateDeal,
+  stateDeal: state.dealReducer.stateDeal,
   stateSellDeals: state.userDealsReducer.stateSellDeals,
   stateBuyDeals: state.userDealsReducer.stateBuyDeals,
-  isActionDone: state.userDealsReducer.isActionDone
+  isActionDone: state.userDealsReducer.isActionDone,
+  isActioning: state.userDealsReducer.isActioning
 })
 
 const mapDispatchToProps = (dispatch) => ({
   getDeal: bindActionCreators(requestGetDeal, dispatch),
   cancelDeal: bindActionCreators(requestCancelDeal, dispatch),
   confirmDeal: bindActionCreators(requestConfirmedDeal, dispatch),
+  payDeal: bindActionCreators(requestPaidDeal, dispatch),
   sendingDeal: bindActionCreators(requestSendingDeal, dispatch),
   receivedDeal: bindActionCreators(requestReceivedDeal, dispatch),
   rateDeal: bindActionCreators(requestRateDeal, dispatch)

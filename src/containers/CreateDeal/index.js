@@ -23,7 +23,7 @@ class CreateDeal extends Component {
     this.state = {
       theme: this.props.route.params,
       address: '',
-      payment: null,
+      isOnlinePayment: false,
       showPayPal: false
     }
     this.addressSelectionRef = null
@@ -43,8 +43,8 @@ class CreateDeal extends Component {
     this.addressSelectionRef = ref
   }
 
-  onPaymentChecked = (payment) => {
-    this.setState({payment: payment})
+  onPaymentChecked = (isOnlinePayment) => {
+    this.setState({isOnlinePayment: isOnlinePayment})
   }
 
   onSubmit = () => {
@@ -54,39 +54,21 @@ class CreateDeal extends Component {
       post_id: dataPost.post.post_id,
       receive_address: this.state.address,
       deal_price: dataPost.post.default_price,
-      online_deal: this.state.payment !== null
+      online_deal: this.state.isOnlinePayment
     }
     if (!data.receive_address || helper.isEmptyString(data.receive_address)) {
       alert('Chưa chọn địa chỉ nhận')
       return
     }
-    if (this.state.payment?.title === 'PAYPAL')
-      this.setState({showPayPal: true})
-    else {
-      createDeal({deal: data})
-    }
-  }
-
-  handlePaypalPaymentResponse = (data) => {
-    console.log('PAYPAL_RESPONSE', data)
-    if (data.title.includes('success')) {
-      this.setState({showPayPal: false})
-      this.props.createDeal({deal: data})
-    } else if (data.title.includes('cancel')) {
-      this.setState({showPayPal: false})
-      alert('Payment canceled')
-    } else {
-      return
-    }
+    createDeal({deal: data})
   }
 
   componentDidMount() {
-    const {currentUser, dataPost, getUserPayment} = this.props
+    const {currentUser} = this.props
     this.setState({
       address:
         currentUser.address === 'Chưa cung cấp' ? '' : currentUser.address
     })
-    getUserPayment({user_id: dataPost.user.user_id})
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -100,14 +82,14 @@ class CreateDeal extends Component {
   }
 
   render() {
-    const {statePost, dataPost} = this.props
+    const {statePost, dataPost, stateDeal} = this.props
     const {theme, address} = this.state
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <Modal visible={statePost.isFetching} transparent>
+          <Modal visible={stateDeal.isActioning} transparent>
             <View
               style={{
                 flex: 1,
@@ -128,16 +110,6 @@ class CreateDeal extends Component {
               </View>
             </View>
           </Modal>
-          <Modal
-            visible={this.state.showPayPal}
-            onRequestClose={() => this.setState({showPayPal: false})}>
-            <WebView
-              source={{uri: 'http://192.168.1.7:3000/paypal'}}
-              onNavigationStateChange={(data) =>
-                this.handlePaypalPaymentResponse(data)
-              }
-            />
-          </Modal>
           <View
             style={[
               {
@@ -155,8 +127,11 @@ class CreateDeal extends Component {
               onPress={this.openAddressSeletion}
             />
             <PaymentInfo post={dataPost.post} />
-            <PaymentCheckBox onCheck={this.onPaymentChecked} />
-            <FormButton title={'Tiến hành giao dịch'} onPress={this.onSubmit} />
+            <PaymentCheckBox onOnlinePayment={this.onPaymentChecked} />
+            <FormButton
+              title={'Gửi yêu cầu giao dịch'}
+              onPress={this.onSubmit}
+            />
           </View>
         </KeyboardView>
         <AddressSelection
@@ -181,8 +156,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   createPost: bindActionCreators(requestCreatePost, dispatch),
-  createDeal: bindActionCreators(requestCreateDeal, dispatch),
-  getUserPayment: bindActionCreators(requestUserPayments, dispatch)
+  createDeal: bindActionCreators(requestCreateDeal, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDeal)

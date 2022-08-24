@@ -1,7 +1,15 @@
+import {ComponentLoading} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, createRef} from 'react'
-import {FlatList, StyleSheet, Text, View} from 'react-native'
+import {
+  ActivityIndicator,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {POST_SCR} from 'src/constants/constant'
@@ -48,7 +56,7 @@ class Search extends Component {
   render() {
     const {theme, onGoBack} = this.state
     const {navigate} = this.props.navigation
-    const {posts} = this.props
+    const {posts, statePosts} = this.props
     const style = initStyle(theme)
     return (
       <View style={style.wrapper}>
@@ -63,32 +71,51 @@ class Search extends Component {
           <CategorySelection ref={this.categorySelectionRef} />
           <PostsHeader />
         </View>
-        <FlatList
-          data={posts}
-          showsVerticalScrollIndicator={false}
-          overScrollMode={'never'}
-          renderItem={({item, index}) => (
-            <PostCard
-              theme={theme}
-              id={item.post_id}
-              image={item.picture[0]}
-              title={item.title}
-              price={item.default_price}
-              time={moment(item.time_updated).fromNow()}
-              location={item.sell_address.split(', ')[2]}
-              haveOnlinePayment={item.online_payment}
-              onPress={this.onPostPress}
-            />
-          )}
-          numColumns={2}
-        />
+        {posts.length === 0 && (
+          <Image
+            source={{
+              uri: 'https://static.vecteezy.com/system/resources/thumbnails/005/163/918/small/search-no-result-found-word-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg'
+            }}
+            style={{
+              width: 200,
+              height: 200,
+              alignSelf: 'center',
+              justifyContent: 'center'
+            }}
+            resizeMode="contain"
+          />
+        )}
+        <ComponentLoading
+          isLoading={statePosts.isFetching}
+          textLoading="Đang tìm kiếm">
+          <FlatList
+            data={posts}
+            showsVerticalScrollIndicator={false}
+            overScrollMode={'never'}
+            renderItem={({item, index}) => (
+              <PostCard
+                theme={theme}
+                id={item.post_id}
+                image={item.picture[0]}
+                title={item.title}
+                price={item.default_price}
+                time={moment(item.time_updated).fromNow()}
+                location={item.sell_address.split(', ')[2]}
+                haveOnlinePayment={item.online_payment}
+                onPress={this.onPostPress}
+              />
+            )}
+            numColumns={2}
+          />
+        </ComponentLoading>
       </View>
     )
   }
 }
 
 const mapStateToProps = (state) => ({
-  posts: state.postsReducer.dataPosts
+  posts: state.postsReducer.dataPosts,
+  statePosts: state.postsReducer.statePosts
 })
 
 const mapDispatchToProps = (dispatch) => ({

@@ -1,5 +1,12 @@
 import {helper} from '@common'
-import {AnimatedDropdown, BottomSheet, Input, KeyboardView} from '@components'
+import {
+  AnimatedDropdown,
+  BaseLoading,
+  BottomSheet,
+  Input,
+  KeyboardView,
+  ModalLoading
+} from '@components'
 import {constant} from '@constants'
 import {dimen} from '@styles'
 import React, {
@@ -23,7 +30,7 @@ import {Checkbox} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {requestCategories, requestDetails} from '../Categories/action'
-import {requestCreatePost} from '../Post/action'
+import {requestCreatePost} from '../PostsManager/action'
 import AddressSelection from './components/AddressSelection'
 import CategorySelection from './components/CategorySelection'
 import FilePicker from './components/FilePicker'
@@ -37,7 +44,7 @@ class CreatePost extends Component {
       theme: this.props.route.params,
       address: '',
       isOnlinePayment: false,
-      picture: null
+      pictures: []
     }
     this.titleRef = createRef()
     this.defaultPriceRef = createRef()
@@ -64,8 +71,8 @@ class CreatePost extends Component {
     this.setState({isOnlinePayment: !this.state.isOnlinePayment})
   }
 
-  onFilePicked = (file) => {
-    this.setState({picture: file})
+  onFilePicked = (files) => {
+    this.setState({pictures: files})
   }
 
   onSubmit = () => {
@@ -77,7 +84,7 @@ class CreatePost extends Component {
       description: this.descriptionRef.current.getText(),
       sell_address: this.state.address,
       online_payment: this.state.isOnlinePayment,
-      picture: [this.state.picture]
+      pictures: this.state.pictures
     }
     if (!this.validateRequest(data)) return
 
@@ -87,12 +94,14 @@ class CreatePost extends Component {
     formData.append('description', data.description)
     formData.append('sell_address', data.sell_address)
     formData.append('online_payment', data.online_payment)
-    data.picture.forEach((file) => {
-      formData.append('picture', {
-        uri: file.uri,
-        name: file.fileName,
-        type: 'image/jpeg'
-      })
+    data.pictures.forEach((file) => {
+      if (file) {
+        formData.append('picture', {
+          uri: file.uri,
+          name: file.fileName,
+          type: 'image/jpeg'
+        })
+      }
     })
     formData.append('category_id', data.category_id)
     data.details.forEach((item, index) => {
@@ -104,19 +113,20 @@ class CreatePost extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
+    const {stateUserPosts} = this.props
     if (
-      prevProps.statePost.isFetching !== this.props.statePost.isFetching &&
-      prevProps.statePost.isFetching &&
-      !helper.isEmptyObject(this.props.dataPost)
+      prevProps.stateUserPosts.isActioning !== stateUserPosts.isActioning &&
+      !stateUserPosts.isActioning &&
+      stateUserPosts.isActionDone
     )
       goBack()
   }
 
   validateRequest(data) {
     if (
-      !data.picture ||
-      helper.isEmptyArray(data.picture) ||
-      data.picture[0] === null
+      !data.pictures ||
+      helper.isEmptyArray(data.pictures) ||
+      data.pictures[0] === null
     ) {
       alert('Vui lòng chọn ít nhất một ảnh')
       return false
@@ -145,34 +155,14 @@ class CreatePost extends Component {
   }
 
   render() {
-    const {statePost} = this.props
+    const {statePost, stateUserPosts} = this.props
     const {theme, address} = this.state
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <Modal visible={statePost.isFetching} transparent>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'rgba(0,0,0,0.5)'
-              }}>
-              <View
-                style={{
-                  width: 100,
-                  height: 100,
-                  backgroundColor: 'white',
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                <ActivityIndicator color={'black'} />
-              </View>
-            </View>
-          </Modal>
+          <ModalLoading loading={stateUserPosts.isActioning} />
           <View
             style={[
               {
@@ -236,7 +226,9 @@ class CreatePost extends Component {
 
 const mapStateToProps = (state) => ({
   statePost: state.postReducer.statePost,
-  dataPost: state.postReducer.dataPost
+  dataPost: state.postReducer.dataPost,
+  userPosts: state.userPostsReducer.dataUserPosts,
+  stateUserPosts: state.userPostsReducer.stateUserPosts
 })
 
 const mapDispatchToProps = (dispatch) => ({

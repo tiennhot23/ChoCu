@@ -1,13 +1,35 @@
+import {helper} from '@common'
 import {font} from '@styles'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {View, Text} from 'react-native'
+import {Checkbox} from 'react-native-paper'
+import {useDispatch, useSelector} from 'react-redux'
+import {requestUserPayments} from 'src/containers/Payment/action'
 
 export default function PaymentInfo({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
-  deal
+  deal,
+  onCheck
 }) {
+  const userPayments = useSelector(
+    (state) => state.paymentsReducer.dataUserPayments
+  )
+  const [checked, setChecked] = useState(-1)
+  const onOptionCheck = (index) => {
+    setChecked(index)
+    if (helper.isFunction(onCheck)) {
+      if (index !== -1) onCheck(userPayments[index])
+      else onCheck(null)
+    }
+  }
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(requestUserPayments({user_id: deal?.seller_id}))
+  }, [deal])
+
   return (
     <View
       style={{
@@ -96,7 +118,9 @@ export default function PaymentInfo({
               : deal?.deal_state === 'pending'
               ? 'Đang chờ xác nhận'
               : deal?.deal_state === 'confirmed'
-              ? 'Đã xác nhận'
+              ? `${deal.online_deal ? 'Chờ thanh toán' : 'Đã xác nhận'}`
+              : deal?.deal_state === 'paid'
+              ? 'Đã thanh toán'
               : deal?.deal_state === 'sending'
               ? 'Đang giao'
               : deal?.deal_state === 'received'
@@ -104,6 +128,50 @@ export default function PaymentInfo({
               : 'Hoàn tất'}
           </Text>
         </View>
+        {deal?.deal_state === 'confirmed' && deal?.online_deal && (
+          <>
+            <Text
+              style={{
+                fontSize: 14,
+                letterSpacing: 0.5,
+                marginBottom: 4,
+                marginTop: 20,
+                color: color
+              }}
+              ellipsizeMode={'tail'}>
+              {'Các hình thức giao dịch khả dụng'}
+            </Text>
+            {userPayments.lengh === 0 && (
+              <Text
+                style={{
+                  color: 'gray',
+                  textAlign: 'center',
+                  padding: 20
+                }}>
+                Người bán chưa cung cấp bất kì thông tin hình thức giao dịch nào
+              </Text>
+            )}
+            {userPayments.map((item, index) => {
+              return (
+                <View
+                  style={{
+                    width,
+                    height: 50,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start'
+                  }}>
+                  <Checkbox
+                    color={color}
+                    status={checked === index ? 'checked' : 'unchecked'}
+                    onPress={() => onOptionCheck(index)}
+                  />
+                  <Text style={{color: color}}>{item.title}</Text>
+                </View>
+              )
+            })}
+          </>
+        )}
       </View>
     </View>
   )

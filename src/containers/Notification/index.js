@@ -59,30 +59,54 @@ class Notification extends Component {
           isEmpty={false}
           textLoadingError={'loading error from compo notification'}
           onPressTryAgains={() => {}}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            style={style.wrapper}
-            data={dataNotify}
-            renderItem={({item, index}) => (
-              <RowItem
-                item={item}
-                index={index}
-                theme={theme}
-                onDelete={this.onDelete}
-                onRead={this.onRead}
+          {dataNotify.length === 0 ? (
+            <View
+              style={{
+                flex: 1,
+                paddingLeft: 20,
+                paddingRight: 20,
+                alignItems: 'center',
+                backgroundColor: '#ffffff'
+              }}>
+              <Image
+                source={{
+                  uri: 'https://media.istockphoto.com/vectors/no-notification-yet-vector-id1329049321?b=1&k=20&m=1329049321&s=170667a&w=0&h=ajYWzE6nwCzstc1xLsq2EVYaRy35eP6kejoobwd2PtQ='
+                }}
+                style={{
+                  width: '80%',
+                  height: '80%',
+                  alignSelf: 'center',
+                  justifyContent: 'center'
+                }}
+                resizeMode="contain"
               />
-            )}
-            ListFooterComponent={
-              <ListFooter
-                isLoadMore={isLoadMore}
-                stateLoadMore={stateLoadMore}
-                style={style.load_more}
-              />
-            }
-            keyExtractor={(item, index) => item.time_created}
-            onEndReachedThreshold={0.5}
-            onEndReached={() => {}}
-          />
+            </View>
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              style={style.wrapper}
+              data={dataNotify}
+              renderItem={({item, index}) => (
+                <RowItem
+                  item={item}
+                  index={index}
+                  theme={theme}
+                  onDelete={this.onDelete}
+                  onRead={this.onRead}
+                />
+              )}
+              ListFooterComponent={
+                <ListFooter
+                  isLoadMore={isLoadMore}
+                  stateLoadMore={stateLoadMore}
+                  style={style.load_more}
+                />
+              }
+              keyExtractor={(item, index) => item.time_created}
+              onEndReachedThreshold={0.5}
+              onEndReached={() => {}}
+            />
+          )}
         </BaseLoading>
       </>
     )

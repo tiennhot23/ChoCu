@@ -47,7 +47,7 @@ export default Header = ({
         />
         <View style={style.posts_container}>
           <BaseText text={user?.name} style={[style.bold_text]} />
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 'space-around'
@@ -62,7 +62,7 @@ export default Header = ({
               style={style.nor_text}
               onPress={() => {}}
             />
-          </View>
+          </View> */}
           <BaseText
             text="Chỉnh sửa thông tin cá nhân"
             style={[style.nor_text, style.thin_border]}
@@ -116,6 +116,11 @@ export default Header = ({
           <Icon name="mail-outline" size={20} style={style.nor_text} />
           <BaseText text={`Email: `} style={style.bold_text} />
           <BaseText text={user?.email} style={style.nor_text} />
+        </View>
+        <View style={style.detail_item}>
+          <Icon name="pencil-outline" size={20} style={style.nor_text} />
+          <BaseText text={`Lượt đăng bài: `} style={style.bold_text} />
+          <BaseText text={user?.post_turn} style={style.nor_text} />
         </View>
       </View>
     </>
