@@ -30,7 +30,6 @@ class Login extends Component {
       isShowPassword: false,
       rememberAccount: false
     }
-    this.adminLogin = false
   }
 
   initFocus = () => {
@@ -58,29 +57,15 @@ class Login extends Component {
     }
     Keyboard.dismiss()
     // showBlockUI()
-    const phoneRegex = new RegExp(/^[0]\d{9}$/)
-    if (phoneRegex.test(userName)) {
-      this.adminLogin = false
-      global.adminLogin = false
-
-      loginAction.requestAuthToken({
-        username: userName.trim(),
-        password: passWord
-      })
-    } else {
-      this.adminLogin = true
-      global.adminLogin = true
-      loginAction.requestAuthTokenAdmin({
-        username: userName.trim(),
-        password: passWord
-      })
-    }
+    loginAction.requestAuthToken({
+      username: userName.trim(),
+      password: passWord
+    })
   }
 
   backToHome = () => {
     if (this.props.mainStack) this.props.navigation.goBack()
     else {
-      global.adminLogin = false
       this.props.appNavigate.navigateToMainScreen()
     }
   }
@@ -105,13 +90,6 @@ class Login extends Component {
           getDataCurrentUser()
           if (this.props.mainStack) this.props.navigation.goBack()
           else this.props.appNavigate.navigateToMainScreen()
-          // if (this.adminLogin) {
-          //   this.props.appNavigate.navigateToAdminScreen()
-          // } else {
-          //   const {getDataCurrentUser} = this.props
-          //   getDataCurrentUser()
-          //   this.props.appNavigate.navigateToMainScreen()
-          // }
         }
       }
     }

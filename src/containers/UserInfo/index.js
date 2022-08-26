@@ -25,7 +25,6 @@ import {requestUserInfo, requestUserPosts} from './action'
 import ActivePosts from './components/ActivePosts'
 import ExpiredPosts from './components/ExpiredPosts'
 import Info from './components/Info'
-import LockAccount from './components/LockAccount'
 
 class UserInfo extends Component {
   constructor(props) {
@@ -53,11 +52,6 @@ class UserInfo extends Component {
       <BaseLoading
         isLoading={stateUserPosts.isFetching || stateUser.isFetching}>
         <ScrollView style={style.wrapper}>
-          <Modal visible={showLockModal} transparent>
-            <LockAccount
-              onCancel={() => this.setState({showLockModal: false})}
-            />
-          </Modal>
           <Info
             navigate={navigate}
             onLockAccount={() => this.setState({showLockModal: true})}

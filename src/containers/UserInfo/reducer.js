@@ -1,15 +1,8 @@
-import {adminAccountManagerAction} from '../AdminAccountManager/action'
 import {userInfoAction} from './action'
 import {userInfoState} from './state'
 
 const userInfoReducer = (state = userInfoState, action) => {
   switch (action.type) {
-    case adminAccountManagerAction.STOP_REQUEST_LOCK_ACCOUNT: {
-      return {
-        ...state,
-        userData: {...state.userData, active: action.accountData.active}
-      }
-    }
     case userInfoAction.START_REQUEST_USER_DATA: {
       return {
         ...state,

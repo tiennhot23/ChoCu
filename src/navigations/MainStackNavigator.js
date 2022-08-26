@@ -12,6 +12,7 @@ import {
   DEAL_SCR,
   EDIT_INFO_SCR,
   HOME_NAV,
+  POSTS_MANAGER_SCR,
   POST_SCR,
   POST_TURN_SERVICES_SCR,
   SEARCH_SCR,
@@ -33,10 +34,10 @@ import BuyDealManager from 'src/containers/BuyDealManager'
 import Deal from 'src/containers/Deal'
 import Chat from 'src/containers/Chat'
 import ChatBox from 'src/containers/ChatBox'
-import AdminCategoryManager from 'src/containers/AdminCategoryManager'
 import AuthStackNavigator from './AuthStackNavigator'
 import UserPayments from 'src/containers/UserPayments'
 import PostTurnServices from 'src/containers/PostTurnServices'
+import PostsManager from 'src/containers/PostsManager'
 
 const Stack = createNativeStackNavigator()
 
@@ -113,11 +114,6 @@ export default function MainStackNavigator() {
                   initialParams={{theme}}
                 />
                 <Stack.Screen
-                  name={ADMIN_CATEGORY_SCR}
-                  component={AdminCategoryManager}
-                  initialParams={{theme}}
-                />
-                <Stack.Screen
                   name={AUTH_NAV}
                   component={AuthStackNavigator}
                   initialParams={{theme}}
@@ -131,6 +127,11 @@ export default function MainStackNavigator() {
                   name={POST_TURN_SERVICES_SCR}
                   component={PostTurnServices}
                   initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={POSTS_MANAGER_SCR}
+                  component={PostsManager}
+                  initialParams={theme}
                 />
               </Stack.Group>
               <Stack.Group

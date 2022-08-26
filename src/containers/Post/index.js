@@ -18,10 +18,8 @@ import {baseUrl} from 'src/constants/api'
 import {AUTH_NAV, width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
-import BottomAdminButtons from './components/BottomAdminButtons'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
-import FormButton from './components/FormButton'
 import Header from './components/Header'
 import PostRating from './components/PostRating'
 import Report from './components/Report'
@@ -63,18 +61,16 @@ class Post extends Component {
                 onCancelReport={() => this.setState({showReport: false})}
               />
             </Modal>
-            {!global.adminLogin && (
-              <Header
-                navigation={this.props.navigation}
-                onGoBack={onGoBack}
-                onReport={() => this.setState({showReport: true})}
-                style={style}
-                theme={theme}
-                postState={dataPost?.post?.post_state}
-                postId={postId}
-                isOwner={dataPost?.user?.user_id === currentUser?.user_id}
-              />
-            )}
+            <Header
+              navigation={this.props.navigation}
+              onGoBack={onGoBack}
+              onReport={() => this.setState({showReport: true})}
+              style={style}
+              theme={theme}
+              postState={dataPost?.post?.post_state}
+              postId={postId}
+              isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+            />
             <ScrollView>
               <View style={style.slider_container}>
                 <Slider theme={theme} pictures={dataPost?.post?.picture} />
@@ -138,8 +134,7 @@ class Post extends Component {
               </View>
             </ScrollView>
             {dataPost?.user?.user_id !== currentUser?.user_id &&
-            dataPost?.post?.post_state === 'active' &&
-            !global.adminLogin ? (
+            dataPost?.post?.post_state === 'active' ? (
               <BottomButtons
                 theme={theme}
                 navigate={navigate}
@@ -151,12 +146,6 @@ class Post extends Component {
                 }
               />
             ) : null}
-            {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
-              <BottomAdminButtons
-                theme={theme}
-                navigation={this.props.navigation}
-              />
-            )}
           </View>
         </BaseLoading>
       </Provider>

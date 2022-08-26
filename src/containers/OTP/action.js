@@ -97,11 +97,9 @@ export const requestVerifyOTP =
   }
 
 export const requestActionForgotPassword =
-  ({password}) =>
+  ({phone, password}) =>
   (dispatch, getState) => {
-    const phone = getState().otpReducer.dataOtp.phone
-    const verify_code = getState().otpReducer.dataOtp.verify_code
-    const body = {password, phone, verify_code}
+    const body = {password, phone}
     dispatch(startAction())
     apiBase(API_FORGOT_PASSWORD, METHOD_POST, body)
       .then((res) => {
@@ -130,11 +128,9 @@ export const requestActionForgotPassword =
   }
 
 export const requestActionCreateAccount =
-  ({password}) =>
+  ({phone, password}) =>
   (dispatch, getState) => {
-    const phone = getState().otpReducer.dataOtp.phone
-    const verify_code = getState().otpReducer.dataOtp.verify_code
-    const body = {password, phone, verify_code}
+    const body = {password, phone}
     dispatch(startAction())
     apiBase(API_CREATE_ACCOUNT, METHOD_POST, body)
       .then((res) => {

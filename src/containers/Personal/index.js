@@ -18,6 +18,7 @@ import {
   ADMIN_CATEGORY_SCR,
   AUTH_NAV,
   BUY_DEALS_MANAGER_SCR,
+  POSTS_MANAGER_SCR,
   POST_TURN_SERVICES_SCR,
   SELL_DEALS_MANAGER_SCR,
   USER_PAYMENT_SCR
@@ -25,13 +26,7 @@ import {
 import {CURRENT_USER} from 'src/constants/storage'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
 
-import {
-  removeUser,
-  requestLogoutAdmin,
-  requestLogoutUser,
-  requestUserData
-} from '../CurrentUser/action'
-import AdminHeader from './components/AdminHeader'
+import {requestLogoutUser, requestUserData} from '../CurrentUser/action'
 import FooterButton from './components/FooterButton'
 import Header from './components/Header'
 import PersonalFuncItem from './components/PersonalFuncItem'
@@ -58,10 +53,9 @@ class Personal extends Component {
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     const {isLoggedIn, currentUser} = this.props
-    const adminLogin = global.adminLogin
     return (
       <ScrollView style={style.wrapper}>
-        {isLoggedIn && !adminLogin && (
+        {isLoggedIn && (
           <>
             <Header navigate={navigate} />
             <PersonalFuncItem
@@ -94,19 +88,15 @@ class Personal extends Component {
                 })
               }
             />
-          </>
-        )}
-        {isLoggedIn && adminLogin && (
-          <>
-            <AdminHeader navigate={navigate} />
             <PersonalFuncItem
-              title={'Quản lí danh mục'}
-              icon={'swap-horizontal-outline'}
+              title={'Quản lý bài đăng'}
+              icon={'newspaper-outline'}
               theme={theme}
-              onPress={() => navigate(ADMIN_CATEGORY_SCR)}
+              onPress={() => navigate(POSTS_MANAGER_SCR)}
             />
           </>
         )}
+
         <View
           style={[
             {
@@ -133,10 +123,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getDataCurrentUser: bindActionCreators(requestUserData, dispatch),
-  removeCurrentUser: bindActionCreators(
-    global.adminLogin ? requestLogoutAdmin : requestLogoutUser,
-    dispatch
-  ),
+  removeCurrentUser: bindActionCreators(requestLogoutUser, dispatch),
   appNavigate: bindActionCreators(AppNavigateActionCreator, dispatch)
 })
 

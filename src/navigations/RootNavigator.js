@@ -10,34 +10,18 @@ import {helper} from '@common'
 import {add_notify} from 'src/containers/Notification/action'
 import {NOTIFICATIONS} from 'src/constants/storage'
 import {getItem, setItem} from 'src/common/storage'
-import AdminStackNavigator from './AdminStackNavigator'
-import {navigateToAdminScreen} from 'src/containers/AppNavigate/action'
 
 const Stack = createNativeStackNavigator()
 
 export default function RootNavigator() {
   const appNavigate = useSelector((state) => state.appNavigateReducer)
-  const currentUser = useSelector((state) => state.currentUserReducer.userData)
-
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (currentUser.role_id === 'admin') global.adminLogin = true
-  }, [currentUser])
   const onRegister = (token) => {
     console.log('onRegister', token)
   }
   const onNotification = (notification) => {
     console.log('onNotification', notification)
-    // const { data } = notification;
-    // if (helper.isValidObject(data?.custom_notification)) {
-    //     const { notify_id,
-    //       notify_detail_id,
-    //       notify_type,
-    //       title,
-    //       message,
-    //       time_created } = JSON.parse(data?.custom_notification);
-    // }
   }
   const _notify = new NotifService(onRegister, onNotification)
 
@@ -101,12 +85,9 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {appNavigate.mainStack ? (
         <Stack.Screen name={MAIN_NAV} component={MainStackNavigator} />
-      ) : appNavigate.adminStack ? (
-        <Stack.Screen name={ADMIN_NAV} component={AdminStackNavigator} />
       ) : (
         <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
       )}
     </Stack.Navigator>
-    // <AuthStackNavigator />
   )
 }

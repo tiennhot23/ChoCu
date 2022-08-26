@@ -124,24 +124,6 @@ export const requestLogoutUser = () => async (dispatch, getState) => {
   })
 }
 
-export const requestLogoutAdmin = () => async (dispatch, getState) => {
-  const fcm_token = await getTokenNotification()
-  const body = {fcm_token}
-  apiBase(API_LOGOUT_ADMIN, METHOD_POST, body).then(async (response) => {
-    if (helper.isNonEmptyArray(response.data)) {
-      let admin = await getItem(CURRENT_USER)
-      database()
-        .ref(`/users/${admin.admin_id}`)
-        .update({
-          ...admin,
-          isOnline: false
-        })
-        .then((val) => console.log(val))
-      dispatch(removeUser())
-    }
-  })
-}
-
 export const startRequest = () => {
   return {
     type: START_REQUEST_USER_DATA
