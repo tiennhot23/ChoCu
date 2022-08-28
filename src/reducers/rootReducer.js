@@ -20,6 +20,7 @@ import {adminPostsManagerReducer} from 'src/containers/AdminPostsManager/reducer
 import {adminCategoriesManagerReducer} from 'src/containers/AdminCategoryManager/reducer'
 import {adminAccountManagerReducer} from 'src/containers/AdminAccountManager/reducer'
 import {adminReportsManagerReducer} from 'src/containers/AdminReportManager/reducer'
+import {adminServicesManagerReducer} from 'src/containers/AdminServiceManager/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   adminPostsManagerReducer,
   adminCategoriesManagerReducer,
   adminAccountManagerReducer,
-  adminReportsManagerReducer
+  adminReportsManagerReducer,
+  adminServicesManagerReducer
 })
 export default rootReducer

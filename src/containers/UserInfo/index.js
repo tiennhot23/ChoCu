@@ -26,6 +26,7 @@ import ActivePosts from './components/ActivePosts'
 import ExpiredPosts from './components/ExpiredPosts'
 import Info from './components/Info'
 import LockAccount from './components/LockAccount'
+import UnlockAccount from './components/UnlockAccount'
 
 class UserInfo extends Component {
   constructor(props) {
@@ -62,12 +63,20 @@ class UserInfo extends Component {
     const {theme, userId, showLockModal} = this.state
     const {navigate, push} = this.props.navigation
     const style = initStyle(theme)
-    const {stateUserPosts, stateUser} = this.props
+    const {stateUserPosts, stateUser, userInfo} = this.props
     return (
       <BaseLoading
         isLoading={stateUserPosts.isFetching || stateUser.isFetching}>
         <Modal visible={showLockModal} transparent>
-          <LockAccount onCancel={() => this.setState({showLockModal: false})} />
+          {userInfo.active ? (
+            <LockAccount
+              onCancel={() => this.setState({showLockModal: false})}
+            />
+          ) : (
+            <UnlockAccount
+              onCancel={() => this.setState({showLockModal: false})}
+            />
+          )}
         </Modal>
         <ScrollView style={style.wrapper}>
           <Info

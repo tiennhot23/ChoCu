@@ -6,6 +6,7 @@ import {
   ADMIN_DASHBOARD_SCR,
   ADMIN_POST_SCR,
   ADMIN_REPORT_SCR,
+  ADMIN_SERVICE_SCR,
   CHAT_BOX_SCR,
   POST_SCR,
   USER_INFO_SCR
@@ -25,6 +26,9 @@ import AdminPostsManager from 'src/containers/AdminPostsManager'
 import AdminReportManager from 'src/containers/AdminReportManager'
 import UserInfo from 'src/containers/UserInfo'
 import ChatBox from 'src/containers/ChatBox'
+import AdminAccountManager from 'src/containers/AdminAccountManager'
+import AdminServiceManager from 'src/containers/AdminServiceManager'
+import AdminStatManager from 'src/containers/AdminStatManager'
 
 const Stack = createNativeStackNavigator()
 
@@ -61,6 +65,11 @@ export default function AdminStackNavigator() {
                 )
               }}>
               <Stack.Group>
+                {/* <Stack.Screen
+                  name={ADMIN_DASHBOARD_SCR}
+                  component={AdminStatManager}
+                  initialParams={{theme}}
+                /> */}
                 <Stack.Screen
                   name={ADMIN_DASHBOARD_SCR}
                   component={AddminDashboard}
@@ -80,7 +89,7 @@ export default function AdminStackNavigator() {
                 />
                 <Stack.Screen
                   name={ADMIN_ACCOUNT_SCR}
-                  component={AddminDashboard}
+                  component={AdminAccountManager}
                   initialParams={{theme}}
                 />
                 <Stack.Screen
@@ -91,6 +100,11 @@ export default function AdminStackNavigator() {
                 <Stack.Screen
                   name={ADMIN_POST_SCR}
                   component={AdminPostsManager}
+                  initialParams={{theme}}
+                />
+                <Stack.Screen
+                  name={ADMIN_SERVICE_SCR}
+                  component={AdminServiceManager}
                   initialParams={{theme}}
                 />
 

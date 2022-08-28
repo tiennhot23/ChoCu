@@ -64,7 +64,10 @@ export default function PaymentInfo({
               fontWeight: font.FONT_WEIGHT_BOLD
             }}
             ellipsizeMode={'tail'}>
-            {deal?.deal_price + ' d'}
+            {deal?.deal_price.toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'VND'
+            })}
           </Text>
         </View>
         <View

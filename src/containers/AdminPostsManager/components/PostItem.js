@@ -61,7 +61,10 @@ export default function PostItem({
             marginVertical: 5,
             color: 'red'
           }}>
-          {post.default_price} d
+          {post.default_price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'VND'
+          })}
         </Text>
       </TouchableOpacity>
       <View

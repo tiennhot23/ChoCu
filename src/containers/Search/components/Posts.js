@@ -62,7 +62,7 @@ export const PostCard = ({
           marginVertical: 5,
           color: theme.red
         }}>
-        {price} d
+        {price.toLocaleString('en-US', {style: 'currency', currency: 'VND'})}
       </Text>
       <Text
         style={{

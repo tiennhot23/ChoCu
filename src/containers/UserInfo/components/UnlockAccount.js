@@ -13,21 +13,22 @@ import {
 } from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
 import {baseUrl} from 'src/constants/api'
-import {requestLockAccount} from 'src/containers/AdminAccountManager/action'
+import {
+  requestLockAccount,
+  requestUnlockAccount
+} from 'src/containers/AdminAccountManager/action'
 import FormButton from 'src/containers/Post/components/FormButton'
 
-export default function LockAccount({onCancel}) {
-  let contentRef = useRef()
+export default function UnlockAccount({onCancel}) {
   const dispatch = useDispatch()
   const accountState = useSelector(
     (state) => state.adminAccountManagerReducer.accountState
   )
   const user = useSelector((state) => state.userInfoReducer.userData)
-  function onLockAccount() {
+  function onUnlockAccount() {
     dispatch(
-      requestLockAccount({
-        username: user?.phone,
-        reason: contentRef?.current.getText()
+      requestUnlockAccount({
+        username: user?.phone
       })
     )
   }
@@ -42,23 +43,16 @@ export default function LockAccount({onCancel}) {
       <View
         style={{
           width: '90%',
-          paddingVertical: 50,
+          paddingVertical: 20,
           backgroundColor: 'white',
           borderRadius: 10,
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-        <Text style={{fontSize: 20, padding: 10}}>Khoá đăng bài</Text>
+        <Text style={{fontSize: 20, padding: 10}}>Mở khoá đăng bài</Text>
         <Text style={{padding: 10, textAlign: 'center'}}>
-          Không cho phép người dùng tài khoản này đăng bài
+          Cho phép người dùng tài khoản này được quyền đăng bài lại
         </Text>
-        <Input
-          title={'Lí do'}
-          multiline={true}
-          placeholder={'Người này vi phạm điều gì'}
-          height={150}
-          ref={contentRef}
-        />
         <View
           style={{
             width: '80%',
@@ -97,8 +91,8 @@ export default function LockAccount({onCancel}) {
               alignItems: 'center',
               margin: 5
             }}
-            title={'Khoá'}
-            onPress={onLockAccount}
+            title={'Mở Khoá'}
+            onPress={onUnlockAccount}
           />
         </View>
       </View>

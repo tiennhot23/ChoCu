@@ -85,7 +85,7 @@ export default Input = forwardRef(
                 elevation: 3
               }}>
               <TextInput
-                keyboardType={inputType}
+                keyboardType={inputType === 'money' ? 'numeric' : inputType}
                 multiline={multiline}
                 editable={editable}
                 style={{

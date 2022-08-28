@@ -61,7 +61,10 @@ export default function DealItem({
             marginVertical: 5,
             color: 'red'
           }}>
-          {deal.deal_price} d
+          {deal.deal_price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'VND'
+          })}
         </Text>
       </TouchableOpacity>
       <View

@@ -40,7 +40,7 @@ export default function ListPostTurnServices({route, navigation}) {
       setShowPayPal(false)
       dispatch(
         addUserServices({
-          service_id: service?.service_id,
+          price: service?.price,
           post_turn: service?.post_turn
         })
       )
@@ -156,7 +156,10 @@ export default function ListPostTurnServices({route, navigation}) {
                         paddingHorizontal: 20
                       }}
                       size={20}
-                      text={`${item.price} đ`}
+                      text={`${item.price.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'VND'
+                      })}`}
                     />
                   </View>
                   <View

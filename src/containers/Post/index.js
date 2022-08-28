@@ -150,7 +150,10 @@ class Post extends Component {
                     />
                     <BaseText
                       style={style.price}
-                      text={dataPost?.post?.default_price + ' đ'}
+                      text={dataPost?.post?.default_price.toLocaleString(
+                        'en-US',
+                        {style: 'currency', currency: 'VND'}
+                      )}
                     />
                   </View>
                   <BaseText

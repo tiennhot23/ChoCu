@@ -180,12 +180,10 @@ export default Info = ({
           </TouchableOpacity>
           {global.adminLogin && (
             <TouchableOpacity
-              disabled={!user?.active}
               style={{
                 flexDirection: 'row',
                 flex: 1,
                 height: '100%',
-                opacity: user?.active ? 1 : 0.5,
                 borderColor: color,
                 borderWidth: 2,
                 padding: 10,
@@ -205,7 +203,7 @@ export default Info = ({
                   color: color,
                   textTransform: 'uppercase'
                 }}>
-                {user?.active ? 'Khoá tài khoản' : 'Đã khoá'}
+                {user?.active ? 'Khoá đăng bài' : 'Mở khoá đăng bài'}
               </Text>
             </TouchableOpacity>
           )}
