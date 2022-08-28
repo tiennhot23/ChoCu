@@ -101,6 +101,25 @@ export const requestCancelDeal =
             dispatch(
               updateSellDealState({deal: data[0], message: message || ''})
             )
+        } else {
+          if (isBuyer)
+            dispatch(
+              updateBuyDealState({
+                deal: {},
+                message: message || '',
+                isEmpty: true,
+                isError: true
+              })
+            )
+          else
+            dispatch(
+              updateSellDealState({
+                deal: {},
+                message: message || '',
+                isEmpty: true,
+                isError: true
+              })
+            )
         }
       })
       .catch((err) => {
@@ -137,6 +156,15 @@ export const requestConfirmedDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateSellDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateSellDealState({
+              deal: {},
+              message: message || '',
+              isEmpty: true,
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -162,6 +190,15 @@ export const requestPaidDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateBuyDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -187,6 +224,15 @@ export const requestSendingDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateSellDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateSellDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -212,6 +258,15 @@ export const requestReceivedDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateBuyDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(

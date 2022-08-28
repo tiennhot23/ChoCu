@@ -57,13 +57,25 @@ class Login extends Component {
     }
     Keyboard.dismiss()
     // showBlockUI()
-    loginAction.requestAuthToken({
-      username: userName.trim(),
-      password: passWord
-    })
+    const phoneRegex = new RegExp(/^[0]\d{9}$/)
+    if (phoneRegex.test(userName.trim())) {
+      global.adminLogin = false
+
+      loginAction.requestAuthToken({
+        username: userName.trim(),
+        password: passWord
+      })
+    } else {
+      global.adminLogin = true
+      loginAction.requestAuthTokenAdmin({
+        username: userName.trim(),
+        password: passWord
+      })
+    }
   }
 
   backToHome = () => {
+    global.adminLogin = false
     if (this.props.mainStack) this.props.navigation.goBack()
     else {
       this.props.appNavigate.navigateToMainScreen()
@@ -86,10 +98,14 @@ class Login extends Component {
         } else {
           // hideBlockUI()
 
-          const {getDataCurrentUser} = this.props
-          getDataCurrentUser()
-          if (this.props.mainStack) this.props.navigation.goBack()
-          else this.props.appNavigate.navigateToMainScreen()
+          if (global.adminLogin) {
+            this.props.appNavigate.navigateToAdminScreen()
+          } else {
+            const {getDataCurrentUser} = this.props
+            getDataCurrentUser()
+            if (this.props.mainStack) this.props.navigation.goBack()
+            else this.props.appNavigate.navigateToMainScreen()
+          }
         }
       }
     }

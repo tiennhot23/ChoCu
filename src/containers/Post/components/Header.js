@@ -3,7 +3,7 @@ import {Icon} from '@components'
 import React from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {Divider, Menu, Provider} from 'react-native-paper'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {
   requestEndPost,
   requestRepostPost
@@ -21,6 +21,7 @@ export default function Header({
 }) {
   const dispatch = useDispatch()
   const [visible, setVisible] = React.useState(false)
+  const currentUser = useSelector((state) => state.currentUserReducer.userData)
 
   const openMenu = () => setVisible(true)
 
@@ -33,7 +34,9 @@ export default function Header({
   }
 
   const repostPost = () => {
-    dispatch(requestRepostPost({post_id: postId}))
+    if (!currentUser?.active)
+      alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
+    else dispatch(requestRepostPost({post_id: postId}))
     if (helper.isFunction(onGoBack)) onGoBack()
     navigation.goBack()
   }

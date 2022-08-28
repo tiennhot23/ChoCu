@@ -10,6 +10,13 @@ import {helper} from '@common'
 import {add_notify} from 'src/containers/Notification/action'
 import {NOTIFICATIONS} from 'src/constants/storage'
 import {getItem, setItem} from 'src/common/storage'
+import AdminStackNavigator from './AdminStackNavigator'
+import {requestUserData} from 'src/containers/CurrentUser/action'
+import {
+  requestBuyDeals,
+  requestSellDeals
+} from 'src/containers/DealManager/action'
+import {requestUserPosts} from 'src/containers/PostsManager/action'
 
 const Stack = createNativeStackNavigator()
 
@@ -40,6 +47,15 @@ export default function RootNavigator() {
       message: notification.body
     })
     if (helper.isValidObject(data)) {
+      if (notification.title === 'Tài khoản đã bị khoá')
+        dispatch(requestUserData())
+      else if (data.notify_type === 'deal') {
+        dispatch(requestSellDeals())
+        dispatch(requestBuyDeals())
+      } else if (data.notify_type === 'post') {
+        dispatch(requestUserPosts())
+      }
+
       dispatch(add_notify(data))
       await addNotifyToStorage(data)
     }
@@ -85,6 +101,8 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       {appNavigate.mainStack ? (
         <Stack.Screen name={MAIN_NAV} component={MainStackNavigator} />
+      ) : appNavigate.adminStack ? (
+        <Stack.Screen name={ADMIN_NAV} component={AdminStackNavigator} />
       ) : (
         <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
       )}

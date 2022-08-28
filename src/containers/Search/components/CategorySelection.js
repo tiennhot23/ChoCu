@@ -139,11 +139,11 @@ const CategorySelection = forwardRef((props, ref) => {
 
 export default CategorySelection
 
-export function _Input({_details, _setDetails, id, title, required}) {
+export function _Input({_details, _setDetails, id, title}) {
   const onChangeText = (text) => {
     let _d = _details
     _d[id].content = text
     _setDetails([..._d])
   }
-  return <Input title={title} required={required} onChange={onChangeText} />
+  return <Input title={title} onChange={onChangeText} />
 }

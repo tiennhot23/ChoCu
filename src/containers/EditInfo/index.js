@@ -96,6 +96,8 @@ class EditInfo extends Component {
       // prevProps.stateUser.isFetching !== this.props.stateUser.isFetching &&
       // prevProps.stateUser.isFetching &&
       // !this.props.stateUser.isError
+      prevProps.stateUser.isActioning !== this.props.stateUser.isActioning &&
+      prevProps.stateUser.isActioning &&
       this.props.stateUser.isActionDone
     )
       goBack()
@@ -148,6 +150,7 @@ class EditInfo extends Component {
               <Input
                 title={'Email'}
                 ref={this.emailRef}
+                _text={currentUser?.email}
                 placeholder={'Email'}
               />
               <Input

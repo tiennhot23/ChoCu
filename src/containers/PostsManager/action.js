@@ -58,13 +58,14 @@ export const requestUserPosts = () => (dispatch, getState) => {
 export const requestCreatePost =
   ({formData}) =>
   (dispatch, getState) => {
+    let userPosts = [...getState().userPostsReducer.dataUserPosts]
     dispatch(startAcion())
     apiBase(API_REQUEST_CREATE_POST, METHOD_POST, formData, {
       contentType: CONTENT_TYPE_MULTIPART
     })
       .then((res) => {
         const {data} = res
-        let userPosts = [...getState().userPostsReducer.dataUserPosts]
+
         if (helper.isNonEmptyArray(data) && helper.isValidObject(data[0])) {
           userPosts.push(data[0])
           dispatch(stopAction({userPosts}))
@@ -99,6 +100,15 @@ export const requestEndPost =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updatePostState({post: data[0], message: message || ''}))
+        else
+          dispatch(
+            updatePostState({
+              post: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -121,6 +131,15 @@ export const requestRepostPost =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updatePostState({post: data[0], message: message || ''}))
+        else
+          dispatch(
+            updatePostState({
+              post: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(

@@ -9,8 +9,7 @@ export default function Address({theme, address}) {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginVertical: 14,
-        paddingBottom: 20
+        marginVertical: 10
       }}>
       <View
         style={{

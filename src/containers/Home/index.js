@@ -2,7 +2,14 @@ import {AnimatedImageSlide, AnimatedImageSlide2} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, PureComponent} from 'react'
-import {AppState, FlatList, StyleSheet, Text, View} from 'react-native'
+import {
+  AppState,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {
@@ -22,7 +29,8 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params
+      theme: this.props.route.params,
+      refreshing: false
     }
   }
 
@@ -57,7 +65,7 @@ class Home extends Component {
   }
 
   render() {
-    const {theme} = this.state
+    const {theme, refreshing} = this.state
     const {navigate} = this.props.navigation
     const {posts} = this.props
     const style = initStyle(theme)
@@ -73,6 +81,12 @@ class Home extends Component {
             />
           }
           data={posts}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
           showsVerticalScrollIndicator={false}
           overScrollMode={'never'}
           renderItem={({item, index}) => (

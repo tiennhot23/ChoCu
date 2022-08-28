@@ -29,7 +29,7 @@ export default function AnimatedDropdown({
   width = '80%',
   height = 70,
   title,
-  required,
+  required = false,
   placeHolder = 'Select',
   item,
   items,

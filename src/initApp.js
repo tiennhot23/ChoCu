@@ -5,6 +5,7 @@ import {
   CURRENT_USER,
   NOTIFICATIONS
 } from './constants/storage'
+import {navigateToAdminScreen} from './containers/AppNavigate/action'
 
 /* ======== STORE ========== */
 
@@ -13,8 +14,17 @@ export const initAppAction = {
   INIT_STORE
 }
 
-export const initStore = (storageData) => {
+export const initStore = (storageData) => (dispatch, getState) => {
   console.log('storageData', storageData)
+  let user = JSON.parse(
+    storageData.currentUser ? storageData.currentUser : '{}'
+  )
+  if (user?.role_id === 'director') {
+    global.adminLogin = true
+    dispatch(navigateToAdminScreen())
+  } else {
+    global.adminLogin = false
+  }
   return {
     type: INIT_STORE,
     currentTheme: storageData.currentTheme,

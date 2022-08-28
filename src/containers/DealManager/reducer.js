@@ -101,6 +101,8 @@ const userDealsReducer = (state = userDealsState, action) => {
           message: action.message,
           isError: action.isError
         },
+
+        isActioning: false,
         isActionDone: action.isError ? false : true
       }
     }

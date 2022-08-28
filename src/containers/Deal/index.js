@@ -10,10 +10,12 @@ import {
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {
+  requestBuyDeals,
   requestCancelDeal,
   requestConfirmedDeal,
   requestPaidDeal,
   requestReceivedDeal,
+  requestSellDeals,
   requestSendingDeal
 } from '../DealManager/action'
 import {requestGetDeal, requestRateDeal} from './action'
@@ -23,7 +25,7 @@ import DealInfo from './components/DealInfo'
 import FormButton from './components/FormButton'
 import PaymentInfo from './components/PaymentInfo'
 import DealRating from './components/DealRating'
-import {BaseLoading, Input, ModalLoading} from '@components'
+import {BaseLoading, ConfirmDialog, Input, ModalLoading} from '@components'
 import {Rating} from 'react-native-ratings'
 import WebView from 'react-native-webview'
 import {baseUrl} from 'src/constants/api'
@@ -38,7 +40,10 @@ class Deal extends Component {
       payment: null,
       showPayPal: false,
       onActionDone: () => {},
-      rate_numb: 0
+      rate_numb: 0,
+      showConfirm: false,
+      confirmTitle: '',
+      funcOnAction: () => {}
     }
     this.rateRef = createRef()
   }
@@ -55,11 +60,24 @@ class Deal extends Component {
     ) {
       this.props.navigation.goBack()
       this.state.onActionDone()
+    } else if (!this.props.isActionDone) {
+      if (
+        prevProps.stateSellDeals.isError !==
+          this.props.stateSellDeals.isError &&
+        this.props.stateSellDeals.isError &&
+        this.props.stateSellDeals.message !== ''
+      ) {
+        alert(this.props.stateSellDeals.message)
+        this.props.getSellDeals()
+      } else if (
+        prevProps.stateBuyDeals.isError !== this.props.stateBuyDeals.isError &&
+        this.props.stateBuyDeals.isError &&
+        this.props.stateBuyDeals.message !== ''
+      ) {
+        alert(this.props.stateBuyDeals.message)
+        this.props.getBuyDeals()
+      }
     }
-  }
-
-  onPaymentChecked = (payment) => {
-    this.setState({payment: payment})
   }
 
   onAction({action, nextState, onActionDone}) {
@@ -85,9 +103,7 @@ class Deal extends Component {
         confirmDeal({deal_id})
         return
       case 'pay':
-        if (this.state.payment?.payment_id === 'paypal')
-          this.setState({showPayPal: true})
-        return
+        this.setState({showPayPal: true})
       case 'send':
         sendingDeal({deal_id})
         return
@@ -120,7 +136,8 @@ class Deal extends Component {
   }
 
   render() {
-    const {theme, dealId, actions} = this.state
+    const {theme, dealId, actions, showConfirm, confirmTitle, funcOnAction} =
+      this.state
     const {dataDeal, currentUser, isLoggedIn, stateDeal, isActioning} =
       this.props
     const {navigate} = this.props.navigation
@@ -128,6 +145,16 @@ class Deal extends Component {
     return (
       <BaseLoading isLoading={stateDeal?.isFetching}>
         <ScrollView style={{backgroundColor: theme.primaryBackground}}>
+          <ConfirmDialog
+            show={showConfirm}
+            title={confirmTitle}
+            onCanceled={() =>
+              this.setState({
+                showConfirm: false
+              })
+            }
+            onConfirmed={funcOnAction}
+          />
           <View
             style={[
               {
@@ -173,10 +200,7 @@ class Deal extends Component {
               }
               navigate={navigate}
             />
-            <PaymentInfo
-              deal={dataDeal?.deal}
-              onCheck={this.onPaymentChecked}
-            />
+            <PaymentInfo deal={dataDeal?.deal} />
             {dataDeal?.deal?.deal_state === 'done' && (
               <DealRating
                 deal={dataDeal?.deal}
@@ -217,13 +241,26 @@ class Deal extends Component {
                       backgroundColor={i && 1 ? 'white' : 'black'}
                       styleContainer={{flex: 1, alignSelf: 'center'}}
                       title={e.label}
-                      onPress={() =>
-                        this.onAction({
-                          action: e.action,
-                          nextState: e.nextState,
-                          onActionDone: e.onActionDone
-                        })
-                      }
+                      onPress={() => {
+                        if (e.action !== 'rate') {
+                          this.setState({
+                            showConfirm: true,
+                            confirmTitle: e.label,
+                            funcOnAction: () =>
+                              this.onAction({
+                                action: e.action,
+                                nextState: e.nextState,
+                                onActionDone: e.onActionDone
+                              })
+                          })
+                        } else {
+                          this.onAction({
+                            action: e.action,
+                            nextState: e.nextState,
+                            onActionDone: e.onActionDone
+                          })
+                        }
+                      }}
                     />
                   )
                 })}
@@ -249,6 +286,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   getDeal: bindActionCreators(requestGetDeal, dispatch),
+  getSellDeals: bindActionCreators(requestSellDeals, dispatch),
+  getBuyDeals: bindActionCreators(requestBuyDeals, dispatch),
   cancelDeal: bindActionCreators(requestCancelDeal, dispatch),
   confirmDeal: bindActionCreators(requestConfirmedDeal, dispatch),
   payDeal: bindActionCreators(requestPaidDeal, dispatch),

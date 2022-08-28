@@ -1,4 +1,4 @@
-import {BaseLoading, BaseText, Icon, Input} from '@components'
+import {BaseLoading, BaseText, Icon, Input, ModalLoading} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, createRef} from 'react'
@@ -27,6 +27,9 @@ import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
 
 import * as AppNavigateActionCreator from '../AppNavigate/action'
+import BottomAdminButtons from './components/BottomAdminButtons'
+import {helper} from '@common'
+import PostReports from './components/PostReports'
 
 class Post extends Component {
   constructor(props) {
@@ -35,7 +38,11 @@ class Post extends Component {
       theme: this.props.route.params.theme,
       postId: this.props.route.params.postId,
       onGoBack: this.props.route.params.onGoBack,
-      showReport: false
+      showReport: false,
+      onActionDone: this.props.route.params.onActionDone
+        ? this.props.route.params.onActionDone
+        : () => {},
+      reports: this.props.route.params.reports
     }
     this.reportContentRef = createRef()
     this.reportInfoRef = createRef()
@@ -44,6 +51,39 @@ class Post extends Component {
   componentDidMount() {
     const {getPost} = this.props
     getPost({post_id: this.state.postId})
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {onActionDone} = this.state
+    const {isAdminActionDone, isAdminActioning, navigation, adminPostsData} =
+      this.props
+    const {dataPost, currentUser, isLoggedIn, statePost} = this.props
+    if (
+      prevProps.isAdminActioning != isAdminActioning &&
+      !isAdminActioning &&
+      isAdminActionDone
+    ) {
+      navigation.goBack()
+      if (
+        helper.isFunction(onActionDone) &&
+        prevProps.adminPostsData.length === adminPostsData.length
+      )
+        onActionDone()
+    }
+
+    if (
+      // prevProps.statePost.isFetching != this.props.statePost.isFetching &&
+      // !this.props.statePost.isFetching &&
+      // this.props.statePost.isError
+      dataPost &&
+      dataPost?.post?.post_state === 'deleted' &&
+      currentUser.user_id !== dataPost?.post?.seller_id &&
+      !global.adminLogin
+    ) {
+      alert('Không tìm thấy bài đăng này')
+      navigation.goBack()
+      if (helper.isFunction(this.state.onGoBack)) this.state.onGoBack()
+    }
   }
 
   render() {
@@ -61,16 +101,18 @@ class Post extends Component {
                 onCancelReport={() => this.setState({showReport: false})}
               />
             </Modal>
-            <Header
-              navigation={this.props.navigation}
-              onGoBack={onGoBack}
-              onReport={() => this.setState({showReport: true})}
-              style={style}
-              theme={theme}
-              postState={dataPost?.post?.post_state}
-              postId={postId}
-              isOwner={dataPost?.user?.user_id === currentUser?.user_id}
-            />
+            {!global.adminLogin && (
+              <Header
+                navigation={this.props.navigation}
+                onGoBack={onGoBack}
+                onReport={() => this.setState({showReport: true})}
+                style={style}
+                theme={theme}
+                postState={dataPost?.post?.post_state}
+                postId={postId}
+                isOwner={dataPost?.user?.user_id === currentUser?.user_id}
+              />
+            )}
             <ScrollView>
               <View style={style.slider_container}>
                 <Slider theme={theme} pictures={dataPost?.post?.picture} />
@@ -130,11 +172,15 @@ class Post extends Component {
                   details={dataPost?.details}
                 />
                 <Address theme={theme} address={dataPost?.post?.sell_address} />
+                {this.state.reports && (
+                  <PostReports reports={this.state.reports} />
+                )}
                 <PostRating postId={postId} navigate={navigate} />
               </View>
             </ScrollView>
             {dataPost?.user?.user_id !== currentUser?.user_id &&
-            dataPost?.post?.post_state === 'active' ? (
+            dataPost?.post?.post_state === 'active' &&
+            !global.adminLogin ? (
               <BottomButtons
                 theme={theme}
                 navigate={navigate}
@@ -146,6 +192,16 @@ class Post extends Component {
                 }
               />
             ) : null}
+            {global.adminLogin &&
+              (dataPost?.post?.post_state === 'pending' ||
+                dataPost?.post?.post_state === 'active') && (
+                <BottomAdminButtons
+                  theme={theme}
+                  navigation={this.props.navigation}
+                  onActionDone={this.state.onActionDone}
+                  hasReports={this.state.reports}
+                />
+              )}
           </View>
         </BaseLoading>
       </Provider>
@@ -157,7 +213,10 @@ const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer?.userData,
   isLoggedIn: state.currentUserReducer?.isLoggedIn,
   dataPost: state.postReducer.dataPost,
-  statePost: state.postReducer.statePost
+  statePost: state.postReducer.statePost,
+  isAdminActionDone: state.adminPostsManagerReducer.isActionDone,
+  isAdminActioning: state.adminPostsManagerReducer.isActioning,
+  adminPostsData: state.adminPostsManagerReducer.postsData
 })
 
 const mapDispatchToProps = (dispatch) => ({

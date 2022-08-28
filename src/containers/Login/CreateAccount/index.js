@@ -245,13 +245,17 @@ class CreateAccount extends Component {
                         }}
                         width={constant.calcWidth(120)}
                       />
-                      {
-                        <FormButton
-                          title={'Xác nhận'}
-                          onPress={this.onSubmit}
-                          width={constant.calcWidth(120)}
-                        />
-                      }
+                      {helper.isNonEmptyString(phoneNumber) &&
+                        phoneRegex.test(phoneNumber) &&
+                        helper.isNonEmptyString(newPassword) &&
+                        newPassword.length >= 8 &&
+                        passwordRegex.test(newPassword) && (
+                          <FormButton
+                            title={'Xác nhận'}
+                            onPress={this.onSubmit}
+                            width={constant.calcWidth(120)}
+                          />
+                        )}
                     </View>
                   </View>
                 )}

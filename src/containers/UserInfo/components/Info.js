@@ -13,7 +13,8 @@ export default Info = ({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
-  navigate
+  navigate,
+  onLockAccount
 }) => {
   const user = useSelector((state) => state.userInfoReducer?.userData)
   const isLoggedIn = useSelector((state) => state.currentUserReducer.isLoggedIn)
@@ -102,9 +103,7 @@ export default Info = ({
           />
           <BaseText text={`Trạng thái: `} style={style.bold_text} />
           <BaseText
-            text={`${
-              status && user?.active ? 'Đang hoạt động' : 'Chưa hoạt động'
-            }`}
+            text={`${status ? 'Đang hoạt động' : 'Chưa hoạt động'}`}
             style={style.nor_text}
           />
         </View>
@@ -125,7 +124,7 @@ export default Info = ({
         <View style={style.detail_item}>
           <Icon name="location-outline" size={20} style={style.nor_text} />
           <BaseText text={`Địa chỉ: `} style={style.bold_text} />
-          <BaseText text={user?.address} style={style.nor_text} />
+          <BaseText text={user?.address} style={[style.nor_text, {flex: 1}]} />
         </View>
         <View style={style.detail_item}>
           <Icon name="call-outline" size={20} style={style.nor_text} />
@@ -161,7 +160,8 @@ export default Info = ({
               margin: 5
             }}
             onPress={() => {
-              if (isLoggedIn) navigate(CHAT_BOX_SCR, {user})
+              if (isLoggedIn || global.adminLogin)
+                navigate(CHAT_BOX_SCR, {user})
               else navigate(AUTH_NAV)
             }}>
             <Icon name="chatbox-ellipses-outline" size={20} color={color} />
@@ -178,6 +178,37 @@ export default Info = ({
               {'Chat'}
             </Text>
           </TouchableOpacity>
+          {global.adminLogin && (
+            <TouchableOpacity
+              disabled={!user?.active}
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                height: '100%',
+                opacity: user?.active ? 1 : 0.5,
+                borderColor: color,
+                borderWidth: 2,
+                padding: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 5
+              }}
+              onPress={onLockAccount}>
+              <Icon name="lock-closed-outline" size={20} color={color} />
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 12,
+                  fontWeight: '800',
+                  letterSpacing: 1,
+                  marginLeft: 5,
+                  color: color,
+                  textTransform: 'uppercase'
+                }}>
+                {user?.active ? 'Khoá tài khoản' : 'Đã khoá'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </>

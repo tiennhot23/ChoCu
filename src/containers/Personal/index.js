@@ -70,14 +70,14 @@ class Personal extends Component {
               theme={theme}
               onPress={() => navigate(BUY_DEALS_MANAGER_SCR)}
             />
-            <PersonalFuncItem
+            {/* <PersonalFuncItem
               title={'Hình thức thanh toán'}
               icon={'wallet-outline'}
               theme={theme}
               onPress={() =>
                 navigate(USER_PAYMENT_SCR, {user_id: currentUser?.user_id})
               }
-            />
+            /> */}
             <PersonalFuncItem
               title={'Mua lượt đăng bài'}
               icon={'cash-outline'}

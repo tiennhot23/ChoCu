@@ -41,7 +41,6 @@ export default function ListPostTurnServices({route, navigation}) {
       dispatch(
         addUserServices({
           service_id: service?.service_id,
-          price: service?.price,
           post_turn: service?.post_turn
         })
       )

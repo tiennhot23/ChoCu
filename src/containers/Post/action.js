@@ -29,7 +29,8 @@ export const requestPost =
             stopGetPost({
               post: {},
               message: res.message || '',
-              isEmpty: true
+              isEmpty: true,
+              isError: true
             })
           )
         }

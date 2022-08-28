@@ -50,6 +50,7 @@ export default function PostRating({
           ellipsizeMode={'tail'}>
           {'Đánh giá'}
         </Text>
+        {data?.length === 0 && <Text>Không có đánh giá nào</Text>}
         {data.map(
           (e) =>
             e.rating && (

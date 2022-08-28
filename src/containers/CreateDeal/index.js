@@ -9,8 +9,6 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {BUY_DEALS_MANAGER_SCR} from 'src/constants/constant'
 import {requestCreateDeal} from '../Deal/action'
-import {requestUserPayments} from '../Payment/action'
-import {requestCreatePost} from '../Post/action'
 import AddressSelection from './components/AddressSelection'
 import FormButton from './components/FormButton'
 import PaymentCheckBox from './components/PaymentCheckBox'
@@ -155,7 +153,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createPost: bindActionCreators(requestCreatePost, dispatch),
   createDeal: bindActionCreators(requestCreateDeal, dispatch)
 })
 

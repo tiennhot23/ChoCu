@@ -10,6 +10,7 @@ import {requestUserPosts} from './action'
 import FormButton from './components/FormButton'
 import TopTabs from './components/TopTabs'
 import ActivePosts from './screens/ActivePosts'
+import DeletedPosts from './screens/DeletedPosts'
 import HiddenPosts from './screens/HiddenPosts'
 import PendingPosts from './screens/PendingPosts'
 
@@ -33,6 +34,8 @@ class PostsManager extends Component {
     const {isLoggedIn, currentUser} = this.props
     if (isLoggedIn) {
       if (currentUser?.post_turn === 0) alert('Bạn đã hết lượt đăng bài')
+      else if (!currentUser?.active)
+        alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
       else navigate(CREATE_POST_SCR)
     } else alert('Cần đăng nhập để thực hiện chức năng này')
   }
@@ -57,6 +60,7 @@ class PostsManager extends Component {
             <View style={{flex: 1, width: '100%'}}>
               <Tab.Navigator
                 screenOptions={{
+                  tabBarScrollEnabled: true,
                   tabBarActiveTintColor: theme.primaryText,
                   tabBarLabelStyle: {
                     fontSize: font.FONT_SIZE_14,
@@ -89,6 +93,11 @@ class PostsManager extends Component {
                   name="HIDDENPOSTS"
                   component={HiddenPosts}
                   options={{title: 'Đã ẩn'}}
+                />
+                <Tab.Screen
+                  name="DELETEDPOSTS"
+                  component={DeletedPosts}
+                  options={{title: 'Đã khoá'}}
                 />
               </Tab.Navigator>
             </View>
