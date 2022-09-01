@@ -93,12 +93,13 @@ const CategorySelection = forwardRef((props, ref) => {
       ) : (
         _details &&
         details?.map((item, index) =>
-          item.editable ? (
+          item.default_content?.length === 0 ? (
             <_Input
               _details={_details}
               _setDetails={_setDetails}
               id={index}
               title={item.details_title}
+              required
             />
           ) : (
             <AnimatedDropdown
@@ -110,9 +111,16 @@ const CategorySelection = forwardRef((props, ref) => {
                   title: item
                 }
               })}
+              required
+              editable={item?.editable}
               onSelect={(itemSelected) =>
                 setDetailContent(index, itemSelected.title)
               }
+              onChangeText={(text) => {
+                let _d = _details
+                _d[index].content = text
+                _setDetails([..._d])
+              }}
             />
           )
         )
@@ -123,11 +131,11 @@ const CategorySelection = forwardRef((props, ref) => {
 
 export default CategorySelection
 
-export function _Input({_details, _setDetails, id, title}) {
+export function _Input({_details, _setDetails, id, title, required}) {
   const onChangeText = (text) => {
     let _d = _details
     _d[id].content = text
     _setDetails([..._d])
   }
-  return <Input title={title} onChange={onChangeText} />
+  return <Input title={title} onChange={onChangeText} required />
 }

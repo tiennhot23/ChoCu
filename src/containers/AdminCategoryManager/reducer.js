@@ -6,6 +6,26 @@ const adminCategoriesManagerReducer = (
   action
 ) => {
   switch (action.type) {
+    case 'RESET_STATE': {
+      return {
+        ...state,
+        categoriesState: {
+          ...state.categoriesState,
+          isActioning: false,
+          isActionDone: false
+        },
+        detailsState: {
+          ...state.detailsState,
+          isActioning: false,
+          isActionDone: false
+        },
+        cateDetailsState: {
+          ...state.cateDetailsState,
+          isActioning: false,
+          isActionDone: false
+        }
+      }
+    }
     case adminCategoriesManagerAction.START_REQUEST_CATEGORY: {
       return {
         ...state,
@@ -67,7 +87,7 @@ const adminCategoriesManagerReducer = (
         ...state,
         cateDetailsData: [],
         cateDetailsState: {
-          isActioning: false,
+          isActioning: true,
           isActionDone: false,
           isFetching: true,
           isEmpty: false,

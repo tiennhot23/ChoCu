@@ -94,7 +94,7 @@ export default function PostItem({
             alignSelf: 'center',
             color: 'gray'
           }}>
-          {moment(post.time_updated).fromNow()}
+          {moment(post.time_created).fromNow()}
         </Text>
       </View>
     </View>

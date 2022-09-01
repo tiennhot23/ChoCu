@@ -52,7 +52,7 @@ export default function PostItem({
             }}
             ellipsizeMode={'tail'}
             numberOfLines={2}>
-            {moment(post.time_updated).fromNow()}
+            {moment(post.time_created).fromNow()}
           </Text>
         </View>
 

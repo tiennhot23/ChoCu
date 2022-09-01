@@ -158,7 +158,7 @@ class Post extends Component {
                   </View>
                   <BaseText
                     style={style.small_text}
-                    text={moment(dataPost?.post?.time_updated).fromNow()}
+                    text={moment(dataPost?.post?.time_created).fromNow()}
                   />
                 </View>
 

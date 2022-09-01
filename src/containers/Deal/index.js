@@ -77,6 +77,7 @@ class Deal extends Component {
         alert(this.props.stateBuyDeals.message)
         this.props.getBuyDeals()
       }
+      this.setState({showConfirm: false})
     }
   }
 

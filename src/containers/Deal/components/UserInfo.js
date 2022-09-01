@@ -137,6 +137,7 @@ export default function UserInfo({
         </Text>
         <Text
           style={{
+            flex: 1,
             fontSize: 14,
             fontWeight: '500',
             letterSpacing: 0.5,

@@ -10,10 +10,19 @@ export default function AdminStatManager({route, navigation, ...props}) {
   const maxDay = Number(
     new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
   )
-  const label = Array.from(Array(maxDay).keys()).map((e) => e + 1)
+  const [label, setLabel] = useState(
+    Array.from(Array(maxDay).keys()).map((e) => e + 1)
+  )
   const [month, setMonth] = useState(moment(new Date()))
 
   useEffect(() => {
+    setLabel(
+      Array.from(
+        Array(
+          Number(new Date(month.year(), month.month() + 1, 0).getDate())
+        ).keys()
+      ).map((e) => e + 1)
+    )
     fetch(baseUrl + '/admin/service-revenue', {
       method: 'POST',
       headers: {

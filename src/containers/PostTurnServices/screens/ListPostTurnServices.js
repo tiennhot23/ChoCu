@@ -28,7 +28,7 @@ export default function ListPostTurnServices({route, navigation}) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch(baseUrl + '/services/post-turn-services')
+    fetch(baseUrl + '/services')
       .then((res) => res.json())
       .then((res) => setServices(res.data))
       .catch((err) => console.log(err))

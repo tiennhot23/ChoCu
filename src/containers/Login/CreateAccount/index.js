@@ -85,6 +85,7 @@ class CreateAccount extends Component {
           confirm: null
         })
       }
+      if (this.props.stateAction.isError) alert(this.props.stateAction.message)
       if (this.props.stateAction.isDone) goBack()
       if (this.props.stateAction.message.includes('không thể tạo tài khoản'))
         new Promise((resolve) =>
@@ -163,7 +164,7 @@ class CreateAccount extends Component {
                         _inputRef={(ref) => (this.inputPhoneNumber = ref)}
                         placeholder={'Số điện thoại'}
                         onSubmitEditing={() => {
-                          this.inputNewPassword.focus()
+                          // this.inputNewPassword.focus()
                         }}
                         onChangeText={(phoneNumber) =>
                           this.setState({
@@ -200,9 +201,9 @@ class CreateAccount extends Component {
                         _inputRef={(ref) => (this.inputNewPassword = ref)}
                         placeholder={'Mật khẩu'}
                         secureTextEntry={!isShowNewPassword}
-                        onSubmitEditing={() =>
-                          this.inputConfirmedPassword.focus()
-                        }
+                        onSubmitEditing={() => {
+                          // this.inputConfirmedPassword.focus()
+                        }}
                         onChangeText={(password) =>
                           this.setState({
                             newPassword: password

@@ -1,15 +1,10 @@
-import {BaseText, Icon, ModalLoading} from '@components'
+import {helper} from '@common'
+import {BaseText, ModalLoading, Icon} from '@components'
 import React, {useEffect, useState} from 'react'
 import {View, Image, FlatList, ScrollView, TouchableOpacity} from 'react-native'
-import {Checkbox} from 'react-native-paper'
+import {Checkbox, Searchbar} from 'react-native-paper'
 import {useDispatch, useSelector} from 'react-redux'
-import {
-  addDetailsToCategory,
-  addMultiDetailsToCategory,
-  requestCateDetails,
-  requestCategories,
-  requestDetails
-} from '../action'
+import {addMultiDetailsToCategory, requestDetails} from '../action'
 
 export default function ListDetails({route, navigation}) {
   let checked = []
@@ -26,6 +21,8 @@ export default function ListDetails({route, navigation}) {
     dispatch(requestDetails())
   }, [])
 
+  const [data, setData] = useState([])
+
   useEffect(() => {
     if (cateDetailsState.isActionDone) {
       onGoBack()
@@ -35,9 +32,14 @@ export default function ListDetails({route, navigation}) {
 
   useEffect(() => {
     if (detailsData.length > 0) {
-      const temp = detailsData.filter((el) => {
+      let temp = detailsData.filter((el) => {
         return !selected.find((e) => e === el.details_id)
       })
+      temp = temp.map((e) => ({
+        ...e,
+        keyword: helper.removeAccent(e.details_title).toLowerCase()
+      }))
+      setData(temp)
       setSelectedDetails(temp)
     }
   }, [detailsData])
@@ -56,6 +58,21 @@ export default function ListDetails({route, navigation}) {
 
   return (
     <View style={{flex: 1, backgroundColor: theme.primaryBackground}}>
+      <Searchbar
+        placeholder="Tìm kiếm..."
+        lightTheme
+        round
+        onChangeText={(text) => {
+          const newData = data.filter((item) => {
+            const itemData = `${item.keyword}`
+            const textData = helper.removeAccent(text).toLowerCase()
+
+            return itemData.indexOf(textData) > -1
+          })
+          setSelectedDetails(newData)
+        }}
+        autoCorrect={false}
+      />
       <ModalLoading loading={cateDetailsState.isFetching} />
       <FlatList
         data={selectedDetails}
@@ -105,7 +122,7 @@ export default function ListDetails({route, navigation}) {
         }}>
         <BaseText
           style={{marginHorizontal: 10, color: 'black', fontWeight: 'bold'}}
-          text={`Tạo thông số chi tiết mới`}
+          text={`Tạo mục chi tiết mới`}
         />
       </TouchableOpacity>
     </View>
@@ -119,23 +136,69 @@ const Item = ({item, add, remove}) => {
     else remove(item.details_id)
   }, [selected])
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        paddingVertical: 10,
-        alignItems: 'center'
-      }}
-      key={item.details_id}>
-      <Checkbox
-        color={'black'}
-        status={selected ? 'checked' : 'unchecked'}
-        onPress={() => setSelected(!selected)}
-      />
-      <Image
-        source={{uri: item.details_icon}}
-        style={{width: 30, height: 30}}
-      />
-      <BaseText style={{marginHorizontal: 10}} text={`${item.details_title}`} />
-    </View>
+    <>
+      <View
+        style={{
+          paddingVertical: 10,
+          borderWidth: 1,
+          borderColor: 'gray',
+          margin: 10,
+          padding: 4
+        }}
+        key={item.category_id}>
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            paddingVertical: 10
+          }}
+          key={item.details_id}>
+          <Checkbox
+            color={'black'}
+            status={selected ? 'checked' : 'unchecked'}
+            onPress={() => setSelected(!selected)}
+          />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column'
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                paddingVertical: 2,
+                alignItems: 'center'
+              }}>
+              <Image
+                source={{uri: item.details_icon}}
+                style={{width: 30, height: 30}}
+              />
+              <BaseText
+                style={{marginHorizontal: 10}}
+                text={`${item.details_title}`}
+              />
+            </View>
+            {item?.default_content?.length > 0 && (
+              <ScrollView horizontal style={{marginVertical: 10}}>
+                {item?.default_content?.map((e) => (
+                  <BaseText
+                    style={{
+                      marginHorizontal: 10,
+                      marginVertical: 3,
+                      padding: 10,
+                      backgroundColor: '#e6e7e8',
+                      borderRadius: 10,
+                      height: 50,
+                      textAlign: 'center'
+                    }}
+                    text={`${e}`}
+                  />
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </View>
+    </>
   )
 }

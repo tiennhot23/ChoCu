@@ -86,7 +86,7 @@ class UserInfo extends Component {
             }}
           />
           <ActivePosts navigate={navigate} push={push} />
-          <ExpiredPosts navigate={navigate} push={push} />
+          {/* <ExpiredPosts navigate={navigate} push={push} /> */}
         </ScrollView>
       </BaseLoading>
     )

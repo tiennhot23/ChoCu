@@ -28,7 +28,7 @@ export default Input = forwardRef(
       title,
       _text = '',
       required = false,
-      placeholder = 'Select',
+      placeholder = title,
       message,
       multiline = false,
       inputType,

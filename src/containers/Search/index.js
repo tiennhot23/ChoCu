@@ -85,7 +85,7 @@ class Search extends Component {
                 image={item.picture[0]}
                 title={item.title}
                 price={item.default_price}
-                time={moment(item.time_updated).fromNow()}
+                time={moment(item.time_created).fromNow()}
                 location={item.sell_address.split(', ')[2]}
                 haveOnlinePayment={item.online_payment}
                 onPress={this.onPostPress}

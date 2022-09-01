@@ -71,7 +71,7 @@ class AdminPostsManager extends Component {
               <Tab.Screen
                 name="DELETEDPOSTS"
                 component={DeletedPosts}
-                options={{title: 'Đã xoá'}}
+                options={{title: 'Đã khoá'}}
               />
             </Tab.Navigator>
           </View>

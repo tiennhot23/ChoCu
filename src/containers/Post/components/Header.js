@@ -36,6 +36,7 @@ export default function Header({
   const repostPost = () => {
     if (!currentUser?.active)
       alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
+    else if (currentUser?.post_turn === 0) alert('Bạn đã hết lượt đăng bài')
     else dispatch(requestRepostPost({post_id: postId}))
     if (helper.isFunction(onGoBack)) onGoBack()
     navigation.goBack()

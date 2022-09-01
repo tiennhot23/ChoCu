@@ -139,6 +139,12 @@ class CreatePost extends Component {
       this.categorySelectionRef.current.alertMessage('Chưa chọn danh mục')
       return false
     }
+    if (
+      data.details.filter((e) => helper.isEmptyString(e.content)).length !== 0
+    ) {
+      alert('Vui lòng điền đầy đủ các mục thông tin chi tiết')
+      return false
+    }
     if (!data.defaut_price || helper.isEmptyString(data.defaut_price)) {
       this.defaultPriceRef.current.alertMessage('Chưa cung cấp giá')
       return false
@@ -188,7 +194,7 @@ class CreatePost extends Component {
               required
               ref={this.defaultPriceRef}
               inputType={'numeric'}
-              placeholder={'Giá ban đầu'}
+              placeholder={'Giá'}
             />
             <Input
               title={'Mô tả'}

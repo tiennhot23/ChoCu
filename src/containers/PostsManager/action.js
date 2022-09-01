@@ -129,9 +129,10 @@ export const requestRepostPost =
     apiBase(API_REQUEST_REPOST_POST + `/${post_id}`, METHOD_POST, body)
       .then((res) => {
         const {code, message, data} = res
-        if (code === 200)
+        if (code === 200) {
           dispatch(updatePostState({post: data[0], message: message || ''}))
-        else
+          dispatch({type: START_ACTION_POST, isError: false})
+        } else
           dispatch(
             updatePostState({
               post: {},

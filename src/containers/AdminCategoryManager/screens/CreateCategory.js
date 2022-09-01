@@ -3,7 +3,7 @@ import {Input, KeyboardView, ModalLoading} from '@components'
 import React, {useEffect, useRef, useState} from 'react'
 import {View} from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
-import {addCategory, addDetails} from '../action'
+import {addCategory, addDetails, updateCategory} from '../action'
 import FilePicker from '../components/FilePicker'
 import FormButton from '../components/FormButton'
 
@@ -14,7 +14,7 @@ export default function CreateCategory({
   backgroundColor = 'white',
   width = '80%'
 }) {
-  const {theme, onGoBack} = route.params
+  const {theme, category, onGoBack} = route.params
   const dispatch = useDispatch()
   const [icon, setIcon] = useState(null)
   const titleRef = useRef()
@@ -34,33 +34,36 @@ export default function CreateCategory({
   }
 
   const onSubmit = () => {
-    const category = {
+    const c = {
       category_title: titleRef.current.getText(),
       category_icon: icon
     }
 
-    if (!validateRequest(category)) return
+    if (!validateRequest(c)) return
 
     let formData = new FormData()
-    formData.append('category_title', category.category_title)
-    if (category.category_icon)
+    formData.append('category_title', c.category_title)
+    if (c.category_icon)
       formData.append('category_icon', {
-        uri: category.category_icon.uri,
-        name: category.category_icon.fileName,
+        uri: c.category_icon.uri,
+        name: c.category_icon.fileName,
         type: 'image/jpeg'
       })
-    dispatch(addCategory({formData}))
+    if (category) {
+      dispatch(updateCategory({category_id: category?.category_id, formData}))
+    } else dispatch(addCategory({formData}))
   }
 
-  const validateRequest = (category) => {
-    if (
-      !category.category_title ||
-      helper.isEmptyString(category.category_title)
-    ) {
+  const validateRequest = (c) => {
+    if (!c.category_title || helper.isEmptyString(c.category_title)) {
       titleRef.current.alertMessage('Tiêu đề không được để trống')
       return false
     }
-    if (!category.category_icon) {
+    if (
+      !c.category_icon &&
+      category &&
+      helper.isEmptyString(category?.category_icon)
+    ) {
       alert('Yêu cầu cung cấp icon')
       return false
     }
@@ -81,12 +84,14 @@ export default function CreateCategory({
         <FilePicker
           title={'Choose icon'}
           icon={'image-outline'}
+          defaultFileUrl={category?.category_icon}
           onPicked={onFilePicked}
         />
         <Input
           title={'Tiêu đề'}
           required
           ref={titleRef}
+          _text={category?.category_title}
           placeholder={'Tiêu đề'}
         />
 
