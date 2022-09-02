@@ -3,6 +3,16 @@ import {userPostsState} from './state'
 
 const userPostsReducer = (state = userPostsState, action) => {
   switch (action.type) {
+    case 'RESET_STATE': {
+      return {
+        ...state,
+        stateUserPosts: {
+          ...state.stateUserPosts,
+          isActioning: false,
+          isActionDone: false
+        }
+      }
+    }
     case userPostsAction.START_GET_USER_POSTS:
       return {
         ...state,

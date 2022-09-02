@@ -98,18 +98,18 @@ export default function PaymentInfo({
               fontWeight: font.FONT_WEIGHT_BOLD
             }}
             ellipsizeMode={'tail'}>
-            {deal?.deal_state === 'canceled'
-              ? 'Đã huỷ'
-              : deal?.deal_state === 'pending'
+            {deal?.deal_state === 'pending'
               ? 'Đang chờ xác nhận'
+              : deal?.deal_state === 'canceled'
+              ? 'Đã huỷ'
+              : deal?.deal_state === 'denied'
+              ? 'Không nhận hàng'
               : deal?.deal_state === 'confirmed'
-              ? `${deal.online_deal ? 'Chờ thanh toán' : 'Đã xác nhận'}`
-              : deal?.deal_state === 'paid'
-              ? 'Đã thanh toán'
-              : deal?.deal_state === 'sending'
+              ? `Đã xác nhận`
+              : deal?.deal_state === 'delivering'
               ? 'Đang giao'
-              : deal?.deal_state === 'received'
-              ? 'Đã nhận/Chưa đánh giá'
+              : deal?.deal_state === 'delivered'
+              ? 'Đã giao\n(Chưa đánh giá)'
               : 'Hoàn tất'}
           </Text>
         </View>

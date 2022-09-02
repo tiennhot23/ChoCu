@@ -19,7 +19,8 @@ class CreateDeal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params,
+      theme: this.props.route.params.theme,
+      onGoBack: this.props.route.params.onGoBack,
       address: '',
       isOnlinePayment: false,
       showPayPal: false
@@ -71,12 +72,23 @@ class CreateDeal extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack, replace} = this.props.navigation
+    const {onGoBack} = this.state
     if (
       prevProps.stateDeal.isFetching !== this.props.stateDeal.isFetching &&
       prevProps.stateDeal.isFetching &&
+      !this.props.stateDeal.isError &&
       !helper.isEmptyObject(this.props.dataDeal)
     )
       replace(BUY_DEALS_MANAGER_SCR)
+    else if (
+      prevProps.stateDeal.isFetching !== this.props.stateDeal.isFetching &&
+      prevProps.stateDeal.isFetching &&
+      this.props.stateDeal.isError
+    ) {
+      alert(this.props.stateDeal.message)
+      if (helper.isFunction(onGoBack)) onGoBack()
+      goBack()
+    }
   }
 
   render() {

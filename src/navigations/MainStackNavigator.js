@@ -81,12 +81,12 @@ export default function MainStackNavigator() {
                 <Stack.Screen
                   name={CREATE_POST_SCR}
                   component={CreatePost}
-                  initialParams={theme}
+                  initialParams={{theme}}
                 />
                 <Stack.Screen
                   name={CREATE_DEAL_SCR}
                   component={CreateDeal}
-                  initialParams={theme}
+                  initialParams={{theme}}
                 />
                 <Stack.Screen
                   name={SELL_DEALS_MANAGER_SCR}

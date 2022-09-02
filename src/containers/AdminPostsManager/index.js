@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux'
 import {requestAllPosts} from './action'
 import ApprovedPosts from './screens/ApprovedPosts'
 import DeletedPosts from './screens/DeletedPosts'
+import DeniedPosts from './screens/DeniedPosts'
 import PendingPosts from './screens/PendingPosts'
 
 const Tab = createMaterialTopTabNavigator()
@@ -35,6 +36,7 @@ class AdminPostsManager extends Component {
         <>
           <View style={{flex: 1, width: '100%'}}>
             <Tab.Navigator
+              initialRouteName="PENDINGPOSTS"
               screenOptions={{
                 tabBarScrollEnabled: true,
                 tabBarActiveTintColor: theme.primaryText,
@@ -58,6 +60,11 @@ class AdminPostsManager extends Component {
               }}
               // tabBar={(props) => <TopTabs {...props} />}
             >
+              <Tab.Screen
+                name="DENIEDPOSTS"
+                component={DeniedPosts}
+                options={{title: 'Bị từ chối'}}
+              />
               <Tab.Screen
                 name="PENDINGPOSTS"
                 component={PendingPosts}

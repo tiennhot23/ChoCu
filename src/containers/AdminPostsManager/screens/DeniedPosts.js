@@ -4,16 +4,14 @@ import {useSelector} from 'react-redux'
 import {DEAL_SCR, POST_SCR} from 'src/constants/constant'
 import PostItem from '../components/PostItem'
 
-export default function ApprovedPosts({route, navigation}) {
+export default function DeniedPosts({route, navigation}) {
   const postsData = useSelector(
     (state) => state.adminPostsManagerReducer.postsData
   )
   const [posts, setPosts] = useState([...postsData])
 
   useEffect(() => {
-    let a = postsData.filter(
-      (item) => item.post_state === 'active' || item.post_state === 'hidden'
-    )
+    let a = postsData.filter((item) => item.post_state === 'denied')
     a = a.sort((a, b) => b.time_updated.localeCompare(a.time_updated))
 
     setPosts(a)

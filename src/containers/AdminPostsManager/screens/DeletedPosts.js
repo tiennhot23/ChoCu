@@ -11,7 +11,7 @@ export default function DeletedPosts({route, navigation}) {
   const [posts, setPosts] = useState([...postsData])
 
   useEffect(() => {
-    let a = postsData.filter((item) => item.post_state === 'deleted')
+    let a = postsData.filter((item) => item.post_state === 'locked')
     a = a.sort((a, b) => b.time_updated.localeCompare(a.time_updated))
 
     setPosts(a)

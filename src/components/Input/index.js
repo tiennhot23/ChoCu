@@ -38,6 +38,7 @@ export default Input = forwardRef(
     },
     ref
   ) => {
+    color = editable ? 'black' : 'gray'
     const [isEmpty, setIsEmpty] = useState(false)
     const [text, setText] = useState('')
 

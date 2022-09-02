@@ -49,10 +49,11 @@ export default function BottomAdminButtons({
         show={showConfirm}
         title={confirmTitle}
         description={confirmDesc}
+        withMessage={confirmAction === 'deny' ? true : false}
         onCanceled={() => setShowConfirm(false)}
-        onConfirmed={() => {
+        onConfirmed={(message) => {
           if (confirmAction === 'deny') {
-            dispatch(denyPost({post_id: post.post_id}))
+            dispatch(denyPost({post_id: post.post_id, reason: message}))
           } else if (confirmAction === 'approve') {
             dispatch(approvePost({post_id: post.post_id}))
           } else if (confirmAction === 'delete') {

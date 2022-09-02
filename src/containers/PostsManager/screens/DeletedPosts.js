@@ -9,7 +9,11 @@ export default function DeletedPosts({route, navigation}) {
   const [posts, setPosts] = useState([...userPosts])
 
   useEffect(() => {
-    setPosts(userPosts.filter((item) => item.post_state === 'deleted'))
+    setPosts(
+      userPosts
+        .filter((item) => item.post_state === 'locked')
+        .sort((a, b) => b.time_updated.localeCompare(a.time_updated))
+    )
   }, [userPosts])
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

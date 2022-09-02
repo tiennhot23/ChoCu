@@ -1,5 +1,5 @@
 import {Icon} from '@components'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {TouchableOpacity, Text, View, TextInput, Image} from 'react-native'
 import {launchImageLibrary} from 'react-native-image-picker'
 
@@ -10,9 +10,14 @@ export default function FilePicker({
   height = 150,
   title,
   icon,
+  initFile = [null],
   onPicked
 }) {
-  const [files, setFiles] = useState([null])
+  const [files, setFiles] = useState(initFile)
+
+  useEffect(() => {
+    onPicked(files)
+  }, [])
 
   const options = {
     title: 'Select image',

@@ -9,7 +9,11 @@ export default function HiddenPosts({route, navigation}) {
   const [posts, setPosts] = useState([...userPosts])
 
   useEffect(() => {
-    setPosts(userPosts.filter((item) => item.post_state === 'expired'))
+    setPosts(
+      userPosts
+        .filter((item) => item.post_state === 'hidden')
+        .sort((a, b) => b.time_updated.localeCompare(a.time_updated))
+    )
   }, [userPosts])
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -35,7 +39,10 @@ export default function HiddenPosts({route, navigation}) {
             <PostItem
               post={item}
               onPress={() =>
-                navigation.navigate(POST_SCR, {postId: item.post_id})
+                navigation.navigate(POST_SCR, {
+                  postId: item.post_id,
+                  onGoBack: () => navigation.jumpTo('ACTIVEPOSTS')
+                })
               }
             />
           )}

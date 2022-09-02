@@ -32,6 +32,7 @@ export default function AnimatedDropdown({
   title,
   required = false,
   editable = false,
+  enable = true,
   placeHolder = title,
   item,
   items,
@@ -39,6 +40,7 @@ export default function AnimatedDropdown({
   onSelect,
   onChangeText
 }) {
+  color = enable ? 'black' : 'gray'
   const [isShown, setIsShown] = useState(false)
   const val = useSharedValue(0)
 
@@ -75,6 +77,7 @@ export default function AnimatedDropdown({
           backgroundColor: backgroundColor,
           elevation: 3
         }}
+        disabled={!enable}
         onPress={onClick}>
         <View
           style={{

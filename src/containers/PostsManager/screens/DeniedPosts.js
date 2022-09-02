@@ -1,24 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {FlatList, Image, View} from 'react-native'
 import {useSelector} from 'react-redux'
-import {DEAL_SCR, POST_SCR} from 'src/constants/constant'
+import {POST_SCR} from 'src/constants/constant'
 import PostItem from '../components/PostItem'
 
-export default function ApprovedPosts({route, navigation}) {
-  const postsData = useSelector(
-    (state) => state.adminPostsManagerReducer.postsData
-  )
-  const [posts, setPosts] = useState([...postsData])
+export default function DeniedPosts({route, navigation}) {
+  const userPosts = useSelector((state) => state.userPostsReducer.dataUserPosts)
+  const [posts, setPosts] = useState([...userPosts])
 
   useEffect(() => {
-    let a = postsData.filter(
-      (item) => item.post_state === 'active' || item.post_state === 'hidden'
+    setPosts(
+      userPosts
+        .filter((item) => item.post_state === 'denied')
+        .sort((a, b) => b.time_updated.localeCompare(a.time_updated))
     )
-    a = a.sort((a, b) => b.time_updated.localeCompare(a.time_updated))
-
-    setPosts(a)
-  }, [postsData])
-
+  }, [userPosts])
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
       {posts.length === 0 ? (
@@ -42,14 +38,9 @@ export default function ApprovedPosts({route, navigation}) {
           renderItem={({item, index}) => (
             <PostItem
               post={item}
-              onPress={() => {
-                navigation.navigate(POST_SCR, {
-                  postId: item.post_id,
-                  onActionDone: () => {
-                    navigation.jumpTo('DELETEDPOSTS')
-                  }
-                })
-              }}
+              onPress={() =>
+                navigation.navigate(POST_SCR, {postId: item.post_id})
+              }
             />
           )}
         />

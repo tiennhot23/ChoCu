@@ -9,7 +9,11 @@ export default function ConfirmedDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'confirmed'))
+    setDeals(
+      userDeals
+        .filter((item) => item.deal_state === 'confirmed')
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (
@@ -38,18 +42,7 @@ export default function ConfirmedDeals({route, navigation}) {
               onPress={() =>
                 navigation.navigate(DEAL_SCR, {
                   dealId: item.deal_id,
-                  actions: item.online_deal
-                    ? [
-                        {
-                          label: 'Thanh toán',
-                          action: 'pay',
-                          nextState: 'paid',
-                          onActionDone: () => {
-                            navigation.jumpTo('PAIDDEALS')
-                          }
-                        }
-                      ]
-                    : []
+                  actions: []
                 })
               }
             />

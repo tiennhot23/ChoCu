@@ -13,6 +13,7 @@ import {
   requestBuyDeals,
   requestCancelDeal,
   requestConfirmedDeal,
+  requestDenyDeal,
   requestPaidDeal,
   requestReceivedDeal,
   requestSellDeals,
@@ -60,7 +61,10 @@ class Deal extends Component {
     ) {
       this.props.navigation.goBack()
       this.state.onActionDone()
-    } else if (!this.props.isActionDone) {
+    } else if (
+      prevProps.isActionDone !== this.props.isActionDone &&
+      !this.props.isActionDone
+    ) {
       if (
         prevProps.stateSellDeals.isError !==
           this.props.stateSellDeals.isError &&
@@ -79,6 +83,14 @@ class Deal extends Component {
       }
       this.setState({showConfirm: false})
     }
+
+    if (
+      prevProps.stateRating.isActioning !==
+        this.props.stateRating.isActioning &&
+      !this.props.stateRating.isActioning &&
+      !this.props.stateRating.isActionDone
+    )
+      alert(this.props.stateRating.message)
   }
 
   onAction({action, nextState, onActionDone}) {
@@ -91,6 +103,7 @@ class Deal extends Component {
       cancelDeal,
       confirmDeal,
       payDeal,
+      denyDeal,
       sendingDeal,
       receivedDeal,
       rateDeal
@@ -100,16 +113,19 @@ class Deal extends Component {
       case 'cancel':
         cancelDeal({deal_id, isBuyer})
         return
+      case 'denied':
+        denyDeal({deal_id})
       case 'confirm':
         confirmDeal({deal_id})
         return
       case 'pay':
         this.setState({showPayPal: true})
-      case 'send':
+      case 'deliver':
         sendingDeal({deal_id})
         return
-      case 'receive':
-        receivedDeal({deal_id})
+      case 'delivered':
+        if (dataDeal?.deal?.online_deal) this.setState({showPayPal: true})
+        else receivedDeal({deal_id})
         return
       case 'rate':
         rateDeal({deal_id, rate_numb, rate_content})
@@ -127,7 +143,8 @@ class Deal extends Component {
     console.log('PAYPAL_RESPONSE', data)
     if (data.title.includes('success')) {
       this.setState({showPayPal: false})
-      this.props.payDeal({deal_id: this.state.dealId})
+      // this.props.payDeal({deal_id: this.state.dealId})
+      this.props.receivedDeal({deal_id: this.state.dealId})
     } else if (data.title.includes('cancel')) {
       this.setState({showPayPal: false})
       alert('Payment canceled')
@@ -209,7 +226,7 @@ class Deal extends Component {
                 user={dataDeal?.buyer}
               />
             )}
-            {dataDeal?.deal?.deal_state === 'received' &&
+            {dataDeal?.deal?.deal_state === 'delivered' &&
               currentUser.user_id === dataDeal?.buyer?.user_id && (
                 <>
                   <Rating
@@ -279,6 +296,7 @@ const mapStateToProps = (state) => ({
   isLoggedIn: state.currentUserReducer?.isLoggedIn,
   dataDeal: state.dealReducer.dataDeal,
   stateDeal: state.dealReducer.stateDeal,
+  stateRating: state.dealReducer.stateRating,
   stateSellDeals: state.userDealsReducer.stateSellDeals,
   stateBuyDeals: state.userDealsReducer.stateBuyDeals,
   isActionDone: state.userDealsReducer.isActionDone,
@@ -290,6 +308,7 @@ const mapDispatchToProps = (dispatch) => ({
   getSellDeals: bindActionCreators(requestSellDeals, dispatch),
   getBuyDeals: bindActionCreators(requestBuyDeals, dispatch),
   cancelDeal: bindActionCreators(requestCancelDeal, dispatch),
+  denyDeal: bindActionCreators(requestDenyDeal, dispatch),
   confirmDeal: bindActionCreators(requestConfirmedDeal, dispatch),
   payDeal: bindActionCreators(requestPaidDeal, dispatch),
   sendingDeal: bindActionCreators(requestSendingDeal, dispatch),

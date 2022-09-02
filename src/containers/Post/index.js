@@ -42,6 +42,9 @@ class Post extends Component {
       onActionDone: this.props.route.params.onActionDone
         ? this.props.route.params.onActionDone
         : () => {},
+      onActionDeny: this.props.route.params.onActionDeny
+        ? this.props.route.params.onActionDeny
+        : () => {},
       reports: this.props.route.params.reports
     }
     this.reportContentRef = createRef()
@@ -54,7 +57,7 @@ class Post extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const {onActionDone} = this.state
+    const {onActionDone, onActionDeny, postId} = this.state
     const {isAdminActionDone, isAdminActioning, navigation, adminPostsData} =
       this.props
     const {dataPost, currentUser, isLoggedIn, statePost} = this.props
@@ -65,10 +68,12 @@ class Post extends Component {
     ) {
       navigation.goBack()
       if (
-        helper.isFunction(onActionDone) &&
-        prevProps.adminPostsData.length === adminPostsData.length
-      )
-        onActionDone()
+        adminPostsData.find((e) => e.post_id === postId).post_state === 'denied'
+      ) {
+        if (helper.isFunction(onActionDeny)) onActionDeny()
+      } else {
+        if (helper.isFunction(onActionDone)) onActionDone()
+      }
     }
 
     if (
@@ -104,12 +109,16 @@ class Post extends Component {
             {!global.adminLogin && (
               <Header
                 navigation={this.props.navigation}
-                onGoBack={onGoBack}
+                onGoBack={() => {
+                  if (helper.isFunction(onGoBack)) onGoBack()
+                  this.componentDidMount()
+                }}
                 onReport={() => this.setState({showReport: true})}
                 style={style}
                 theme={theme}
                 postState={dataPost?.post?.post_state}
                 postId={postId}
+                dataPost={dataPost}
                 isOwner={dataPost?.user?.user_id === currentUser?.user_id}
               />
             )}

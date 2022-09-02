@@ -10,7 +10,11 @@ export default function ActivePosts({route, navigation}) {
 
   useEffect(() => {
     console.log('changed')
-    setPosts(userPosts.filter((item) => item.post_state === 'active'))
+    setPosts(
+      userPosts
+        .filter((item) => item.post_state === 'active')
+        .sort((a, b) => b.time_updated.localeCompare(a.time_updated))
+    )
   }, [userPosts])
 
   return (
@@ -37,7 +41,10 @@ export default function ActivePosts({route, navigation}) {
             <PostItem
               post={item}
               onPress={() =>
-                navigation.navigate(POST_SCR, {postId: item.post_id})
+                navigation.navigate(POST_SCR, {
+                  postId: item.post_id,
+                  onGoBack: () => navigation.jumpTo('HIDDENPOSTS')
+                })
               }
             />
           )}

@@ -9,7 +9,11 @@ export default function PendingDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'pending'))
+    setDeals(
+      userDeals
+        .filter((item) => item.deal_state === 'pending')
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (

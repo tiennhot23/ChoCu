@@ -4,6 +4,7 @@ import React from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {Divider, Menu, Provider} from 'react-native-paper'
 import {useDispatch, useSelector} from 'react-redux'
+import {CREATE_POST_SCR} from 'src/constants/constant'
 import {
   requestEndPost,
   requestRepostPost
@@ -17,6 +18,7 @@ export default function Header({
   theme,
   postState,
   postId,
+  dataPost,
   isOwner
 }) {
   const dispatch = useDispatch()
@@ -38,8 +40,15 @@ export default function Header({
       alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
     else if (currentUser?.post_turn === 0) alert('Bạn đã hết lượt đăng bài')
     else dispatch(requestRepostPost({post_id: postId}))
-    if (helper.isFunction(onGoBack)) onGoBack()
+    if (helper.isFunction(onGoBack) && currentUser?.post_turn !== 0) onGoBack()
     navigation.goBack()
+  }
+
+  const updatePost = () => {
+    navigation.navigate(CREATE_POST_SCR, {
+      initDataPost: dataPost,
+      onGoBack: onGoBack
+    })
   }
 
   return (
@@ -64,7 +73,7 @@ export default function Header({
             />
           </TouchableOpacity>
         }>
-        {isOwner && postState === 'expired' && (
+        {isOwner && postState === 'hidden' && (
           <Menu.Item
             onPress={repostPost}
             title="Đăng lại"
@@ -102,6 +111,20 @@ export default function Header({
               <Icon
                 style={{paddingRight: 15}}
                 name="alert-circle-outline"
+                size={28}
+                color={theme.primaryText}
+              />
+            )}
+          />
+        )}
+        {isOwner && postState !== 'locked' && postState !== 'sold' && (
+          <Menu.Item
+            onPress={updatePost}
+            title="Sửa tin"
+            icon={() => (
+              <Icon
+                style={{paddingRight: 15}}
+                name="pencil-outline"
                 size={28}
                 color={theme.primaryText}
               />

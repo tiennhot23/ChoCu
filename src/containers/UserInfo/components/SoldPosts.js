@@ -6,14 +6,14 @@ import {useDispatch, useSelector} from 'react-redux'
 import {requestUserPosts} from '../action'
 import PostItem from './PostItem'
 
-export default function ExpiredPosts({
+export default function SoldPosts({
   color = 'black',
   backgroundColor = 'white',
   navigate,
   push
 }) {
   const posts = useSelector((state) => state.userInfoReducer.userPosts)
-  const activePosts = posts.filter((e) => e.post_state === 'expired')
+  const activePosts = posts.filter((e) => e.post_state === 'sold')
 
   return (
     <View
@@ -23,7 +23,7 @@ export default function ExpiredPosts({
         borderBottomWidth: 0.7
       }}>
       <BaseText
-        text={`Tin đã hết: `}
+        text={`Tin đã bán: `}
         style={{
           fontSize: font.FONT_SIZE_16,
           color: 'black',

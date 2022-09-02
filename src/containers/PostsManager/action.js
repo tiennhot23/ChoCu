@@ -7,10 +7,13 @@ import {
 } from 'src/common/api'
 import {
   API_REQUEST_CREATE_POST,
+  API_REQUEST_EDIT_POST,
   API_REQUEST_END_POST,
   API_REQUEST_POSTS,
   API_REQUEST_REPOST_POST
 } from 'src/constants/api'
+import {postAction} from '../Post/action'
+import {postTurnServicesAction} from '../PostTurnServices/action'
 
 const START_GET_USER_POSTS = 'START_GET_USER_POSTS'
 const STOP_GET_USER_POSTS = 'STOP_GET_USER_POSTS'
@@ -74,7 +77,55 @@ export const requestCreatePost =
             stopAction({
               userPosts: userPosts,
               message: res.message || '',
-              isEmpty: true
+              isEmpty: true,
+              isError: true
+            })
+          )
+        }
+      })
+      .catch((err) => {
+        dispatch(
+          stopAction({
+            userPosts: userPosts,
+            isEmpty: true,
+            message: err.message,
+            isError: true
+          })
+        )
+      })
+  }
+
+export const requestEditPost =
+  ({post_id, formData, isActive}) =>
+  (dispatch, getState) => {
+    let userPosts = [...getState().userPostsReducer.dataUserPosts]
+    dispatch(startAcion())
+    apiBase(API_REQUEST_EDIT_POST + `/${post_id}`, METHOD_POST, formData, {
+      contentType: CONTENT_TYPE_MULTIPART
+    })
+      .then((res) => {
+        const {data} = res
+
+        if (helper.isNonEmptyArray(data) && helper.isValidObject(data[0])) {
+          userPosts = userPosts.map((e) => {
+            if (e.post_id === post_id) {
+              e = data[0]
+            }
+            return e
+          })
+          dispatch(stopAction({userPosts}))
+          if (!isActive)
+            dispatch({
+              type: postTurnServicesAction.STOP_ACTION_ADD_USER_SERVICE,
+              post_turn: 1
+            })
+        } else {
+          dispatch(
+            stopAction({
+              userPosts: userPosts,
+              message: res.message || '',
+              isEmpty: true,
+              isError: true
             })
           )
         }

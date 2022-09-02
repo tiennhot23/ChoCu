@@ -85,7 +85,7 @@ export default function DealItem({
           <Text numberOfLines={2} style={{color: 'gray'}}>
             {deal.receive_address}
           </Text>
-          {['received', 'done'].indexOf(deal.deal_state) >= 0 && (
+          {['delivered', 'done'].indexOf(deal.deal_state) >= 0 && (
             <Rating
               type="star"
               startingValue={deal.rate_numb}
@@ -114,17 +114,17 @@ export default function DealItem({
             onPress={onActionPress}>
             <Text style={{color: 'white', textAlign: 'center'}}>
               {deal.deal_state === 'pending'
-                ? 'Huỷ'
+                ? 'Đang chờ xác nhận'
+                : deal.deal_state === 'canceled'
+                ? 'Đã huỷ'
+                : deal.deal_state === 'denied'
+                ? 'Không nhận hàng'
                 : deal.deal_state === 'confirmed'
-                ? `${
-                    deal.online_deal ? 'Chưa thanh toán' : 'Đang chờ giao hàng'
-                  }`
-                : deal.deal_state === 'paid'
-                ? 'Đang chờ giao hàng'
-                : deal.deal_state === 'sending'
-                ? 'Đã nhận'
-                : deal.deal_state === 'received'
-                ? 'Đã nhận\n(Chưa đánh giá)'
+                ? `Đã xác nhận`
+                : deal.deal_state === 'delivering'
+                ? 'Đang giao'
+                : deal.deal_state === 'delivered'
+                ? 'Đã giao\n(Chưa đánh giá)'
                 : 'Hoàn tất'}
             </Text>
           </TouchableOpacity>

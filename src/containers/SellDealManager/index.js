@@ -74,11 +74,11 @@ class BuyDealsManager extends Component {
                   component={ConfirmedDeals}
                   options={{title: 'Đã xác nhận'}}
                 />
-                <Tab.Screen
+                {/* <Tab.Screen
                   name="PAIDDEALS"
                   component={PaidDeals}
                   options={{title: 'Đã thanh toán'}}
-                />
+                /> */}
                 <Tab.Screen
                   name="SENDINGDEALS"
                   component={SendingDeals}

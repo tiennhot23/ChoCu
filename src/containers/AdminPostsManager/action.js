@@ -85,15 +85,20 @@ export const approvePost =
   }
 
 export const denyPost =
-  ({post_id}) =>
+  ({post_id, reason}) =>
   async (dispatch, getState) => {
     let postsData = [...getState().adminPostsManagerReducer.postsData]
     dispatch(startAction())
-    apiBase(API_REQUEST_DENY_POST + `/${post_id}`, METHOD_POST)
+    apiBase(API_REQUEST_DENY_POST + `/${post_id}`, METHOD_POST, {reason})
       .then(async (response) => {
         const {data, message} = response
         if (helper.isNonEmptyArray(response.data)) {
-          postsData = postsData.filter((e) => e.post_id !== data[0].post_id)
+          postsData = postsData.map((e) => {
+            if (e.post_id === post_id) {
+              e.post_state = 'denied'
+            }
+            return e
+          })
         }
 
         dispatch(updatePostState({postsData, message: message || ''}))

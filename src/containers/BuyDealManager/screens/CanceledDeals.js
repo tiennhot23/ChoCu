@@ -9,7 +9,14 @@ export default function CanceledDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'canceled'))
+    setDeals(
+      userDeals
+        .filter(
+          (item) =>
+            item.deal_state === 'canceled' || item.deal_state === 'denied'
+        )
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (

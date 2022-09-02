@@ -19,9 +19,11 @@ export default function ConfirmDialog({
   title = '',
   show = false,
   description = '',
+  withMessage = false,
   onCanceled,
   onConfirmed
 }) {
+  const messageRef = useRef()
   return (
     <Modal visible={show} transparent>
       <View
@@ -51,6 +53,15 @@ export default function ConfirmDialog({
           <Text style={{color: 'gray', padding: 10, textAlign: 'center'}}>
             {description}
           </Text>
+          {withMessage && (
+            <Input
+              title={'Lí do'}
+              multiline={true}
+              placeholder={'Bài đăng này vi phạm điều gì?'}
+              height={150}
+              ref={messageRef}
+            />
+          )}
           <View style={{flexDirection: 'row'}}>
             <FormButton
               color="black"
@@ -59,7 +70,10 @@ export default function ConfirmDialog({
               onPress={onCanceled}
             />
 
-            <FormButton title={'Xác nhận'} onPress={onConfirmed} />
+            <FormButton
+              title={'Xác nhận'}
+              onPress={() => onConfirmed(messageRef?.current?.getText())}
+            />
           </View>
         </View>
       </View>

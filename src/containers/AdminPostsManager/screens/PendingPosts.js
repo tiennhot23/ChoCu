@@ -45,6 +45,9 @@ export default function PendingPosts({route, navigation}) {
                   postId: item.post_id,
                   onActionDone: () => {
                     navigation.jumpTo('APPROVEDPOSTS')
+                  },
+                  onActionDeny: () => {
+                    navigation.jumpTo('DENIEDPOSTS')
                   }
                 })
               }}

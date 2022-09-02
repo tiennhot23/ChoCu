@@ -7,9 +7,10 @@ export default function OnlinePaymentCheckBox({
   color = 'black',
   width = '80%',
   height = 50,
+  intitChecked = false,
   onCheck
 }) {
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(intitChecked)
   return (
     <View
       style={{

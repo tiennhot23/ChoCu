@@ -23,7 +23,7 @@ import {
 } from '../CurrentUser/action'
 import {requestUserInfo, requestUserPosts} from './action'
 import ActivePosts from './components/ActivePosts'
-import ExpiredPosts from './components/ExpiredPosts'
+import SoldPosts from './components/SoldPosts'
 import Info from './components/Info'
 import LockAccount from './components/LockAccount'
 import UnlockAccount from './components/UnlockAccount'
@@ -86,7 +86,7 @@ class UserInfo extends Component {
             }}
           />
           <ActivePosts navigate={navigate} push={push} />
-          {/* <ExpiredPosts navigate={navigate} push={push} /> */}
+          <SoldPosts navigate={navigate} push={push} />
         </ScrollView>
       </BaseLoading>
     )

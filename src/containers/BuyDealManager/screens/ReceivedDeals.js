@@ -10,9 +10,12 @@ export default function ReceivedDeals({route, navigation}) {
 
   useEffect(() => {
     setDeals(
-      userDeals.filter(
-        (item) => item.deal_state === 'received' || item.deal_state === 'done'
-      )
+      userDeals
+        .filter(
+          (item) =>
+            item.deal_state === 'delivered' || item.deal_state === 'done'
+        )
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
     )
   }, [userDeals])
 
@@ -43,7 +46,7 @@ export default function ReceivedDeals({route, navigation}) {
                 navigation.navigate(DEAL_SCR, {
                   dealId: item.deal_id,
                   actions:
-                    item.deal_state === 'received'
+                    item.deal_state === 'delivered'
                       ? [
                           {
                             label: 'Đánh giá',
