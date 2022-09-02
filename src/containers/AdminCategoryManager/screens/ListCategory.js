@@ -39,7 +39,10 @@ export default function ListCategory({route, navigation}) {
       setShowConfirm(false)
     } else {
       setShowConfirm(false)
-      if (categoriesState.isError) alert(categoriesState.message)
+      if (categoriesState.isError) {
+        dispatch({type: 'RESET_STATE'})
+        alert(categoriesState.message)
+      }
     }
   }, [categoriesState])
 

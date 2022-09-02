@@ -9,6 +9,7 @@ import {
 import {
   ADMIN_ACCOUNT_SCR,
   ADMIN_CATEGORY_SCR,
+  ADMIN_DETAILS_SCR,
   ADMIN_POST_SCR,
   ADMIN_REPORT_SCR,
   ADMIN_SERVICE_SCR
@@ -47,11 +48,16 @@ export default function AddminDashboard({route, navigation, ...props}) {
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.card]}
-            onPress={() => navigation.navigate(ADMIN_ACCOUNT_SCR)}>
-            <Text>Quản lí tài khoản</Text>
+            onPress={() => navigation.navigate(ADMIN_DETAILS_SCR)}>
+            <Text>Quản lí chi tiết</Text>
           </TouchableOpacity>
         </View>
         <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity
+            style={[style.card]}
+            onPress={() => navigation.navigate(ADMIN_ACCOUNT_SCR)}>
+            <Text>Quản lí tài khoản</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_SERVICE_SCR)}>

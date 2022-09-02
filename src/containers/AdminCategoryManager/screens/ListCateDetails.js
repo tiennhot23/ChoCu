@@ -153,7 +153,7 @@ export default function ListCateDetails({route, navigation}) {
             margin: 10
           }}
           onPress={() =>
-            navigation.navigate('details', {
+            navigation.navigate('restdetails', {
               selected: cateDetailsData.map((e) => e.details_id),
               category_id: category.category_id,
               onGoBack: onRefresh

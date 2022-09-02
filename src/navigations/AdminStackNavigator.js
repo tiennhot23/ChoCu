@@ -4,6 +4,7 @@ import {
   ADMIN_ACCOUNT_SCR,
   ADMIN_CATEGORY_SCR,
   ADMIN_DASHBOARD_SCR,
+  ADMIN_DETAILS_SCR,
   ADMIN_POST_SCR,
   ADMIN_REPORT_SCR,
   ADMIN_SERVICE_SCR,
@@ -29,6 +30,7 @@ import ChatBox from 'src/containers/ChatBox'
 import AdminAccountManager from 'src/containers/AdminAccountManager'
 import AdminServiceManager from 'src/containers/AdminServiceManager'
 import AdminStatManager from 'src/containers/AdminStatManager'
+import AdminDetailsManager from 'src/containers/AdminDetailsManager'
 
 const Stack = createNativeStackNavigator()
 
@@ -84,6 +86,12 @@ export default function AdminStackNavigator() {
                 <Stack.Screen
                   name={ADMIN_CATEGORY_SCR}
                   component={AdminCategoryManager}
+                  initialParams={{theme}}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name={ADMIN_DETAILS_SCR}
+                  component={AdminDetailsManager}
                   initialParams={{theme}}
                   options={{headerShown: false}}
                 />

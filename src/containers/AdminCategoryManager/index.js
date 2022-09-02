@@ -5,6 +5,7 @@ import CreateDetails from './screens/CreateDetails'
 import ListCateDetails from './screens/ListCateDetails'
 import ListCategory from './screens/ListCategory'
 import ListDetails from './screens/ListDetails'
+import ListRestDetails from './screens/ListRestDetails'
 
 const Stack = createNativeStackNavigator()
 
@@ -21,6 +22,11 @@ export default function AdminCategoryManager({route, navigation}) {
       <Stack.Screen
         name={'details'}
         component={ListDetails}
+        initialParams={{theme}}
+      />
+      <Stack.Screen
+        name={'restdetails'}
+        component={ListRestDetails}
         initialParams={{theme}}
       />
       <Stack.Screen

@@ -310,7 +310,7 @@ export const updateDetails =
         const {data} = response
         if (helper.isNonEmptyArray(response.data)) {
           detailsData = detailsData.map((e) => {
-            if (e.category_id === category_id) {
+            if (e.details_id === details_id) {
               e = data[0]
             }
             return e

@@ -12,17 +12,20 @@ const adminCategoriesManagerReducer = (
         categoriesState: {
           ...state.categoriesState,
           isActioning: false,
-          isActionDone: false
+          isActionDone: false,
+          isError: false
         },
         detailsState: {
           ...state.detailsState,
           isActioning: false,
-          isActionDone: false
+          isActionDone: false,
+          isError: false
         },
         cateDetailsState: {
           ...state.cateDetailsState,
           isActioning: false,
-          isActionDone: false
+          isActionDone: false,
+          isError: false
         }
       }
     }
