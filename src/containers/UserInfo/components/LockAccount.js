@@ -48,8 +48,10 @@ export default function LockAccount({onCancel}) {
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-        <Text style={{fontSize: 20, padding: 10}}>Khoá đăng bài</Text>
-        <Text style={{padding: 10, textAlign: 'center'}}>
+        <Text style={{fontSize: 20, padding: 10, color: 'black'}}>
+          Khoá đăng bài
+        </Text>
+        <Text style={{padding: 10, textAlign: 'center', color: 'black'}}>
           Không cho phép người dùng tài khoản này đăng bài
         </Text>
         <Input

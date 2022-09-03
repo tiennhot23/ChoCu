@@ -191,7 +191,7 @@ export default function BottomAdminButtons({
                 color: 'white',
                 textTransform: 'uppercase'
               }}>
-              {'Xoá bài đăng'}
+              {'Khoá bài đăng'}
             </Text>
           </TouchableOpacity>
         </>

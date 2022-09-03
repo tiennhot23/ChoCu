@@ -216,6 +216,7 @@ class Deal extends Component {
                   ? dataDeal?.buyer
                   : dataDeal?.seller
               }
+              isBuyer={currentUser.user_id === dataDeal?.seller?.user_id}
               navigate={navigate}
             />
             <PaymentInfo deal={dataDeal?.deal} />

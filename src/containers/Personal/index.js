@@ -21,7 +21,8 @@ import {
   POSTS_MANAGER_SCR,
   POST_TURN_SERVICES_SCR,
   SELL_DEALS_MANAGER_SCR,
-  USER_PAYMENT_SCR
+  USER_PAYMENT_SCR,
+  USER_REVENUE_STAT_SCR
 } from 'src/constants/constant'
 import {CURRENT_USER} from 'src/constants/storage'
 import * as AppNavigateActionCreator from '../AppNavigate/action'
@@ -93,6 +94,12 @@ class Personal extends Component {
               icon={'newspaper-outline'}
               theme={theme}
               onPress={() => navigate(POSTS_MANAGER_SCR)}
+            />
+            <PersonalFuncItem
+              title={'Doanh thu giao dịch'}
+              icon={'stats-chart-outline'}
+              theme={theme}
+              onPress={() => navigate(USER_REVENUE_STAT_SCR)}
             />
           </>
         )}

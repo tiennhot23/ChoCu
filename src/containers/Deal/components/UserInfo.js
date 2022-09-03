@@ -1,16 +1,35 @@
 import {BaseText, Icon} from '@components'
 import React from 'react'
+import {useEffect} from 'react'
+import {useState} from 'react'
 import {TouchableOpacity, View, Text} from 'react-native'
 import {Avatar} from 'react-native-paper'
-import {CHAT_BOX_SCR} from 'src/constants/constant'
+import {Rating} from 'react-native-ratings'
+import {baseUrl} from 'src/constants/api'
+import {CHAT_BOX_SCR, USER_INFO_SCR} from 'src/constants/constant'
 
 export default function UserInfo({
   color = 'black',
   backgroundColor = 'white',
   width = '90%',
   user,
+  isBuyer,
   navigate
 }) {
+  const [stat, setStat] = useState({
+    rating: 0,
+    rate_count: 0,
+    success_sell_deal_count: 0,
+    success_buy_deal_count: 1,
+    denied_buy_deal_count: 1
+  })
+
+  useEffect(() => {
+    fetch(baseUrl + `/user/user-deal-stat/${user?.user_id}`)
+      .then((res) => res.json())
+      .then((res) => setStat(res.data[0]))
+      .catch((err) => alert(res.message))
+  }, [])
   return (
     <>
       <View
@@ -25,7 +44,9 @@ export default function UserInfo({
           borderStyle: 'dashed',
           paddingBottom: 10
         }}>
-        <View
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigate(USER_INFO_SCR, {userId: user?.user_id})}
           style={{
             flexDirection: 'row',
             alignItems: 'center'
@@ -52,16 +73,8 @@ export default function UserInfo({
               ]}
               text={user?.name}
             />
-            <BaseText
-              style={{
-                fontSize: 12,
-                marginVertical: 4,
-                color: 'gray'
-              }}
-              text={'Trạng thái hoạt động'}
-            />
           </View>
-        </View>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigate(CHAT_BOX_SCR, {user})}>
           <Icon
             name="chatbox-outline"
@@ -146,6 +159,65 @@ export default function UserInfo({
           }}
           ellipsizeMode={'tail'}>
           {user?.address}
+        </Text>
+      </View>
+      <View style={{flexDirection: 'row', width}}>
+        <Text
+          style={{
+            fontSize: 14,
+            letterSpacing: 0.5,
+            marginVertical: 4,
+            marginEnd: 10,
+            color: color
+          }}
+          ellipsizeMode={'tail'}>
+          {'Đánh giá:'}
+        </Text>
+        <Rating
+          type="star"
+          startingValue={stat?.rating}
+          ratingCount={5}
+          imageSize={20}
+          readonly
+          style={{}}
+        />
+        <Text
+          style={{
+            fontSize: 14,
+            letterSpacing: 0.5,
+            marginVertical: 4,
+            marginEnd: 10,
+            color: color
+          }}
+          ellipsizeMode={'tail'}>
+          ({stat?.rate_count} lượt đánh giá)
+        </Text>
+      </View>
+      <View style={{flexDirection: 'row', width}}>
+        <Text
+          style={{
+            fontSize: 14,
+            letterSpacing: 0.5,
+            marginVertical: 4,
+            marginEnd: 10,
+            color: color
+          }}
+          ellipsizeMode={'tail'}>
+          {isBuyer ? 'Giao dịch mua thành công:' : 'Giao dịch bán thành công:'}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            letterSpacing: 0.5,
+            marginVertical: 4,
+            marginEnd: 10,
+            color: color
+          }}
+          ellipsizeMode={'tail'}>
+          {isBuyer
+            ? stat?.success_buy_deal_count
+            : stat?.success_sell_deal_count}{' '}
+          lần
         </Text>
       </View>
     </>

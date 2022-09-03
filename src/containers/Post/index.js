@@ -204,16 +204,14 @@ class Post extends Component {
                 }
               />
             ) : null}
-            {global.adminLogin &&
-              (dataPost?.post?.post_state === 'pending' ||
-                dataPost?.post?.post_state === 'active') && (
-                <BottomAdminButtons
-                  theme={theme}
-                  navigation={this.props.navigation}
-                  onActionDone={this.state.onActionDone}
-                  hasReports={this.state.reports}
-                />
-              )}
+            {global.adminLogin && dataPost?.post?.post_state !== 'locked' && (
+              <BottomAdminButtons
+                theme={theme}
+                navigation={this.props.navigation}
+                onActionDone={this.state.onActionDone}
+                hasReports={this.state.reports}
+              />
+            )}
           </View>
         </BaseLoading>
       </Provider>

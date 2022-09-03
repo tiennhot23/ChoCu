@@ -68,7 +68,8 @@ export default function AdminStatManager({route, navigation, ...props}) {
           fontWeight: '700',
           alignSelf: 'center',
           padding: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          color: 'black'
         }}>
         Biểu đồ doanh thu dịch vụ mua lượt đăng bài
       </Text>

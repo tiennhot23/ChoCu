@@ -65,6 +65,7 @@ export const approvePost =
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
               e.post_state = 'active'
+              e.time_updated = new Date()
             }
             return e
           })
@@ -96,6 +97,7 @@ export const denyPost =
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
               e.post_state = 'denied'
+              e.time_updated = new Date()
             }
             return e
           })
@@ -127,6 +129,7 @@ export const deletePost =
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
               e.post_state = 'deleted'
+              e.time_updated = new Date()
             }
             return e
           })

@@ -43,7 +43,7 @@ export default function DealInfo({
           }}
           ellipsizeMode={'tail'}
           numberOfLines={2}>
-          {moment(deal?.time_created).fromNow()}
+          Ngày đặt: {moment(deal?.time_created).format('hh:mm:ss  DD-MM-YYYY')}
         </Text>
       </View>
     </View>

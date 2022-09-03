@@ -18,7 +18,8 @@ import {
   SEARCH_SCR,
   SELL_DEALS_MANAGER_SCR,
   USER_INFO_SCR,
-  USER_PAYMENT_SCR
+  USER_PAYMENT_SCR,
+  USER_REVENUE_STAT_SCR
 } from 'src/constants/constant'
 import HomeTabNavigator from './HomeTabNavigator'
 import UserInfo from 'src/containers/UserInfo'
@@ -38,6 +39,7 @@ import AuthStackNavigator from './AuthStackNavigator'
 import UserPayments from 'src/containers/UserPayments'
 import PostTurnServices from 'src/containers/PostTurnServices'
 import PostsManager from 'src/containers/PostsManager'
+import UserRevenueStat from 'src/containers/UserRevenueStat'
 
 const Stack = createNativeStackNavigator()
 
@@ -132,6 +134,11 @@ export default function MainStackNavigator() {
                   name={POSTS_MANAGER_SCR}
                   component={PostsManager}
                   initialParams={theme}
+                />
+                <Stack.Screen
+                  name={USER_REVENUE_STAT_SCR}
+                  component={UserRevenueStat}
+                  initialParams={{theme}}
                 />
               </Stack.Group>
               <Stack.Group
