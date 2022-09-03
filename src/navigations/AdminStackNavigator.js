@@ -48,7 +48,6 @@ export default function AdminStackNavigator() {
             />
             <Stack.Navigator
               screenOptions={{
-                headerTitle: admin.name,
                 headerShadowVisible: false,
                 headerRight: () => (
                   <Text
@@ -56,7 +55,8 @@ export default function AdminStackNavigator() {
                       padding: 10,
                       borderRadius: 10,
                       borderWidth: 1,
-                      marginVertical: 10
+                      marginVertical: 10,
+                      color: 'black'
                     }}
                     onPress={() => {
                       dispatch(requestLogoutAdmin())
@@ -76,44 +76,60 @@ export default function AdminStackNavigator() {
                   name={ADMIN_DASHBOARD_SCR}
                   component={AddminDashboard}
                   initialParams={{theme}}
+                  options={{
+                    headerTitle: ''
+                  }}
                 />
               </Stack.Group>
 
-              <Stack.Group
-                screenOptions={{
-                  headerShown: false
-                }}>
+              <Stack.Group>
                 <Stack.Screen
                   name={ADMIN_CATEGORY_SCR}
                   component={AdminCategoryManager}
                   initialParams={{theme}}
-                  options={{headerShown: false}}
+                  options={{
+                    headerTitle: 'Quản lí danh mục'
+                  }}
                 />
                 <Stack.Screen
                   name={ADMIN_DETAILS_SCR}
                   component={AdminDetailsManager}
                   initialParams={{theme}}
-                  options={{headerShown: false}}
+                  options={{
+                    headerTitle: 'Quản lí chi tiết'
+                  }}
                 />
                 <Stack.Screen
                   name={ADMIN_ACCOUNT_SCR}
                   component={AdminAccountManager}
                   initialParams={{theme}}
+                  options={{
+                    headerTitle: 'Quản lí tài khoản'
+                  }}
                 />
                 <Stack.Screen
                   name={ADMIN_REPORT_SCR}
                   component={AdminReportManager}
                   initialParams={{theme}}
+                  options={{
+                    headerTitle: 'Quản lí khiếu nại'
+                  }}
                 />
                 <Stack.Screen
                   name={ADMIN_POST_SCR}
                   component={AdminPostsManager}
                   initialParams={{theme}}
+                  options={{
+                    headerTitle: 'Quản lí bài đăng'
+                  }}
                 />
                 <Stack.Screen
                   name={ADMIN_SERVICE_SCR}
                   component={AdminServiceManager}
                   initialParams={{theme}}
+                  options={{
+                    headerTitle: 'Quản lí dịch vụ'
+                  }}
                 />
 
                 <Stack.Screen

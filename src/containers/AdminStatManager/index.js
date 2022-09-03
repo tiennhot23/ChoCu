@@ -4,25 +4,19 @@ import {LineChart} from 'react-native-chart-kit'
 import {baseUrl} from 'src/constants/api'
 import MonthSelector from 'react-native-month-selector'
 import moment from 'moment'
+import {AnimatedDropdown} from '@components'
 
 export default function AdminStatManager({route, navigation, ...props}) {
   const [data, setData] = useState([])
-  const maxDay = Number(
-    new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate()
-  )
-  const [label, setLabel] = useState(
-    Array.from(Array(maxDay).keys()).map((e) => e + 1)
-  )
-  const [month, setMonth] = useState(moment(new Date()))
+  const label = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  const [total, setTotal] = useState(0)
+  const [year, setYear] = useState(new Date().getFullYear())
+  const years = Array.from(new Array(20), (val, index) => ({
+    id: new Date().getFullYear() - index,
+    title: new Date().getFullYear() - index
+  }))
 
   useEffect(() => {
-    setLabel(
-      Array.from(
-        Array(
-          Number(new Date(month.year(), month.month() + 1, 0).getDate())
-        ).keys()
-      ).map((e) => e + 1)
-    )
     fetch(baseUrl + '/admin/service-revenue', {
       method: 'POST',
       headers: {
@@ -30,38 +24,40 @@ export default function AdminStatManager({route, navigation, ...props}) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        month: month.month() + 1,
-        year: month.year()
+        year: year
       })
     })
       .then((res) => res.json())
       .then((res) => {
-        let tmp = res.data.map((e) => ({
-          day: new Date(e.time_buy).getDate(),
-          price: e.price
-        }))
+        let t = 0
+        let {data} = res
         let i = 0
         let d = label.map((e) => {
-          if (tmp.length !== 0 && e === tmp[i]?.day) {
+          if (data.length !== 0 && e === data[i]?.month) {
             let _i = i++
+            t += data[_i].price
             return {
-              day: tmp[_i].day,
-              price: tmp[_i].price
+              month: data[_i].month,
+              price: data[_i].price
             }
           } else {
             return {
-              day: e,
+              month: e,
               price: 0
             }
           }
         })
+        setTotal(t)
         setData(d)
       })
       .catch((err) => console.log(err))
-  }, [month])
+  }, [year])
 
   return (
-    <>
+    <View
+      style={{
+        backgroundColor: 'white'
+      }}>
       <Text
         style={{
           fontSize: 20,
@@ -71,15 +67,32 @@ export default function AdminStatManager({route, navigation, ...props}) {
           textAlign: 'center',
           color: 'black'
         }}>
-        Biểu đồ doanh thu dịch vụ mua lượt đăng bài
+        Biểu đồ doanh thu dịch vụ mua lượt đăng bài theo năm
       </Text>
-      <MonthSelector
-        selectedDate={month}
-        onMonthTapped={(date) => {
-          setMonth(date)
-        }}
-        localeLanguage="vi"
-      />
+      <View style={{flexDirection: 'row'}}>
+        <AnimatedDropdown
+          title={'Năm'}
+          data={years}
+          item={year}
+          width={100}
+          onSelect={(e) => setYear(e.id)}
+        />
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: '400',
+            alignSelf: 'center',
+            padding: 5,
+            textAlign: 'center',
+            color: 'black'
+          }}>
+          Doanh thu:{' '}
+          {total.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'VND'
+          })}
+        </Text>
+      </View>
       <ScrollView
         horizontal
         overScrollMode="never"
@@ -100,7 +113,7 @@ export default function AdminStatManager({route, navigation, ...props}) {
                   }
                 ]
               }}
-              width={Dimensions.get('window').width + 700}
+              width={Dimensions.get('window').width}
               height={300}
               yAxisSuffix="d"
               chartConfig={{
@@ -120,6 +133,6 @@ export default function AdminStatManager({route, navigation, ...props}) {
           )}
         </View>
       </ScrollView>
-    </>
+    </View>
   )
 }

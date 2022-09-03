@@ -25,18 +25,19 @@ export default function AddminDashboard({route, navigation, ...props}) {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-          flex: 1
+          flex: 1,
+          backgroundColor: theme.primaryBackground
         }}>
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_POST_SCR)}>
-            <Text>Duyệt tin đăng</Text>
+            <Text style={style.text}>Duyệt tin đăng</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_REPORT_SCR)}>
-            <Text>Bài đăng bị khiếu nại</Text>
+            <Text style={style.text}>Bài đăng bị khiếu nại</Text>
           </TouchableOpacity>
         </View>
 
@@ -44,24 +45,24 @@ export default function AddminDashboard({route, navigation, ...props}) {
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_CATEGORY_SCR)}>
-            <Text>Quản lí danh mục</Text>
+            <Text style={style.text}>Quản lí danh mục</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_DETAILS_SCR)}>
-            <Text>Quản lí chi tiết</Text>
+            <Text style={style.text}>Quản lí chi tiết</Text>
           </TouchableOpacity>
         </View>
         <View style={{flexDirection: 'row'}}>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_ACCOUNT_SCR)}>
-            <Text>Quản lí tài khoản</Text>
+            <Text style={style.text}>Quản lí tài khoản</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[style.card]}
             onPress={() => navigation.navigate(ADMIN_SERVICE_SCR)}>
-            <Text>Quản lí dịch vụ</Text>
+            <Text style={style.text}>Quản lí dịch vụ</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -73,12 +74,16 @@ export default function AddminDashboard({route, navigation, ...props}) {
 const style = StyleSheet.create({
   card: {
     width: '40%',
-    aspectRatio: 1,
-    margin: 20,
+    height: 80,
+    margin: 10,
     elevation: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 25
+    backgroundColor: '#d9d7d9',
+    borderRadius: 10,
+    borderWidth: 1
+  },
+  text: {
+    color: 'black'
   }
 })
