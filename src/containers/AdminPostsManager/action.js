@@ -64,8 +64,7 @@ export const approvePost =
         if (helper.isNonEmptyArray(response.data)) {
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
-              e.post_state = 'active'
-              e.time_updated = new Date()
+              e = data[0]
             }
             return e
           })
@@ -96,8 +95,7 @@ export const denyPost =
         if (helper.isNonEmptyArray(response.data)) {
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
-              e.post_state = 'denied'
-              e.time_updated = new Date()
+              e = data[0]
             }
             return e
           })
@@ -128,8 +126,7 @@ export const deletePost =
         if (helper.isNonEmptyArray(response.data)) {
           postsData = postsData.map((e) => {
             if (e.post_id === post_id) {
-              e.post_state = 'deleted'
-              e.time_updated = new Date()
+              e = data[0]
             }
             return e
           })

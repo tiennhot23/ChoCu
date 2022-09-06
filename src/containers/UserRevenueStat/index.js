@@ -94,6 +94,14 @@ export default function UserRevenueStat({route, navigation, ...props}) {
   }
   return (
     <View style={{flex: 1, backgroundColor: theme.primaryBackground}}>
+      {/* <Text
+        style={{
+          color: 'black',
+          fontSize: 20,
+          fontWeight: '800',
+          textAlign: 'center',
+          padding: 20
+        }}></Text> */}
       <View style={{flexDirection: 'row'}}>
         <Text style={{color: 'black', padding: 10, alignSelf: 'center'}}>
           Từ ngày:

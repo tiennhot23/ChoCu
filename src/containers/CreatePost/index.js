@@ -47,7 +47,9 @@ class CreatePost extends Component {
       address: this.props.route.params.initDataPost
         ? this.props.route.params.initDataPost?.post?.sell_address
         : '',
-      isOnlinePayment: false,
+      isOnlinePayment: this.props.route.params.initDataPost
+        ? this.props.route.params.initDataPost?.post?.online_payment
+        : false,
       pictures: []
     }
     this.titleRef = createRef()
@@ -189,7 +191,7 @@ class CreatePost extends Component {
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <ModalLoading loading={stateUserPosts.isActioning} />
+          {/* <ModalLoading loading={stateUserPosts.isActioning} /> */}
           <View
             style={[
               {
@@ -250,6 +252,7 @@ class CreatePost extends Component {
               placeholder={'Nơi bán'}
               editable={false}
               required
+              selectable={true}
               onPress={this.openAddressSeletion}
             />
             <OnlinePaymentCheckBox

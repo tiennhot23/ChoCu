@@ -69,6 +69,10 @@ export default function MainStackNavigator() {
                   name={CHAT_BOX_SCR}
                   component={ChatBox}
                   initialParams={{theme}}
+                  options={{
+                    headerShown: true,
+                    headerShadowVisible: false
+                  }}
                 />
                 <Stack.Screen
                   name={POST_SCR}
@@ -94,11 +98,21 @@ export default function MainStackNavigator() {
                   name={SELL_DEALS_MANAGER_SCR}
                   component={SellDealManager}
                   initialParams={theme}
+                  options={{
+                    headerShown: true,
+                    headerTitle: 'Giao dịch bán',
+                    headerShadowVisible: false
+                  }}
                 />
                 <Stack.Screen
                   name={BUY_DEALS_MANAGER_SCR}
                   component={BuyDealManager}
                   initialParams={theme}
+                  options={{
+                    headerShown: true,
+                    headerTitle: 'Giao dịch mua',
+                    headerShadowVisible: false
+                  }}
                 />
                 <Stack.Screen
                   name={DEAL_SCR}
@@ -134,11 +148,21 @@ export default function MainStackNavigator() {
                   name={POSTS_MANAGER_SCR}
                   component={PostsManager}
                   initialParams={theme}
+                  options={{
+                    headerShown: true,
+                    headerTitle: 'Quản lí bài đăng',
+                    headerShadowVisible: false
+                  }}
                 />
                 <Stack.Screen
                   name={USER_REVENUE_STAT_SCR}
                   component={UserRevenueStat}
                   initialParams={{theme}}
+                  options={{
+                    headerShown: true,
+                    headerTitle: 'Thống kê doanh thu bán hàng',
+                    headerShadowVisible: false
+                  }}
                 />
               </Stack.Group>
               <Stack.Group

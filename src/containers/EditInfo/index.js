@@ -94,31 +94,31 @@ class EditInfo extends Component {
     updateUserInfo({formData})
   }
 
-  backAction = () => {
-    // if (this.backToHome) {
-    //   alert('Vui lòng cập nhật đầy đủ các thông tin cần thiết')
-    //   return null
-    // } else return true
-    Alert.alert('', 'Vui lòng cập nhật đầy đủ các thông tin cần thiết', [
-      {
-        text: 'OK',
-        onPress: () => null,
-        style: 'cancel'
-      }
-    ])
-    return true
-  }
+  // backAction = () => {
+  //   // if (this.backToHome) {
+  //   //   alert('Vui lòng cập nhật đầy đủ các thông tin cần thiết')
+  //   //   return null
+  //   // } else return true
+  //   Alert.alert('', 'Vui lòng cập nhật đầy đủ các thông tin cần thiết', [
+  //     {
+  //       text: 'OK',
+  //       onPress: () => null,
+  //       style: 'cancel'
+  //     }
+  //   ])
+  //   return true
+  // }
 
-  componentDidMount() {
-    this.backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      this.backAction
-    )
-  }
+  // componentDidMount() {
+  //   this.backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     this.backAction
+  //   )
+  // }
 
-  componentWillUnmount() {
-    this.backHandler.remove()
-  }
+  // componentWillUnmount() {
+  //   this.backHandler.remove()
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
@@ -199,6 +199,7 @@ class EditInfo extends Component {
                 _text={address}
                 placeholder={currentUser?.address}
                 editable={false}
+                selectable
                 onPress={this.openAddressSeletion}
               />
               <FormButton title={'Lưu thay đổi'} onPress={this.onSubmit} />

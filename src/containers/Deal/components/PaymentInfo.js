@@ -37,7 +37,7 @@ export default function PaymentInfo({
             borderBottomWidth: 1
           }}
           ellipsizeMode={'tail'}>
-          {'Thông tin giao dịch'}
+          {'Thông tin thanh toán'}
         </Text>
         <View
           style={{
@@ -74,9 +74,6 @@ export default function PaymentInfo({
           style={{
             flexDirection: 'row',
             padding: 10,
-            borderBottomColor: color,
-            borderBottomWidth: 1,
-            borderStyle: 'dashed',
             justifyContent: 'space-between'
           }}>
           <Text
@@ -111,6 +108,37 @@ export default function PaymentInfo({
               : deal?.deal_state === 'delivered'
               ? 'Đã giao\n(Chưa đánh giá)'
               : 'Hoàn tất'}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            padding: 10,
+            borderBottomColor: color,
+            borderBottomWidth: 1,
+            borderStyle: 'dashed',
+            justifyContent: 'space-between'
+          }}>
+          <Text
+            style={{
+              fontSize: font.FONT_SIZE_14,
+              letterSpacing: 0.5,
+              textAlign: 'right',
+              color: color
+            }}
+            ellipsizeMode={'tail'}>
+            {'Hình thức thanh toán'}
+          </Text>
+          <Text
+            style={{
+              fontSize: font.FONT_SIZE_18,
+              letterSpacing: 0.5,
+              textAlign: 'right',
+              color: color,
+              fontWeight: font.FONT_WEIGHT_BOLD
+            }}
+            ellipsizeMode={'tail'}>
+            {deal?.online_deal ? 'Thanh toán online' : 'Thanh toán trực tiếp'}
           </Text>
         </View>
       </View>

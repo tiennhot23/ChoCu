@@ -136,16 +136,25 @@ export default function AdminStackNavigator() {
                   name={POST_SCR}
                   component={Post}
                   initialParams={{theme}}
+                  options={{
+                    headerShown: false
+                  }}
                 />
                 <Stack.Screen
                   name={USER_INFO_SCR}
                   component={UserInfo}
                   initialParams={{theme}}
+                  options={{
+                    headerShown: false
+                  }}
                 />
                 <Stack.Screen
                   name={CHAT_BOX_SCR}
                   component={ChatBox}
                   initialParams={{theme}}
+                  options={{
+                    headerShown: false
+                  }}
                 />
               </Stack.Group>
             </Stack.Navigator>

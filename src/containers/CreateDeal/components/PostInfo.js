@@ -44,7 +44,7 @@ export default function PostInfo({
           }}
           ellipsizeMode={'tail'}
           numberOfLines={2}>
-          {moment(post.time_created).fromNow()}
+          Ngày đặt: {moment(new Date()).format('hh:mm:ss  DD-MM-YYYY')}
         </Text>
       </View>
     </View>

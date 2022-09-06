@@ -98,7 +98,7 @@ export default function DealItem({
             />
           )}
         </View>
-        {deal.deal_state !== 'canceled' && (
+        {
           <TouchableOpacity
             activeOpacity={1}
             style={{
@@ -128,7 +128,7 @@ export default function DealItem({
                 : 'Hoàn tất'}
             </Text>
           </TouchableOpacity>
-        )}
+        }
       </View>
     </View>
   )

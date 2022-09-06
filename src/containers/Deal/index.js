@@ -181,7 +181,7 @@ class Deal extends Component {
                 alignItems: 'center'
               }
             ]}>
-            <ModalLoading loading={this.state.showPayPal || isActioning} />
+            {/* <ModalLoading loading={this.state.showPayPal || isActioning} /> */}
             <Modal
               visible={this.state.showPayPal}
               onRequestClose={() => this.setState({showPayPal: false})}>

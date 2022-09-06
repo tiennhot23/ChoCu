@@ -33,16 +33,16 @@ class Home extends Component {
     this.props.getDataCurrentUser()
   }
 
-  componentDidUpdate() {
-    const {currentUser} = this.props
-    if (
-      currentUser &&
-      (currentUser?.name === 'Chưa cung cấp' ||
-        currentUser?.email === 'Chưa cung cấp')
-    ) {
-      this.props.navigation.navigate(EDIT_INFO_SCR, {backToHome: true})
-    }
-  }
+  // componentDidUpdate() {
+  //   const {currentUser} = this.props
+  //   if (
+  //     currentUser &&
+  //     (currentUser?.name === 'Chưa cung cấp' ||
+  //       currentUser?.email === 'Chưa cung cấp')
+  //   ) {
+  //     this.props.navigation.navigate(EDIT_INFO_SCR, {backToHome: true})
+  //   }
+  // }
 
   onPostPress = (postId) => {
     this.props.navigation.navigate(POST_SCR, {postId, onGoBack: this.onRefresh})

@@ -9,7 +9,7 @@ export default function AdminServiceManager({route, navigation}) {
   const {theme} = route.params
   return (
     <Stack.Navigator
-      screenOptions={{headerShown: true, headerShadowVisible: false}}>
+      screenOptions={{headerShown: false, headerShadowVisible: false}}>
       <Stack.Screen
         name={'services'}
         component={ListServices}

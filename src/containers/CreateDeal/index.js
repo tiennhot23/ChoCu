@@ -133,6 +133,7 @@ class CreateDeal extends Component {
               title={'Địa chỉ nhận'}
               _text={address}
               editable={false}
+              selectable
               required
               onPress={this.openAddressSeletion}
             />

@@ -68,7 +68,8 @@ class Post extends Component {
     ) {
       navigation.goBack()
       if (
-        adminPostsData.find((e) => e.post_id === postId).post_state === 'denied'
+        adminPostsData.find((e) => e.post_id === postId)?.post_state ===
+        'denied'
       ) {
         if (helper.isFunction(onActionDeny)) onActionDeny()
       } else {
@@ -204,6 +205,41 @@ class Post extends Component {
                 }
               />
             ) : null}
+            {dataPost?.post?.post_state !== 'active' &&
+              dataPost?.post?.post_state !== 'pending' && (
+                <View
+                  style={{
+                    backgroundColor:
+                      dataPost?.post?.post_state === 'locked'
+                        ? 'red'
+                        : dataPost?.post?.post_state === 'sold'
+                        ? '#78f25a'
+                        : dataPost?.post?.post_state === 'hidden'
+                        ? '#555'
+                        : dataPost?.post?.post_state === 'denied'
+                        ? 'black'
+                        : '#bbb',
+                    padding: 20
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: 'white',
+                      fontSize: 20,
+                      fontWeight: '600'
+                    }}>
+                    {dataPost?.post?.post_state === 'locked'
+                      ? 'Đã bị khoá'
+                      : dataPost?.post?.post_state === 'hidden'
+                      ? 'Đã ẩn'
+                      : dataPost?.post?.post_state === 'pending'
+                      ? 'Đang chờ duyệt'
+                      : dataPost?.post?.post_state === 'denied'
+                      ? 'Bị từ chối'
+                      : 'Đang đăng'}
+                  </Text>
+                </View>
+              )}
             {global.adminLogin && dataPost?.post?.post_state !== 'locked' && (
               <BottomAdminButtons
                 theme={theme}

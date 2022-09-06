@@ -45,10 +45,13 @@ export default function Header({
   }
 
   const updatePost = () => {
-    navigation.navigate(CREATE_POST_SCR, {
-      initDataPost: dataPost,
-      onGoBack: onGoBack
-    })
+    if (!currentUser?.active)
+      alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
+    else
+      navigation.navigate(CREATE_POST_SCR, {
+        initDataPost: dataPost,
+        onGoBack: onGoBack
+      })
   }
 
   return (

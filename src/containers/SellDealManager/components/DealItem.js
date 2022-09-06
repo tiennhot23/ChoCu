@@ -98,37 +98,39 @@ export default function DealItem({
             />
           )}
         </View>
-        <TouchableOpacity
-          activeOpacity={1}
-          style={{
-            width: 150,
-            height: 50,
-            backgroundColor: 'red',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 5,
-            alignSelf: 'center'
-          }}
-          disabled={
-            ['delivered', 'done', 'delivering'].indexOf(deal.deal_state) >= 0
-          }
-          onPress={onActionPress}>
-          <Text style={{color: 'white', textAlign: 'center'}}>
-            {deal.deal_state === 'pending'
-              ? 'Đang chờ xác nhận'
-              : deal.deal_state === 'canceled'
-              ? 'Đã huỷ'
-              : deal.deal_state === 'denied'
-              ? 'Không nhận hàng'
-              : deal.deal_state === 'confirmed'
-              ? `Đã xác nhận`
-              : deal.deal_state === 'delivering'
-              ? 'Đang giao'
-              : deal.deal_state === 'delivered'
-              ? 'Đã giao\n(Chưa đánh giá)'
-              : 'Hoàn tất'}
-          </Text>
-        </TouchableOpacity>
+        {
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              width: 150,
+              height: 50,
+              backgroundColor: 'red',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 5,
+              alignSelf: 'center'
+            }}
+            disabled={
+              ['delivered', 'done', 'delivering'].indexOf(deal.deal_state) >= 0
+            }
+            onPress={onActionPress}>
+            <Text style={{color: 'white', textAlign: 'center'}}>
+              {deal.deal_state === 'pending'
+                ? 'Đang chờ xác nhận'
+                : deal.deal_state === 'canceled'
+                ? 'Đã huỷ'
+                : deal.deal_state === 'denied'
+                ? 'Không nhận hàng'
+                : deal.deal_state === 'confirmed'
+                ? `Đã xác nhận`
+                : deal.deal_state === 'delivering'
+                ? 'Đang giao'
+                : deal.deal_state === 'delivered'
+                ? 'Đã giao\n(Chưa đánh giá)'
+                : 'Hoàn tất'}
+            </Text>
+          </TouchableOpacity>
+        }
       </View>
     </View>
   )

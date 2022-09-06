@@ -17,6 +17,10 @@ const ChatBox = ({route, navigation, ...props}) => {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
+    navigation.setOptions({title: toUser.name})
+  }, [])
+
+  useEffect(() => {
     //load old messages
     const loadData = async () => {
       const myChatroom = await fetchMessages()

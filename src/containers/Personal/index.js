@@ -96,7 +96,7 @@ class Personal extends Component {
               onPress={() => navigate(POSTS_MANAGER_SCR)}
             />
             <PersonalFuncItem
-              title={'Doanh thu giao dịch'}
+              title={'Doanh thu bán hàng'}
               icon={'stats-chart-outline'}
               theme={theme}
               onPress={() => navigate(USER_REVENUE_STAT_SCR)}

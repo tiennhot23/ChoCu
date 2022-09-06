@@ -65,7 +65,7 @@ export default function BottomAdminButtons({
           }
         }}
       />
-      <ModalLoading loading={isActioning} />
+      {/* <ModalLoading loading={isActioning} /> */}
 
       {post?.post_state === 'pending' ? (
         <>
@@ -132,6 +132,38 @@ export default function BottomAdminButtons({
         </>
       ) : (
         <>
+          {hasReports && (
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                flex: 1,
+                height: '100%',
+                backgroundColor: '#dbdbdb',
+                padding: 10,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+              onPress={() => {
+                jump = true
+                setShowConfirm(true)
+                setConfirmTitle('Xoá khiếu nại')
+                setConfirmDesc('Xoá toàn bộ khiếu nại của bài đăng này')
+                setConfirmAction('clearReports')
+              }}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 12,
+                  fontWeight: '800',
+                  letterSpacing: 1,
+                  marginLeft: 5,
+                  color: 'black',
+                  textTransform: 'uppercase'
+                }}>
+                {'Xoá khiếu nại'}
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={{
               flexDirection: 'row',
@@ -143,11 +175,13 @@ export default function BottomAdminButtons({
               alignItems: 'center'
             }}
             onPress={() => {
-              jump = true
+              jump = false
               setShowConfirm(true)
-              setConfirmTitle('Xoá khiếu nại')
-              setConfirmDesc('Xoá toàn bộ khiếu nại của bài đăng này')
-              setConfirmAction('clearReports')
+              setConfirmTitle('Từ chối bài đăng')
+              setConfirmDesc(
+                'Đưa bài đăng quay lại trạng thái bị từ chối và yêu cầu người đăng chỉnh sửa lại.'
+              )
+              setConfirmAction('deny')
             }}>
             <Text
               style={{
@@ -156,10 +190,10 @@ export default function BottomAdminButtons({
                 fontWeight: '800',
                 letterSpacing: 1,
                 marginLeft: 5,
-                color: 'black',
+                color: theme.primaryText,
                 textTransform: 'uppercase'
               }}>
-              {'Xoá khiếu nại'}
+              {'Từ chối'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -175,9 +209,9 @@ export default function BottomAdminButtons({
             onPress={() => {
               jump = true
               setShowConfirm(true)
-              setConfirmTitle('Xoá bài đăng')
+              setConfirmTitle('Khoá bài đăng')
               setConfirmDesc(
-                'Xoá bài đăng khỏi bảng tin cùng toàn bộ khiếu nại của bài đăng này'
+                'Khoá bài đăng khỏi bảng tin cùng toàn bộ khiếu nại của bài đăng này'
               )
               setConfirmAction('delete')
             }}>

@@ -33,12 +33,13 @@ export default Input = forwardRef(
       multiline = false,
       inputType,
       editable = true,
+      selectable = false,
       onPress,
       onChange
     },
     ref
   ) => {
-    color = editable ? 'black' : 'gray'
+    color = editable ? 'black' : selectable ? 'black' : 'gray'
     const [isEmpty, setIsEmpty] = useState(false)
     const [text, setText] = useState('')
 
