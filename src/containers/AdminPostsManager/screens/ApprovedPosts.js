@@ -12,7 +12,10 @@ export default function ApprovedPosts({route, navigation}) {
 
   useEffect(() => {
     let a = postsData.filter(
-      (item) => item.post_state === 'active' || item.post_state === 'hidden'
+      (item) =>
+        item.post_state === 'active' ||
+        item.post_state === 'hidden' ||
+        item.post_state === 'sold'
     )
     a = a.sort((a, b) => b.time_updated.localeCompare(a.time_updated))
 

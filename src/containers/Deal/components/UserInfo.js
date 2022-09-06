@@ -220,6 +220,32 @@ export default function UserInfo({
           lần
         </Text>
       </View>
+      {isBuyer && (
+        <View style={{flexDirection: 'row', width}}>
+          <Text
+            style={{
+              fontSize: 14,
+              letterSpacing: 0.5,
+              marginVertical: 4,
+              marginEnd: 10,
+              color: color
+            }}
+            ellipsizeMode={'tail'}>
+            Số lần từ chối nhận:
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              letterSpacing: 0.5,
+              marginVertical: 4,
+              marginEnd: 10,
+              color: color
+            }}
+            ellipsizeMode={'tail'}>
+            {stat?.denied_buy_deal_count} lần
+          </Text>
+        </View>
+      )}
     </>
   )
 }

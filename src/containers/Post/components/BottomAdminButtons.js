@@ -169,7 +169,7 @@ export default function BottomAdminButtons({
               flexDirection: 'row',
               flex: 1,
               height: '100%',
-              backgroundColor: '#dbdbdb',
+              backgroundColor: '#555',
               padding: 10,
               justifyContent: 'center',
               alignItems: 'center'
@@ -190,7 +190,7 @@ export default function BottomAdminButtons({
                 fontWeight: '800',
                 letterSpacing: 1,
                 marginLeft: 5,
-                color: theme.primaryText,
+                color: 'white',
                 textTransform: 'uppercase'
               }}>
               {'Từ chối'}

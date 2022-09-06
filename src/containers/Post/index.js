@@ -236,6 +236,8 @@ class Post extends Component {
                       ? 'Đang chờ duyệt'
                       : dataPost?.post?.post_state === 'denied'
                       ? 'Bị từ chối'
+                      : dataPost?.post?.post_state === 'sold'
+                      ? 'Đã bán'
                       : 'Đang đăng'}
                   </Text>
                 </View>
