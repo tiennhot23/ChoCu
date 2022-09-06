@@ -4,6 +4,7 @@ import {
   Platform,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   UIManager,
   View
@@ -29,13 +30,17 @@ export default function AnimatedDropdown({
   width = '80%',
   height = 70,
   title,
-  required,
-  placeHolder = 'Select',
+  required = false,
+  editable = false,
+  enable = true,
+  placeHolder = title,
   item,
   items,
   data,
-  onSelect
+  onSelect,
+  onChangeText
 }) {
+  color = enable ? 'black' : 'gray'
   const [isShown, setIsShown] = useState(false)
   const val = useSharedValue(0)
 
@@ -72,6 +77,7 @@ export default function AnimatedDropdown({
           backgroundColor: backgroundColor,
           elevation: 3
         }}
+        disabled={!enable}
         onPress={onClick}>
         <View
           style={{
@@ -93,6 +99,16 @@ export default function AnimatedDropdown({
                   {item}
                 </Text>
               ))
+            ) : editable ? (
+              <TextInput
+                style={{
+                  width: '100%',
+                  height: 40
+                }}
+                placeholder={placeHolder}
+                value={item}
+                onChangeText={onChangeText}
+              />
             ) : item ? (
               <Text style={{color: color}}> {item} </Text>
             ) : (

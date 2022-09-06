@@ -28,7 +28,7 @@ export default function ListPostTurnServices({route, navigation}) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    fetch(baseUrl + '/services/post-turn-services')
+    fetch(baseUrl + '/services')
       .then((res) => res.json())
       .then((res) => setServices(res.data))
       .catch((err) => console.log(err))
@@ -40,7 +40,6 @@ export default function ListPostTurnServices({route, navigation}) {
       setShowPayPal(false)
       dispatch(
         addUserServices({
-          service_id: service?.service_id,
           price: service?.price,
           post_turn: service?.post_turn
         })
@@ -80,23 +79,6 @@ export default function ListPostTurnServices({route, navigation}) {
           {services
             ?.sort((a, b) => a.service_id - b.service_id)
             .map((item, index) => {
-              let icon = ''
-              switch (item.service_name) {
-                case 'Gói Bronze':
-                  icon =
-                    'https://harperlibrary.typepad.com/.a/6a0105368f4fef970b01b8d20a2631970c-800wi'
-                  break
-                case 'Gói Golden':
-                  icon =
-                    'https://www.elm.org/wp-content/uploads/2014/05/gold-star.jpg'
-                  break
-                case 'Gói Silver':
-                  icon =
-                    'https://thumbs.dreamstime.com/b/silver-star-3301715.jpg'
-                  break
-                default:
-                  break
-              }
               return (
                 <View
                   style={{
@@ -116,17 +98,21 @@ export default function ListPostTurnServices({route, navigation}) {
                       flexDirection: 'row',
                       alignItems: 'center'
                     }}>
-                    <Image
-                      source={{uri: icon}}
-                      style={{width: 40, height: 40}}
-                    />
                     <BaseText
                       style={{marginLeft: 10}}
                       size={20}
                       text={`${item.service_name}`}
                     />
                   </View>
-
+                  <BaseText
+                    style={{
+                      marginVertical: 10,
+                      textAlign: 'center',
+                      letterSpacing: 1,
+                      fontWeight: '800'
+                    }}
+                    text={`${item.post_turn} lượt đăng`}
+                  />
                   <BaseText
                     style={{
                       marginVertical: 10,
@@ -141,12 +127,6 @@ export default function ListPostTurnServices({route, navigation}) {
                       flexDirection: 'row',
                       alignItems: 'center'
                     }}>
-                    <Text
-                      style={{
-                        textDecorationLine: 'underline line-through'
-                      }}>
-                      {item.post_turn !== 10 ? item.post_turn * 20000 : ''}
-                    </Text>
                     <BaseText
                       style={{
                         marginVertical: 10,
@@ -157,7 +137,10 @@ export default function ListPostTurnServices({route, navigation}) {
                         paddingHorizontal: 20
                       }}
                       size={20}
-                      text={`${item.price} đ`}
+                      text={`${item.price.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'VND'
+                      })}`}
                     />
                   </View>
                   <View

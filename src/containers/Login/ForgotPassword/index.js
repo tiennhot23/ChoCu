@@ -6,6 +6,7 @@ import FormInput from '../components/FormInput'
 import FormButton from '../components/FormButton'
 import {KeyboardView, BaseText, BaseLoading} from '@components'
 import {OTP_SCR} from 'src/constants/constant'
+import auth from '@react-native-firebase/auth'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
 import {
@@ -25,7 +26,6 @@ class ForgotPassword extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      userName: '',
       phoneNumber: '',
       otpCode: '',
       newPassword: '',
@@ -35,160 +35,81 @@ class ForgotPassword extends Component {
       isLoading: false,
       showPhoneForm: true,
       showOTPForm: false,
-      showPasswordForm: false
+      confirm: null
     }
   }
 
-  onSubmitPhone = () => {
-    const {getOtp} = this.props
-    const {phoneNumber} = this.state
-    getOtp({phone: phoneNumber})
-  }
-
-  onSubmitOTP = () => {
-    const {verifyOtp} = this.props
-    const {otpCode} = this.state
-    verifyOtp({otp_code: otpCode})
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const {goBack} = this.props.navigation
-    if (
-      prevProps.stateOtp.isFetching !== this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isError
-    ) {
-      if (this.props.dataOtp.verified) {
-        this.setState({
-          showOTPForm: false,
-          showPasswordForm: true
-        })
-      } else {
-        const {dataOtp} = this.props
-        this.setState({
-          showPhoneForm: false,
-          showOTPForm: true
-        })
-        global._notify.localNotify({
-          title: 'Mã OTP',
-          message: dataOtp.otp_code
-        })
-      }
-    } else if (
-      prevProps.stateOtp.isFetching !== this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isFetching
-    ) {
-      if (this.props.stateOtp.isError) {
-        alert(this.props.stateOtp.message)
-        if (this.props.stateOtp.message.includes('hết hiệu lực'))
-          this.setState({
-            showPhoneForm: true,
-            showOTPForm: false
-          })
-      } else if (this.props.stateAction.isError)
-        alert(this.props.stateAction.message)
-    }
-
-    if (
-      prevProps.stateAction.isFetching !== this.props.stateAction.isFetching &&
-      !this.props.stateAction.isFetching
-    ) {
-      if (helper.isNonEmptyString(this.props.stateAction.message))
-        alert(this.props.stateAction.message)
-      if (this.props.stateAction.isDone) {
-        alert('Đổi mật khẩu thành công')
-        goBack()
-      }
-      if (this.props.stateAction.message.includes('không tồn tại'))
-        new Promise((resolve) =>
-          setTimeout(() => {
-            resolve
-            goBack()
-          }, 1000)
-        )
-    }
-  }
-
-  onSubmit = () => {
+  onSubmit = async () => {
     const {newPassword, confirmedPassword} = this.state
     if (newPassword != confirmedPassword) {
       alert('Mật khẩu không trùng khớp, vui lòng nhập lại')
       return
     }
-    const {resetPassword} = this.props
-    resetPassword({password: newPassword})
-    // const { userName, phoneNumber, newPassword, confirmedPassword } = this.state
-    // if (helper.isEmptyString(userName)) {
-    //   Alert.alert('', 'Vui lòng nhập tên đăng nhập')
-    // } else if (helper.isEmptyString(phoneNumber)) {
-    //   Alert.alert('', 'Vui lòng nhập số điện thoại')
-    // } else {
-    //   const isValidatePhone = regExpPhone.test(phoneNumber)
-    //   if (!isValidatePhone) {
-    //     Alert.alert('', 'Vui lòng nhập số điện thoại đúng 10 chữ số')
-    //   } else if (!helper.isValidatePhonePrefix(phoneNumber)) {
-    //     Alert.alert('', 'Vui lòng nhập đúng đầu số điện thoại')
-    //   } else if (helper.isEmptyString(newPassword)) {
-    //     Alert.alert('', 'Vui lòng nhập mật khẩu mới')
-    //   } else if (newPassword.length < 8 || !passwordRegex.test(newPassword)) {
-    //     Alert.alert(
-    //       '',
-    //       'Mật khẩu mới phải ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số'
-    //     )
-    //   } else if (newPassword != confirmedPassword) {
-    //     Alert.alert('', 'Mật khẩu không trùng khớp, vui lòng nhập lại')
-    //   } else {
-    // showBlockUI()
-    // createOTP(userName, phoneNumber)
-    //   .then((success) => {
-    //     hideBlockUI()
-    //     this.props.navigation.navigate('OtpInput', {
-    //       userName,
-    //       phoneNumber,
-    //       newPassword
-    //     })
-    //   })
-    //   .catch((msgError) => {
-    //     if (msgError == 'locked account') {
-    //       Alert.alert(
-    //         '',
-    //         'Tài khoản của bạn đã bị khóa do nhập sai mã OTP nhiều lần, liên hệ bộ phận IT để mở khóa',
-    //         [
-    //           {
-    //             text: 'OK',
-    //             style: 'cancel',
-    //             onPress: () => {
-    //               hideBlockUI()
-    //               this.props.navigation.goBack()
-    //             }
-    //           }
-    //         ]
-    //       )
-    //     } else
-    //       Alert.alert(
-    //         translate('common.notification_uppercase'),
-    //         msgError,
-    //         [
-    //           {
-    //             text: translate('common.btn_skip'),
-    //             style: 'cancel',
-    //             onPress: hideBlockUI
-    //           },
-    //           {
-    //             text: translate('common.btn_notify_try_again'),
-    //             style: 'default',
-    //             onPress: this.onSubmit
-    //           }
-    //         ]
-    //       )
-    //   })
-    //   }
-    // }
+    try {
+      const {phoneNumber} = this.state
+      const confirmation = await auth().signInWithPhoneNumber(
+        '+84' + phoneNumber.slice(1, 10)
+      )
+      this.setState({
+        confirm: confirmation,
+        showOTPForm: true,
+        showPhoneForm: false
+      })
+    } catch (error) {
+      console.log(error)
+      if (error.code === 'auth/invalid-phone-number')
+        alert('Số điện thoại không hợp lệ')
+      else alert('Không thể gửi mã otp')
+    }
+  }
+
+  onSubmitOTP = async () => {
+    const {confirm, otpCode} = this.state
+    try {
+      await confirm.confirm(otpCode)
+      // alert('ok')
+      const {resetPassword} = this.props
+      const {newPassword, phoneNumber} = this.state
+      resetPassword({phone: phoneNumber, password: newPassword})
+    } catch (error) {
+      console.log(error)
+      alert('Mã xác thực không chính xác hoặc đã hết hiệu lực')
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {goBack} = this.props.navigation
+
+    if (
+      prevProps.stateAction.isFetching !== this.props.stateAction.isFetching &&
+      !this.props.stateAction.isFetching
+    ) {
+      if (helper.isNonEmptyString(this.props.stateAction.message)) {
+        this.setState({
+          userName: '',
+          phoneNumber: '',
+          otpCode: '',
+          newPassword: '',
+          confirmedPassword: '',
+          isShowNewPassword: false,
+          isShowConfirmedPassword: false,
+          isLoading: false,
+          showPhoneForm: true,
+          showOTPForm: false,
+          showPasswordForm: false,
+          confirm: null
+        })
+        alert(this.props.stateAction.message)
+      }
+      if (this.props.stateAction.isDone) {
+        alert('Đổi mật khẩu thành công')
+        goBack()
+      }
+    }
   }
 
   render() {
     const {
-      userName,
       phoneNumber,
       otpCode,
       newPassword,
@@ -196,8 +117,7 @@ class ForgotPassword extends Component {
       isShowNewPassword,
       isShowConfirmedPassword,
       showPhoneForm,
-      showOTPForm,
-      showPasswordForm
+      showOTPForm
     } = this.state
     const {style} = this.props.route.params
     return (
@@ -242,7 +162,7 @@ class ForgotPassword extends Component {
 
                     <BaseText
                       text={
-                        'Nhập số điện thoại của bạn vào phía dưới và ấn xác nhận để lấy mã OTP'
+                        'Nhập số điện thoại dùng để đăng ký tài khoản và mật khẩu sau đó ấn xác nhận để lấy mã OTP'
                       }
                       style={{
                         marginTop: constant.calcHeight(10)
@@ -289,6 +209,73 @@ class ForgotPassword extends Component {
                         }}
                       />
                     </View>
+                    <View style={{marginTop: 10}}>
+                      <FormInput
+                        icon={{uri: 'lock-closed-outline'}}
+                        _inputRef={(ref) => (this.inputNewPassword = ref)}
+                        placeholder={'Mật khẩu mới'}
+                        secureTextEntry={!isShowNewPassword}
+                        onSubmitEditing={() =>
+                          this.inputConfirmedPassword.focus()
+                        }
+                        onChangeText={(password) =>
+                          this.setState({
+                            newPassword: password
+                          })
+                        }
+                        value={newPassword}
+                        isPassword={true}
+                        isShowPassword={isShowNewPassword}
+                        onPress={() =>
+                          this.setState({isShowNewPassword: !isShowNewPassword})
+                        }
+                      />
+                      <FormInput
+                        icon={{
+                          uri: 'shield-checkmark'
+                        }}
+                        _inputRef={(ref) => (this.inputConfirmedPassword = ref)}
+                        placeholder={'Nhập lại mật khẩu mới'}
+                        secureTextEntry={!isShowConfirmedPassword}
+                        onSubmitEditing={this.onSubmit}
+                        onChangeText={(password) =>
+                          this.setState({
+                            confirmedPassword: password
+                          })
+                        }
+                        value={confirmedPassword}
+                        autoFocus={false}
+                        isPassword={true}
+                        isShowPassword={isShowConfirmedPassword}
+                        onPress={() =>
+                          this.setState({
+                            isShowConfirmedPassword: !isShowConfirmedPassword
+                          })
+                        }
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        height: constant.calcHeight(25),
+                        marginTop: -10
+                      }}>
+                      <BaseText
+                        text={
+                          helper.isNonEmptyString(newPassword) &&
+                          newPassword.length < 8
+                            ? 'Mật khẩu phải có tối thiểu 8 ký tự'
+                            : newPassword.length >= 8 &&
+                              !passwordRegex.test(newPassword)
+                            ? 'Mật khẩu phải bao gồm chữ hoa, chữ thường và số'
+                            : ''
+                        }
+                        style={{
+                          marginBottom: constant.calcHeight(10),
+                          color: '#F50537'
+                        }}
+                      />
+                    </View>
                     <View style={{flexDirection: 'row'}}>
                       <FormButton
                         title={'Hủy'}
@@ -298,10 +285,13 @@ class ForgotPassword extends Component {
                         width={constant.calcWidth(120)}
                       />
                       {helper.isNonEmptyString(phoneNumber) &&
-                        phoneRegex.test(phoneNumber) && (
+                        phoneRegex.test(phoneNumber) &&
+                        helper.isNonEmptyString(newPassword) &&
+                        newPassword.length >= 8 &&
+                        passwordRegex.test(newPassword) && (
                           <FormButton
                             title={'Xác nhận'}
-                            onPress={this.onSubmitPhone}
+                            onPress={this.onSubmit}
                             width={constant.calcWidth(120)}
                           />
                         )}
@@ -395,129 +385,6 @@ class ForgotPassword extends Component {
                     </View>
                   </View>
                 )}
-                {showPasswordForm && (
-                  <View
-                    style={{
-                      paddingVertical: constant.calcHeight(10),
-                      paddingHorizontal: constant.calcWidth(20),
-                      marginTop: constant.calcHeight(10),
-                      alignItems: 'center',
-                      backgroundColor: 'white',
-                      width: constant.width - 60,
-                      borderRadius: constant.calcWidth(15)
-                    }}>
-                    <View
-                      style={{
-                        borderBottomColor: '#CCCCCC',
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        width: constant.width - 60,
-                        alignItems: 'center',
-                        paddingBottom: constant.calcHeight(5)
-                      }}>
-                      <BaseText
-                        text={'ĐẶT LẠI MẬT KHẨU'}
-                        style={{
-                          marginTop: constant.calcHeight(5),
-                          fontWeight: 'bold'
-                        }}
-                      />
-                    </View>
-
-                    <BaseText
-                      text={'Nhập mật khẩu mới'}
-                      style={{
-                        marginTop: constant.calcHeight(10)
-                      }}
-                    />
-
-                    <View style={{marginTop: 10}}>
-                      <FormInput
-                        icon={{uri: 'lock-closed-outline'}}
-                        _inputRef={(ref) => (this.inputNewPassword = ref)}
-                        placeholder={'Mật khẩu mới'}
-                        secureTextEntry={!isShowNewPassword}
-                        onSubmitEditing={() =>
-                          this.inputConfirmedPassword.focus()
-                        }
-                        onChangeText={(password) =>
-                          this.setState({
-                            newPassword: password
-                          })
-                        }
-                        value={newPassword}
-                        isPassword={true}
-                        isShowPassword={isShowNewPassword}
-                        onPress={() =>
-                          this.setState({isShowNewPassword: !isShowNewPassword})
-                        }
-                      />
-                      <FormInput
-                        icon={{
-                          uri: 'shield-checkmark'
-                        }}
-                        _inputRef={(ref) => (this.inputConfirmedPassword = ref)}
-                        placeholder={'Nhập lại mật khẩu mới'}
-                        secureTextEntry={!isShowConfirmedPassword}
-                        onSubmitEditing={this.onSubmit}
-                        onChangeText={(password) =>
-                          this.setState({
-                            confirmedPassword: password
-                          })
-                        }
-                        value={confirmedPassword}
-                        autoFocus={false}
-                        isPassword={true}
-                        isShowPassword={isShowConfirmedPassword}
-                        onPress={() =>
-                          this.setState({
-                            isShowConfirmedPassword: !isShowConfirmedPassword
-                          })
-                        }
-                      />
-                    </View>
-
-                    <View
-                      style={{
-                        height: constant.calcHeight(25),
-                        marginTop: -10
-                      }}>
-                      <BaseText
-                        text={
-                          helper.isNonEmptyString(newPassword) &&
-                          newPassword.length < 8
-                            ? 'Mật khẩu phải có tối thiểu 8 ký tự'
-                            : newPassword.length >= 8 &&
-                              !passwordRegex.test(newPassword)
-                            ? 'Mật khẩu phải bao gồm chữ hoa, chữ thường và số'
-                            : ''
-                        }
-                        style={{
-                          marginBottom: constant.calcHeight(10),
-                          color: '#F50537'
-                        }}
-                      />
-                    </View>
-
-                    <View style={{flexDirection: 'row'}}>
-                      <FormButton
-                        title={'Hủy'}
-                        onPress={() => {
-                          this.props.navigation.goBack()
-                        }}
-                        width={constant.calcWidth(120)}
-                      />
-                      {helper.isNonEmptyString(newPassword) &&
-                        newPassword.length >= 8 &&
-                        passwordRegex.test(newPassword) && (
-                          <FormButton
-                            title={'Xác nhận'}
-                            onPress={this.onSubmit}
-                            width={constant.calcWidth(120)}
-                          />
-                        )}
-                    </View>
-                  </View>
-                )}
               </View>
             </View>
           </ImageBackground>
@@ -528,14 +395,10 @@ class ForgotPassword extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  dataOtp: state.otpReducer.dataOtp,
-  stateOtp: state.otpReducer.stateOtp,
   stateAction: state.otpReducer.stateAction
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getOtp: bindActionCreators(requestGetOTP, dispatch),
-  verifyOtp: bindActionCreators(requestVerifyOTP, dispatch),
   resetPassword: bindActionCreators(requestActionForgotPassword, dispatch)
 })
 

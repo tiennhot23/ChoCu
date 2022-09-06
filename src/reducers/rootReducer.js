@@ -15,10 +15,12 @@ import {dealReducer} from 'src/containers/Deal/reducer'
 import {userDealsReducer} from 'src/containers/DealManager/reducer'
 import {otpReducer} from 'src/containers/OTP/reducer'
 import {userInfoReducer} from 'src/containers/UserInfo/reducer'
-import {adminPostsManagerReducer} from 'src/containers/AdminPostManager/reducer'
+import {postTurnServicesReducer} from 'src/containers/PostTurnServices/reducer'
+import {adminPostsManagerReducer} from 'src/containers/AdminPostsManager/reducer'
 import {adminCategoriesManagerReducer} from 'src/containers/AdminCategoryManager/reducer'
 import {adminAccountManagerReducer} from 'src/containers/AdminAccountManager/reducer'
-import {postTurnServicesReducer} from 'src/containers/PostTurnServices/reducer'
+import {adminReportsManagerReducer} from 'src/containers/AdminReportManager/reducer'
+import {adminServicesManagerReducer} from 'src/containers/AdminServiceManager/reducer'
 
 const inintAppReducer = (state = {}, action) => {
   switch (action.type) {
@@ -46,9 +48,11 @@ const rootReducer = combineReducers({
   userDealsReducer,
   otpReducer,
   userInfoReducer,
+  postTurnServicesReducer,
   adminPostsManagerReducer,
   adminCategoriesManagerReducer,
   adminAccountManagerReducer,
-  postTurnServicesReducer
+  adminReportsManagerReducer,
+  adminServicesManagerReducer
 })
 export default rootReducer

@@ -12,8 +12,6 @@ import {
   View
 } from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
-import {baseUrl} from 'src/constants/api'
-import {requestLockAccount} from 'src/containers/AdminAccountManager/action'
 import {linkPayment, unlinkPayment} from 'src/containers/Payment/action'
 import FormButton from 'src/containers/Post/components/FormButton'
 

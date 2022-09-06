@@ -23,9 +23,10 @@ import {
 } from '../CurrentUser/action'
 import {requestUserInfo, requestUserPosts} from './action'
 import ActivePosts from './components/ActivePosts'
-import ExpiredPosts from './components/ExpiredPosts'
+import SoldPosts from './components/SoldPosts'
 import Info from './components/Info'
 import LockAccount from './components/LockAccount'
+import UnlockAccount from './components/UnlockAccount'
 
 class UserInfo extends Component {
   constructor(props) {
@@ -44,26 +45,48 @@ class UserInfo extends Component {
     getUserPosts({user_id: userId})
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const {accountState} = this.props
+    if (
+      prevProps.accountState.isFetching !== accountState.isFetching &&
+      accountState.isActionDone
+    ) {
+      const {userId} = this.state
+      const {getUserInfo, getUserPosts} = this.props
+      getUserInfo({user_id: userId})
+      getUserPosts({user_id: userId})
+      this.setState({showLockModal: false})
+    }
+  }
+
   render() {
     const {theme, userId, showLockModal} = this.state
     const {navigate, push} = this.props.navigation
     const style = initStyle(theme)
-    const {stateUserPosts, stateUser} = this.props
+    const {stateUserPosts, stateUser, userInfo} = this.props
     return (
       <BaseLoading
         isLoading={stateUserPosts.isFetching || stateUser.isFetching}>
-        <ScrollView style={style.wrapper}>
-          <Modal visible={showLockModal} transparent>
+        <Modal visible={showLockModal} transparent>
+          {userInfo.active ? (
             <LockAccount
               onCancel={() => this.setState({showLockModal: false})}
             />
-          </Modal>
+          ) : (
+            <UnlockAccount
+              onCancel={() => this.setState({showLockModal: false})}
+            />
+          )}
+        </Modal>
+        <ScrollView style={style.wrapper}>
           <Info
             navigate={navigate}
-            onLockAccount={() => this.setState({showLockModal: true})}
+            onLockAccount={() => {
+              this.setState({showLockModal: true})
+            }}
           />
           <ActivePosts navigate={navigate} push={push} />
-          <ExpiredPosts navigate={navigate} push={push} />
+          <SoldPosts navigate={navigate} push={push} />
         </ScrollView>
       </BaseLoading>
     )
@@ -74,7 +97,8 @@ const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer.userData,
   userInfo: state.userInfoReducer.userData,
   stateUser: state.userInfoReducer.stateUser,
-  stateUserPosts: state.userInfoReducer.stateUserPosts
+  stateUserPosts: state.userInfoReducer.stateUserPosts,
+  accountState: state.adminAccountManagerReducer.accountState
 })
 
 const mapDispatchToProps = (dispatch) => ({

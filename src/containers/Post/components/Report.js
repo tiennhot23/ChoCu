@@ -31,7 +31,10 @@ export default function Report({postId, onCancelReport}) {
     })
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
-      .finally(() => onCancelReport())
+      .finally(() => {
+        onCancelReport()
+        alert('Đã báo cáo bài đăng, đang chờ quản trị viên kiểm duyệt')
+      })
   }
   return (
     <View

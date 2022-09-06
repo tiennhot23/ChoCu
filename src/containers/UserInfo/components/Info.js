@@ -1,5 +1,4 @@
 import {BaseText, Icon} from '@components'
-import {constant} from '@constants'
 import {font} from '@styles'
 import React, {useCallback, useEffect, useState} from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
@@ -8,16 +7,7 @@ import {Rating} from 'react-native-ratings'
 import {useDispatch, useSelector} from 'react-redux'
 import database from '@react-native-firebase/database'
 import {baseUrl} from 'src/constants/api'
-import {getItem} from 'src/common/storage'
-import {
-  AUTH_NAV,
-  CHAT_BOX_SCR,
-  EDIT_INFO_SCR,
-  USER_INFO_SCR
-} from 'src/constants/constant'
-import {CURRENT_USER} from 'src/constants/storage'
-import {requestUserData} from 'src/containers/CurrentUser/action'
-import {lockAccount} from 'src/containers/AdminAccountManager/action'
+import {AUTH_NAV, CHAT_BOX_SCR} from 'src/constants/constant'
 
 export default Info = ({
   color = 'black',
@@ -113,9 +103,7 @@ export default Info = ({
           />
           <BaseText text={`Trạng thái: `} style={style.bold_text} />
           <BaseText
-            text={`${
-              status && user?.active ? 'Đang hoạt động' : 'Chưa hoạt động'
-            }`}
+            text={`${status ? 'Đang hoạt động' : 'Chưa hoạt động'}`}
             style={style.nor_text}
           />
         </View>
@@ -136,7 +124,7 @@ export default Info = ({
         <View style={style.detail_item}>
           <Icon name="location-outline" size={20} style={style.nor_text} />
           <BaseText text={`Địa chỉ: `} style={style.bold_text} />
-          <BaseText text={user?.address} style={style.nor_text} />
+          <BaseText text={user?.address} style={[style.nor_text, {flex: 1}]} />
         </View>
         <View style={style.detail_item}>
           <Icon name="call-outline" size={20} style={style.nor_text} />
@@ -172,7 +160,8 @@ export default Info = ({
               margin: 5
             }}
             onPress={() => {
-              if (isLoggedIn) navigate(CHAT_BOX_SCR, {user})
+              if (isLoggedIn || global.adminLogin)
+                navigate(CHAT_BOX_SCR, {user})
               else navigate(AUTH_NAV)
             }}>
             <Icon name="chatbox-ellipses-outline" size={20} color={color} />
@@ -191,12 +180,10 @@ export default Info = ({
           </TouchableOpacity>
           {global.adminLogin && (
             <TouchableOpacity
-              disabled={!user?.active}
               style={{
                 flexDirection: 'row',
                 flex: 1,
                 height: '100%',
-                opacity: user?.active ? 1 : 0.5,
                 borderColor: color,
                 borderWidth: 2,
                 padding: 10,
@@ -216,7 +203,7 @@ export default Info = ({
                   color: color,
                   textTransform: 'uppercase'
                 }}>
-                {user?.active ? 'Khoá tài khoản' : 'Đã khoá'}
+                {user?.active ? 'Khoá đăng bài' : 'Mở khoá đăng bài'}
               </Text>
             </TouchableOpacity>
           )}

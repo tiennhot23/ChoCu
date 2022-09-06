@@ -52,7 +52,7 @@ export default function PostItem({
             }}
             ellipsizeMode={'tail'}
             numberOfLines={2}>
-            {moment(post.time_updated).fromNow()}
+            {moment(post.time_created).fromNow()}
           </Text>
         </View>
 
@@ -63,7 +63,10 @@ export default function PostItem({
             marginVertical: 5,
             color: 'red'
           }}>
-          {post.default_price} d
+          {post.default_price.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'VND'
+          })}
         </Text>
       </TouchableOpacity>
     </View>

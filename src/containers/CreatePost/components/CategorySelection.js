@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {requestDetails} from 'src/containers/Categories/action'
 
 const CategorySelection = forwardRef((props, ref) => {
+  const initDataPost = props.initDataPost
   const dataCategories = useSelector(
     (state) => state.categoriesReducer.dataCategories
   )
@@ -25,6 +26,24 @@ const CategorySelection = forwardRef((props, ref) => {
   const [details, setDetails] = useState([])
   const [_details, _setDetails] = useState([])
   const [message, setMessage] = useState('')
+
+  const dataCateDrop =
+    dataCategories.map((item) => {
+      return {
+        id: item.category_id,
+        title: item.category_title
+      }
+    }) || []
+
+  useEffect(() => {
+    if (initDataPost) {
+      setCategory(
+        dataCateDrop.filter(
+          (e) => e.id === initDataPost?.category?.category_id
+        )[0]
+      )
+    }
+  }, [])
 
   useImperativeHandle(ref, () => ({
     getData() {
@@ -53,8 +72,13 @@ const CategorySelection = forwardRef((props, ref) => {
       (item) => item.category_id === category.id
     )[0]?.details
     let _d = []
-    d?.forEach((item) => {
-      _d.push({details_id: item.details_id, content: ''})
+    d?.forEach((item, index) => {
+      _d.push({
+        details_id: item.details_id,
+        content: initDataPost?.details[index]
+          ? initDataPost?.details[index].content
+          : ''
+      })
     })
     setDetails(d)
     _setDetails(_d)
@@ -66,14 +90,8 @@ const CategorySelection = forwardRef((props, ref) => {
         title={'Danh mục'}
         required
         item={category.title}
-        data={
-          dataCategories.map((item) => {
-            return {
-              id: item.category_id,
-              title: item.category_title
-            }
-          }) || []
-        }
+        data={dataCateDrop}
+        enable={initDataPost?.post?.post_state !== 'active'}
         color={helper.isNonEmptyString(message) ? 'red' : undefined}
         onSelect={(itemSelected) => setCategory(itemSelected)}
       />
@@ -93,18 +111,17 @@ const CategorySelection = forwardRef((props, ref) => {
       ) : (
         _details &&
         details?.map((item, index) =>
-          item.editable ? (
+          item.default_content?.length === 0 ? (
             <_Input
               _details={_details}
               _setDetails={_setDetails}
               id={index}
               title={item.details_title}
-              required={item.required}
+              required
             />
           ) : (
             <AnimatedDropdown
               title={item.details_title}
-              required={item.required}
               item={_details[index].content}
               data={item.default_content.map((item) => {
                 return {
@@ -112,9 +129,16 @@ const CategorySelection = forwardRef((props, ref) => {
                   title: item
                 }
               })}
+              required
+              editable={item?.editable}
               onSelect={(itemSelected) =>
                 setDetailContent(index, itemSelected.title)
               }
+              onChangeText={(text) => {
+                let _d = _details
+                _d[index].content = text
+                _setDetails([..._d])
+              }}
             />
           )
         )
@@ -131,5 +155,12 @@ export function _Input({_details, _setDetails, id, title, required}) {
     _d[id].content = text
     _setDetails([..._d])
   }
-  return <Input title={title} required={required} onChange={onChangeText} />
+  return (
+    <Input
+      title={title}
+      _text={_details[id].content}
+      onChange={onChangeText}
+      required
+    />
+  )
 }

@@ -16,6 +16,9 @@ import React, {
   useImperativeHandle
 } from 'react'
 import {
+  Alert,
+  AppState,
+  BackHandler,
   ActivityIndicator,
   Modal,
   ScrollView,
@@ -47,6 +50,7 @@ class EditInfo extends Component {
     this.nameRef = createRef()
     this.emailRef = createRef()
     this.addressSelectionRef = null
+    this.backToHome = props.route.params.backToHome
   }
 
   openAddressSeletion = () => {
@@ -90,20 +94,52 @@ class EditInfo extends Component {
     updateUserInfo({formData})
   }
 
+  // backAction = () => {
+  //   // if (this.backToHome) {
+  //   //   alert('Vui lòng cập nhật đầy đủ các thông tin cần thiết')
+  //   //   return null
+  //   // } else return true
+  //   Alert.alert('', 'Vui lòng cập nhật đầy đủ các thông tin cần thiết', [
+  //     {
+  //       text: 'OK',
+  //       onPress: () => null,
+  //       style: 'cancel'
+  //     }
+  //   ])
+  //   return true
+  // }
+
+  // componentDidMount() {
+  //   this.backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     this.backAction
+  //   )
+  // }
+
+  // componentWillUnmount() {
+  //   this.backHandler.remove()
+  // }
+
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
     if (
       // prevProps.stateUser.isFetching !== this.props.stateUser.isFetching &&
       // prevProps.stateUser.isFetching &&
       // !this.props.stateUser.isError
+      prevProps.stateUser.isActioning !== this.props.stateUser.isActioning &&
+      prevProps.stateUser.isActioning &&
       this.props.stateUser.isActionDone
     )
       goBack()
   }
 
   validateRequest(data) {
-    if (!data.name || helper.isEmptyString(data.name)) {
+    if (!data.name || helper.isEmptyString(data.name.trim())) {
       this.nameRef.current.alertMessage('Họ và tên không được để trống')
+      return false
+    }
+    if (!data.email || helper.isEmptyString(data.email.trim())) {
+      this.emailRef.current.alertMessage('Email không được để trống')
       return false
     }
     return true
@@ -136,7 +172,9 @@ class EditInfo extends Component {
               <Input
                 title={'Họ và tên'}
                 required
-                _text={currentUser?.name}
+                _text={
+                  currentUser?.name === 'Chưa cung cấp' ? '' : currentUser?.name
+                }
                 ref={this.nameRef}
                 placeholder={'Họ tên'}
               />
@@ -147,7 +185,13 @@ class EditInfo extends Component {
               />
               <Input
                 title={'Email'}
+                required
                 ref={this.emailRef}
+                _text={
+                  currentUser?.email === 'Chưa cung cấp'
+                    ? ''
+                    : currentUser?.email
+                }
                 placeholder={'Email'}
               />
               <Input
@@ -155,6 +199,7 @@ class EditInfo extends Component {
                 _text={address}
                 placeholder={currentUser?.address}
                 editable={false}
+                selectable
                 onPress={this.openAddressSeletion}
               />
               <FormButton title={'Lưu thay đổi'} onPress={this.onSubmit} />

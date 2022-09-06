@@ -30,7 +30,7 @@ import {Checkbox} from 'react-native-paper'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {requestCategories, requestDetails} from '../Categories/action'
-import {requestCreatePost} from '../PostsManager/action'
+import {requestCreatePost, requestEditPost} from '../PostsManager/action'
 import AddressSelection from './components/AddressSelection'
 import CategorySelection from './components/CategorySelection'
 import FilePicker from './components/FilePicker'
@@ -41,9 +41,15 @@ class CreatePost extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params,
-      address: '',
-      isOnlinePayment: false,
+      theme: this.props.route.params.theme,
+      initDataPost: this.props.route.params.initDataPost,
+      onGoBack: this.props.route.params.onGoBack,
+      address: this.props.route.params.initDataPost
+        ? this.props.route.params.initDataPost?.post?.sell_address
+        : '',
+      isOnlinePayment: this.props.route.params.initDataPost
+        ? this.props.route.params.initDataPost?.post?.online_payment
+        : false,
       pictures: []
     }
     this.titleRef = createRef()
@@ -76,7 +82,8 @@ class CreatePost extends Component {
   }
 
   onSubmit = () => {
-    const {createPost} = this.props
+    const {initDataPost} = this.state
+    const {createPost, editPost} = this.props
     const data = {
       ...this.categorySelectionRef.current.getData(),
       title: this.titleRef.current.getText(),
@@ -96,11 +103,15 @@ class CreatePost extends Component {
     formData.append('online_payment', data.online_payment)
     data.pictures.forEach((file) => {
       if (file) {
-        formData.append('picture', {
-          uri: file.uri,
-          name: file.fileName,
-          type: 'image/jpeg'
-        })
+        if (file?.fileName) {
+          formData.append('picture', {
+            uri: file.uri,
+            name: file?.fileName,
+            type: 'image/jpeg'
+          })
+        } else {
+          formData.append('default_picture', file.uri)
+        }
       }
     })
     formData.append('category_id', data.category_id)
@@ -108,18 +119,29 @@ class CreatePost extends Component {
       formData.append(`details[${index}][details_id]`, item.details_id)
       formData.append(`details[${index}][content]`, item.content)
     })
-    createPost({formData})
+    if (initDataPost)
+      editPost({
+        post_id: initDataPost?.post?.post_id,
+        formData,
+        isActive:
+          initDataPost?.post?.post_state === 'active' ||
+          initDataPost?.post?.post_state === 'hidden'
+      })
+    else createPost({formData})
   }
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
     const {stateUserPosts} = this.props
+    const {onGoBack} = this.state
     if (
       prevProps.stateUserPosts.isActioning !== stateUserPosts.isActioning &&
       !stateUserPosts.isActioning &&
       stateUserPosts.isActionDone
-    )
+    ) {
       goBack()
+      if (helper.isFunction(onGoBack)) onGoBack()
+    }
   }
 
   validateRequest(data) {
@@ -139,6 +161,12 @@ class CreatePost extends Component {
       this.categorySelectionRef.current.alertMessage('Chưa chọn danh mục')
       return false
     }
+    if (
+      data.details.filter((e) => helper.isEmptyString(e.content)).length !== 0
+    ) {
+      alert('Vui lòng điền đầy đủ các mục thông tin chi tiết')
+      return false
+    }
     if (!data.defaut_price || helper.isEmptyString(data.defaut_price)) {
       this.defaultPriceRef.current.alertMessage('Chưa cung cấp giá')
       return false
@@ -156,13 +184,14 @@ class CreatePost extends Component {
 
   render() {
     const {statePost, stateUserPosts} = this.props
-    const {theme, address} = this.state
+    const {theme, initDataPost, address} = this.state
+    const isActive = initDataPost?.post?.post_state === 'active'
     const style = initStyle(theme)
     return (
       <GestureHandlerRootView
         style={{flex: 1, backgroundColor: theme.primaryBackground}}>
         <KeyboardView>
-          <ModalLoading loading={stateUserPosts.isActioning} />
+          {/* <ModalLoading loading={stateUserPosts.isActioning} /> */}
           <View
             style={[
               {
@@ -175,20 +204,36 @@ class CreatePost extends Component {
               title={'Pick image'}
               icon={'image-outline'}
               onPicked={this.onFilePicked}
+              initFile={
+                initDataPost
+                  ? initDataPost?.post?.picture.length === 5
+                    ? initDataPost?.post?.picture.map((e) => ({uri: e}))
+                    : [
+                        ...initDataPost?.post?.picture.map((e) => ({uri: e})),
+                        null
+                      ]
+                  : [null]
+              }
             />
             <Input
               title={'Tiêu đề'}
               required
               ref={this.titleRef}
               placeholder={'Tiêu đề bài đăng'}
+              _text={initDataPost?.post?.title}
+              editable={!isActive}
             />
-            <CategorySelection ref={this.categorySelectionRef} />
+            <CategorySelection
+              ref={this.categorySelectionRef}
+              initDataPost={initDataPost}
+            />
             <Input
               title={'Giá'}
               required
+              _text={String(initDataPost?.post?.default_price || '')}
               ref={this.defaultPriceRef}
               inputType={'numeric'}
-              placeholder={'Giá ban đầu'}
+              placeholder={'Giá'}
             />
             <Input
               title={'Mô tả'}
@@ -197,6 +242,7 @@ class CreatePost extends Component {
                 'Mô tả ngắn gọn về mặt hàng giao dịch\nSử dụng các hashtag để tìm kiếm dễ dàng hơn\nVí dụ: #áo '
               }
               required
+              _text={initDataPost ? initDataPost?.post?.description : ''}
               height={150}
               ref={this.descriptionRef}
             />
@@ -206,9 +252,15 @@ class CreatePost extends Component {
               placeholder={'Nơi bán'}
               editable={false}
               required
+              selectable={true}
               onPress={this.openAddressSeletion}
             />
-            <OnlinePaymentCheckBox onCheck={this.onOnlinePaymentChecked} />
+            <OnlinePaymentCheckBox
+              onCheck={this.onOnlinePaymentChecked}
+              intitChecked={
+                initDataPost ? initDataPost?.post?.online_payment : false
+              }
+            />
             <FormButton title={'Đăng bài'} onPress={this.onSubmit} />
           </View>
         </KeyboardView>
@@ -232,7 +284,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createPost: bindActionCreators(requestCreatePost, dispatch)
+  createPost: bindActionCreators(requestCreatePost, dispatch),
+  editPost: bindActionCreators(requestEditPost, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreatePost)

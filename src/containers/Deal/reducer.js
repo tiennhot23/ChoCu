@@ -47,12 +47,14 @@ const dealReducer = (state = dealState, action) => {
         ...state,
         dataDeal: {
           ...state.dataDeal,
-          deal: {...state.dataDeal?.deal, deal_state: 'done'},
-          rating: action.dataRating
+          deal: action.isError
+            ? {...state.dataDeal?.deal}
+            : {...state.dataDeal?.deal, deal_state: 'done'},
+          rating: action.isError ? {} : action.dataRating
         },
         dataRating: action.dataRating,
         stateRating: {
-          isActioning: true,
+          isActioning: false,
           isActionDone: action.isError ? false : true,
           isFetching: false,
           isEmpty: action.isEmpty,

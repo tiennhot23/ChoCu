@@ -1,13 +1,16 @@
-import {adminPostsManagerAction} from './action'
-import {adminPostsManagerState} from './state'
+import {adminReportsManagerAction} from './action'
+import {adminReportsManagerState} from './state'
 
-const adminPostsManagerReducer = (state = adminPostsManagerState, action) => {
+const adminReportsManagerReducer = (
+  state = adminReportsManagerState,
+  action
+) => {
   switch (action.type) {
-    case adminPostsManagerAction.START_REQUEST_PENDING_POSTS: {
+    case adminReportsManagerAction.START_REQUEST_REPORTS: {
       return {
         ...state,
-        postsData: [],
-        postsState: {
+        reportsData: [],
+        reportsState: {
           isActionDone: false,
           isFetching: true,
           isEmpty: false,
@@ -16,11 +19,11 @@ const adminPostsManagerReducer = (state = adminPostsManagerState, action) => {
         }
       }
     }
-    case adminPostsManagerAction.STOP_REQUEST_PENDING_POSTS: {
+    case adminReportsManagerAction.STOP_REQUEST_REPORTS: {
       return {
         ...state,
-        postsData: action.postsData,
-        postsState: {
+        reportsData: action.reportsData,
+        reportsState: {
           isActionDone: action.isActionDone,
           isFetching: false,
           isEmpty: action.isEmpty,
@@ -34,4 +37,4 @@ const adminPostsManagerReducer = (state = adminPostsManagerState, action) => {
   }
 }
 
-export {adminPostsManagerReducer}
+export {adminReportsManagerReducer}

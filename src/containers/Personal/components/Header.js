@@ -104,7 +104,7 @@ export default Header = ({
         <View style={style.detail_item}>
           <Icon name="location-outline" size={20} style={style.nor_text} />
           <BaseText text={`Địa chỉ: `} style={style.bold_text} />
-          <BaseText text={user?.address} style={style.nor_text} />
+          <BaseText text={user?.address} style={[style.nor_text, {flex: 1}]} />
         </View>
         <View style={style.detail_item}>
           <Icon name="call-outline" size={20} style={style.nor_text} />

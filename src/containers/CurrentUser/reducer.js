@@ -86,12 +86,14 @@ const currentUserReducer = (state = currentUserState, action) => {
         }
       }
     }
-    case userPostsAction.START_ACTION_POST: {
+    case userPostsAction.STOP_ACTION_POST: {
       return {
         ...state,
         userData: {
           ...state.userData,
-          post_turn: state.userData.post_turn - 1
+          post_turn: action.isError
+            ? state.userData.post_turn
+            : state.userData.post_turn - 1
         }
       }
     }

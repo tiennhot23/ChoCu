@@ -49,7 +49,9 @@ export default function PaymentCheckBox({
             status={checked === 1 ? 'checked' : 'unchecked'}
             onPress={() => onOptionCheck(1)}
           />
-          <Text style={{color: color}}>Thanh toán trực tuyến</Text>
+          <Text style={{color: color}}>
+            Thanh toán online (Chuyển khoản khi nhận hàng)
+          </Text>
         </View>
       )}
     </>

@@ -9,7 +9,11 @@ export default function PaidDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'paid'))
+    setDeals(
+      userDeals
+        .filter((item) => item.deal_state === 'paid')
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (

@@ -4,6 +4,7 @@ import {Platform, Text, TouchableOpacity, View} from 'react-native'
 import {CHAT_BOX_SCR, CREATE_DEAL_SCR, LOGIN_SCR} from 'src/constants/constant'
 import {Linking} from 'react-native'
 import {useDispatch, useSelector} from 'react-redux'
+import {requestPost} from '../action'
 
 export default function BottomButtons({
   theme,
@@ -14,6 +15,7 @@ export default function BottomButtons({
   navigateToLoginScreen
 }) {
   const post = useSelector((state) => state.postReducer.dataPost.post)
+  const dispatch = useDispatch()
   return (
     <View
       style={{
@@ -125,7 +127,13 @@ export default function BottomButtons({
           alignItems: 'center'
         }}
         onPress={() => {
-          if (isLoggedIn) navigate(CREATE_DEAL_SCR, {postId})
+          if (isLoggedIn)
+            navigate(CREATE_DEAL_SCR, {
+              postId,
+              onGoBack: () => {
+                dispatch(requestPost({post_id: postId}))
+              }
+            })
           else navigateToLoginScreen()
         }}>
         <Icon name="wallet-outline" size={20} color={theme.primaryBackground} />

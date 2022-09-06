@@ -9,7 +9,11 @@ export default function SendingDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'sending'))
+    setDeals(
+      userDeals
+        .filter((item) => item.deal_state === 'delivering')
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (
@@ -40,11 +44,21 @@ export default function SendingDeals({route, navigation}) {
                   dealId: item.deal_id,
                   actions: [
                     {
-                      label: 'Đã nhận',
-                      action: 'receive',
-                      nextState: 'received',
+                      label: `Nhận hàng\n${
+                        item.online_deal ? '(Thanh toán)' : ''
+                      }`,
+                      action: 'delivered',
+                      nextState: 'delivered',
                       onActionDone: () => {
                         navigation.jumpTo('RECEIVEDDEALS')
+                      }
+                    },
+                    {
+                      label: 'Từ chối nhận',
+                      action: 'denied',
+                      nextState: 'denied',
+                      onActionDone: () => {
+                        navigation.jumpTo('CANCELEDDEALS')
                       }
                     }
                   ]

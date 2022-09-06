@@ -101,6 +101,25 @@ export const requestCancelDeal =
             dispatch(
               updateSellDealState({deal: data[0], message: message || ''})
             )
+        } else {
+          if (isBuyer)
+            dispatch(
+              updateBuyDealState({
+                deal: {},
+                message: message || '',
+                isEmpty: true,
+                isError: true
+              })
+            )
+          else
+            dispatch(
+              updateSellDealState({
+                deal: {},
+                message: message || '',
+                isEmpty: true,
+                isError: true
+              })
+            )
         }
       })
       .catch((err) => {
@@ -125,6 +144,41 @@ export const requestCancelDeal =
       })
   }
 
+export const requestDenyDeal =
+  ({deal_id}) =>
+  (dispatch, getState) => {
+    const body = {
+      deal_state: 'denied'
+    }
+    dispatch(startAction())
+    apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
+      .then((res) => {
+        const {code, message, data} = res
+        if (code === 200) {
+          dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+        } else {
+          dispatch(
+            updateBuyDealState({
+              deal: {},
+              message: message || '',
+              isEmpty: true,
+              isError: true
+            })
+          )
+        }
+      })
+      .catch((err) => {
+        dispatch(
+          updateBuyDealState({
+            deal: {},
+            isEmpty: true,
+            message: err.message,
+            isError: true
+          })
+        )
+      })
+  }
+
 export const requestConfirmedDeal =
   ({deal_id}) =>
   (dispatch, getState) => {
@@ -137,6 +191,15 @@ export const requestConfirmedDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateSellDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateSellDealState({
+              deal: {},
+              message: message || '',
+              isEmpty: true,
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -162,6 +225,15 @@ export const requestPaidDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateBuyDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -179,7 +251,7 @@ export const requestSendingDeal =
   ({deal_id}) =>
   (dispatch, getState) => {
     const body = {
-      deal_state: 'sending'
+      deal_state: 'delivering'
     }
     dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
@@ -187,6 +259,15 @@ export const requestSendingDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateSellDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateSellDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(
@@ -204,7 +285,7 @@ export const requestReceivedDeal =
   ({deal_id}) =>
   (dispatch, getState) => {
     const body = {
-      deal_state: 'received'
+      deal_state: 'delivered'
     }
     dispatch(startAction())
     apiBase(API_REQUEST_UPDATE_DEAL_STATE + `/${deal_id}`, METHOD_POST, body)
@@ -212,6 +293,15 @@ export const requestReceivedDeal =
         const {code, message, data} = res
         if (code === 200)
           dispatch(updateBuyDealState({deal: data[0], message: message || ''}))
+        else
+          dispatch(
+            updateBuyDealState({
+              deal: {},
+              isEmpty: true,
+              message: message || '',
+              isError: true
+            })
+          )
       })
       .catch((err) => {
         dispatch(

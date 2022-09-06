@@ -5,7 +5,7 @@ import {Button} from '@components'
 const FormButton = ({
   title,
   color,
-  textColor,
+  textColor = 'black',
   onPress,
   width = constant.calcWidth(189)
 }) => {

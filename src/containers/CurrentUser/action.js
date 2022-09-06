@@ -20,6 +20,7 @@ import {
   NOTIFY_TOKEN_FCM
 } from 'src/constants/storage'
 import database from '@react-native-firebase/database'
+import {clear_all_notify} from '../Notification/action'
 
 const START_ACTION_USER_DATA = 'START_ACTION_USER_DATA'
 const SAVE_USER = 'SAVE_USER'
@@ -109,19 +110,24 @@ export const requestUpdateUserInfo =
 export const requestLogoutUser = () => async (dispatch, getState) => {
   const fcm_token = await getTokenNotification()
   const body = {fcm_token}
-  apiBase(API_LOGOUT, METHOD_POST, body).then(async (response) => {
-    if (helper.isNonEmptyArray(response.data)) {
-      let user = await getItem(CURRENT_USER)
-      database()
-        .ref(`/users/${user.user_id}`)
-        .update({
-          ...user,
-          isOnline: false
-        })
-        .then((val) => console.log(val))
+  apiBase(API_LOGOUT, METHOD_POST, body)
+    .then(async (response) => {
+      if (helper.isNonEmptyArray(response.data)) {
+        let user = await getItem(CURRENT_USER)
+        user = JSON.parse(user)
+        database()
+          .ref(`/users/${user.user_id}`)
+          .update({
+            ...user,
+            isOnline: false
+          })
+          .then((val) => console.log(val))
+      }
+    })
+    .finally(() => {
       dispatch(removeUser())
-    }
-  })
+      dispatch(clear_all_notify())
+    })
 }
 
 export const requestLogoutAdmin = () => async (dispatch, getState) => {
@@ -130,8 +136,9 @@ export const requestLogoutAdmin = () => async (dispatch, getState) => {
   apiBase(API_LOGOUT_ADMIN, METHOD_POST, body).then(async (response) => {
     if (helper.isNonEmptyArray(response.data)) {
       let admin = await getItem(CURRENT_USER)
+      admin = JSON.parse(admin)
       database()
-        .ref(`/users/${admin.admin_id}`)
+        .ref(`/users/${admin.user_id}`)
         .update({
           ...admin,
           isOnline: false

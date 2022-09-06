@@ -1,4 +1,4 @@
-import {BaseLoading, BaseText, Icon, Input} from '@components'
+import {BaseLoading, BaseText, Icon, Input, ModalLoading} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, createRef} from 'react'
@@ -18,10 +18,8 @@ import {baseUrl} from 'src/constants/api'
 import {AUTH_NAV, width} from 'src/constants/constant'
 import {requestPost} from './action'
 import Address from './components/Address'
-import BottomAdminButtons from './components/BottomAdminButtons'
 import BottomButtons from './components/BottomButtons'
 import Description from './components/Description'
-import FormButton from './components/FormButton'
 import Header from './components/Header'
 import PostRating from './components/PostRating'
 import Report from './components/Report'
@@ -29,6 +27,9 @@ import SellerInfo from './components/SellerInfo'
 import Slider from './components/Slider'
 
 import * as AppNavigateActionCreator from '../AppNavigate/action'
+import BottomAdminButtons from './components/BottomAdminButtons'
+import {helper} from '@common'
+import PostReports from './components/PostReports'
 
 class Post extends Component {
   constructor(props) {
@@ -37,7 +38,14 @@ class Post extends Component {
       theme: this.props.route.params.theme,
       postId: this.props.route.params.postId,
       onGoBack: this.props.route.params.onGoBack,
-      showReport: false
+      showReport: false,
+      onActionDone: this.props.route.params.onActionDone
+        ? this.props.route.params.onActionDone
+        : () => {},
+      onActionDeny: this.props.route.params.onActionDeny
+        ? this.props.route.params.onActionDeny
+        : () => {},
+      reports: this.props.route.params.reports
     }
     this.reportContentRef = createRef()
     this.reportInfoRef = createRef()
@@ -46,6 +54,42 @@ class Post extends Component {
   componentDidMount() {
     const {getPost} = this.props
     getPost({post_id: this.state.postId})
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const {onActionDone, onActionDeny, postId} = this.state
+    const {isAdminActionDone, isAdminActioning, navigation, adminPostsData} =
+      this.props
+    const {dataPost, currentUser, isLoggedIn, statePost} = this.props
+    if (
+      prevProps.isAdminActioning != isAdminActioning &&
+      !isAdminActioning &&
+      isAdminActionDone
+    ) {
+      navigation.goBack()
+      if (
+        adminPostsData.find((e) => e.post_id === postId)?.post_state ===
+        'denied'
+      ) {
+        if (helper.isFunction(onActionDeny)) onActionDeny()
+      } else {
+        if (helper.isFunction(onActionDone)) onActionDone()
+      }
+    }
+
+    if (
+      // prevProps.statePost.isFetching != this.props.statePost.isFetching &&
+      // !this.props.statePost.isFetching &&
+      // this.props.statePost.isError
+      dataPost &&
+      dataPost?.post?.post_state === 'deleted' &&
+      currentUser.user_id !== dataPost?.post?.seller_id &&
+      !global.adminLogin
+    ) {
+      alert('Không tìm thấy bài đăng này')
+      navigation.goBack()
+      if (helper.isFunction(this.state.onGoBack)) this.state.onGoBack()
+    }
   }
 
   render() {
@@ -66,12 +110,16 @@ class Post extends Component {
             {!global.adminLogin && (
               <Header
                 navigation={this.props.navigation}
-                onGoBack={onGoBack}
+                onGoBack={() => {
+                  if (helper.isFunction(onGoBack)) onGoBack()
+                  this.componentDidMount()
+                }}
                 onReport={() => this.setState({showReport: true})}
                 style={style}
                 theme={theme}
                 postState={dataPost?.post?.post_state}
                 postId={postId}
+                dataPost={dataPost}
                 isOwner={dataPost?.user?.user_id === currentUser?.user_id}
               />
             )}
@@ -112,12 +160,15 @@ class Post extends Component {
                     />
                     <BaseText
                       style={style.price}
-                      text={dataPost?.post?.default_price + ' đ'}
+                      text={dataPost?.post?.default_price.toLocaleString(
+                        'en-US',
+                        {style: 'currency', currency: 'VND'}
+                      )}
                     />
                   </View>
                   <BaseText
                     style={style.small_text}
-                    text={moment(dataPost?.post?.time_updated).fromNow()}
+                    text={moment(dataPost?.post?.time_created).fromNow()}
                   />
                 </View>
 
@@ -134,6 +185,9 @@ class Post extends Component {
                   details={dataPost?.details}
                 />
                 <Address theme={theme} address={dataPost?.post?.sell_address} />
+                {this.state.reports && (
+                  <PostReports reports={this.state.reports} />
+                )}
                 <PostRating postId={postId} navigate={navigate} />
               </View>
             </ScrollView>
@@ -151,10 +205,47 @@ class Post extends Component {
                 }
               />
             ) : null}
-            {global.adminLogin && dataPost?.post?.post_state === 'pending' && (
+            {dataPost?.post?.post_state !== 'active' &&
+              dataPost?.post?.post_state !== 'pending' && (
+                <View
+                  style={{
+                    backgroundColor:
+                      dataPost?.post?.post_state === 'locked'
+                        ? 'red'
+                        : dataPost?.post?.post_state === 'sold'
+                        ? '#78f25a'
+                        : dataPost?.post?.post_state === 'hidden'
+                        ? '#555'
+                        : dataPost?.post?.post_state === 'denied'
+                        ? 'black'
+                        : '#bbb',
+                    padding: 20
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: 'white',
+                      fontSize: 20,
+                      fontWeight: '600'
+                    }}>
+                    {dataPost?.post?.post_state === 'locked'
+                      ? 'Đã bị khoá'
+                      : dataPost?.post?.post_state === 'hidden'
+                      ? 'Đã ẩn'
+                      : dataPost?.post?.post_state === 'pending'
+                      ? 'Đang chờ duyệt'
+                      : dataPost?.post?.post_state === 'denied'
+                      ? 'Bị từ chối'
+                      : 'Đang đăng'}
+                  </Text>
+                </View>
+              )}
+            {global.adminLogin && dataPost?.post?.post_state !== 'locked' && (
               <BottomAdminButtons
                 theme={theme}
                 navigation={this.props.navigation}
+                onActionDone={this.state.onActionDone}
+                hasReports={this.state.reports}
               />
             )}
           </View>
@@ -168,7 +259,10 @@ const mapStateToProps = (state) => ({
   currentUser: state.currentUserReducer?.userData,
   isLoggedIn: state.currentUserReducer?.isLoggedIn,
   dataPost: state.postReducer.dataPost,
-  statePost: state.postReducer.statePost
+  statePost: state.postReducer.statePost,
+  isAdminActionDone: state.adminPostsManagerReducer.isActionDone,
+  isAdminActioning: state.adminPostsManagerReducer.isActioning,
+  adminPostsData: state.adminPostsManagerReducer.postsData
 })
 
 const mapDispatchToProps = (dispatch) => ({

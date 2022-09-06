@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {View, ImageBackground, StyleSheet, Alert} from 'react-native'
+
+import auth from '@react-native-firebase/auth'
 import {helper} from '@common'
 import {constant} from '@constants'
 import FormInput from '../components/FormInput'
@@ -7,12 +9,7 @@ import FormButton from '../components/FormButton'
 import {KeyboardView, BaseText, BaseLoading} from '@components'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
-import {
-  requestActionCreateAccount,
-  requestActionForgotPassword,
-  requestGetOTP,
-  requestVerifyOTP
-} from 'src/containers/OTP/action'
+import {requestActionCreateAccount} from 'src/containers/OTP/action'
 
 const passwordRegex = new RegExp(
   // /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[A-Za-z\d@$!%*?&]{8,}$/
@@ -32,66 +29,63 @@ class CreateAccount extends Component {
       isLoading: false,
       showPhoneForm: true,
       showOTPForm: false,
-      showPasswordForm: false
+      confirm: null
     }
   }
 
-  onSubmitPhone = () => {
-    const {getOtp} = this.props
-    const {phoneNumber} = this.state
-    getOtp({phone: phoneNumber})
+  onSubmit = async () => {
+    try {
+      const {phoneNumber} = this.state
+      const confirmation = await auth().signInWithPhoneNumber(
+        '+84' + phoneNumber.slice(1, 10)
+      )
+      this.setState({
+        confirm: confirmation,
+        showOTPForm: true,
+        showPhoneForm: false
+      })
+    } catch (error) {
+      console.log(error)
+      if (error.code === 'auth/invalid-phone-number')
+        alert('Số điện thoại không hợp lệ')
+      else alert('Không thể gửi mã otp')
+    }
   }
 
-  onSubmitOTP = () => {
-    const {verifyOtp} = this.props
-    const {otpCode} = this.state
-    verifyOtp({otp_code: otpCode})
+  onSubmitOTP = async () => {
+    const {confirm, otpCode} = this.state
+    try {
+      await confirm.confirm(otpCode)
+      // alert('ok')
+      const {createAccount} = this.props
+      const {newPassword, phoneNumber} = this.state
+      createAccount({phone: phoneNumber, password: newPassword})
+    } catch (error) {
+      console.log(error)
+      alert('Mã xác thực không chính xác hoặc đã hết hiệu lực')
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack} = this.props.navigation
     if (
-      prevProps.stateOtp.isFetching !== this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isError
-    ) {
-      if (this.props.dataOtp.verified) {
-        this.setState({
-          showOTPForm: false,
-          showPasswordForm: true
-        })
-      } else {
-        const {dataOtp} = this.props
-        this.setState({
-          showPhoneForm: false,
-          showOTPForm: true
-        })
-        global._notify.localNotify({
-          title: 'Mã OTP',
-          message: dataOtp.otp_code
-        })
-      }
-    } else if (
-      prevProps.stateOtp.isFetching !== this.props.stateOtp.isFetching &&
-      !this.props.stateOtp.isFetching
-    ) {
-      if (this.props.stateOtp.isError) {
-        alert(this.props.stateOtp.message)
-        if (this.props.stateOtp.message.includes('hết hiệu lực'))
-          this.setState({
-            showPhoneForm: true,
-            showOTPForm: false
-          })
-      } else if (this.props.stateAction.isError)
-        alert(this.props.stateAction.message)
-    }
-
-    if (
       prevProps.stateAction.isFetching !== this.props.stateAction.isFetching &&
       !this.props.stateAction.isFetching
     ) {
-      if (helper.isNonEmptyString(this.props.stateAction.message))
+      if (helper.isNonEmptyString(this.props.stateAction.message)) {
         alert(this.props.stateAction.message)
+        this.setState({
+          phoneNumber: '',
+          otpCode: '',
+          newPassword: '',
+          isShowNewPassword: false,
+          isLoading: false,
+          showPhoneForm: true,
+          showOTPForm: false,
+          confirm: null
+        })
+      }
+      if (this.props.stateAction.isError) alert(this.props.stateAction.message)
       if (this.props.stateAction.isDone) goBack()
       if (this.props.stateAction.message.includes('không thể tạo tài khoản'))
         new Promise((resolve) =>
@@ -103,12 +97,6 @@ class CreateAccount extends Component {
     }
   }
 
-  onSubmit = () => {
-    const {createAccount} = this.props
-    const {newPassword} = this.state
-    createAccount({password: newPassword})
-  }
-
   render() {
     const {
       phoneNumber,
@@ -116,8 +104,7 @@ class CreateAccount extends Component {
       newPassword,
       isShowNewPassword,
       showPhoneForm,
-      showOTPForm,
-      showPasswordForm
+      showOTPForm
     } = this.state
     const {style} = this.props.route.params
     return (
@@ -162,7 +149,7 @@ class CreateAccount extends Component {
 
                     <BaseText
                       text={
-                        'Nhập số điện thoại dùng để đăng ký tài khoản và ấn xác nhận để lấy mã OTP'
+                        'Nhập số điện thoại dùng để đăng ký tài khoản và mật khẩu sau đó ấn xác nhận để lấy mã OTP'
                       }
                       style={{
                         marginTop: constant.calcHeight(10)
@@ -177,7 +164,7 @@ class CreateAccount extends Component {
                         _inputRef={(ref) => (this.inputPhoneNumber = ref)}
                         placeholder={'Số điện thoại'}
                         onSubmitEditing={() => {
-                          this.inputNewPassword.focus()
+                          // this.inputNewPassword.focus()
                         }}
                         onChangeText={(phoneNumber) =>
                           this.setState({
@@ -204,7 +191,49 @@ class CreateAccount extends Component {
                             : ''
                         }
                         style={{
-                          marginBottom: constant.calcHeight(10),
+                          color: '#F50537'
+                        }}
+                      />
+                    </View>
+                    <View>
+                      <FormInput
+                        icon={{uri: 'lock-closed-outline'}}
+                        _inputRef={(ref) => (this.inputNewPassword = ref)}
+                        placeholder={'Mật khẩu'}
+                        secureTextEntry={!isShowNewPassword}
+                        onSubmitEditing={() => {
+                          // this.inputConfirmedPassword.focus()
+                        }}
+                        onChangeText={(password) =>
+                          this.setState({
+                            newPassword: password
+                          })
+                        }
+                        value={newPassword}
+                        isPassword={true}
+                        isShowPassword={isShowNewPassword}
+                        onPress={() =>
+                          this.setState({isShowNewPassword: !isShowNewPassword})
+                        }
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        height: constant.calcHeight(25),
+                        marginTop: -10
+                      }}>
+                      <BaseText
+                        text={
+                          helper.isNonEmptyString(newPassword) &&
+                          newPassword.length < 8
+                            ? 'Mật khẩu phải có tối thiểu 8 ký tự'
+                            : newPassword.length >= 8 &&
+                              !passwordRegex.test(newPassword)
+                            ? 'Mật khẩu phải bao gồm chữ hoa, chữ thường và số'
+                            : ''
+                        }
+                        style={{
                           color: '#F50537'
                         }}
                       />
@@ -218,10 +247,13 @@ class CreateAccount extends Component {
                         width={constant.calcWidth(120)}
                       />
                       {helper.isNonEmptyString(phoneNumber) &&
-                        phoneRegex.test(phoneNumber) && (
+                        phoneRegex.test(phoneNumber) &&
+                        helper.isNonEmptyString(newPassword) &&
+                        newPassword.length >= 8 &&
+                        passwordRegex.test(newPassword) && (
                           <FormButton
                             title={'Xác nhận'}
-                            onPress={this.onSubmitPhone}
+                            onPress={this.onSubmit}
                             width={constant.calcWidth(120)}
                           />
                         )}
@@ -315,106 +347,6 @@ class CreateAccount extends Component {
                     </View>
                   </View>
                 )}
-                {showPasswordForm && (
-                  <View
-                    style={{
-                      paddingVertical: constant.calcHeight(10),
-                      paddingHorizontal: constant.calcWidth(20),
-                      marginTop: constant.calcHeight(10),
-                      alignItems: 'center',
-                      backgroundColor: 'white',
-                      width: constant.width - 60,
-                      borderRadius: constant.calcWidth(15)
-                    }}>
-                    <View
-                      style={{
-                        borderBottomColor: '#CCCCCC',
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        width: constant.width - 60,
-                        alignItems: 'center',
-                        paddingBottom: constant.calcHeight(5)
-                      }}>
-                      <BaseText
-                        text={'ĐẶT MẬT KHẨU'}
-                        style={{
-                          marginTop: constant.calcHeight(5),
-                          fontWeight: 'bold'
-                        }}
-                      />
-                    </View>
-
-                    <BaseText
-                      text={'Nhập mật khẩu'}
-                      style={{
-                        marginTop: constant.calcHeight(10)
-                      }}
-                    />
-
-                    <View style={{marginTop: 10}}>
-                      <FormInput
-                        icon={{uri: 'lock-closed-outline'}}
-                        _inputRef={(ref) => (this.inputNewPassword = ref)}
-                        placeholder={'Mật khẩu'}
-                        secureTextEntry={!isShowNewPassword}
-                        onSubmitEditing={() =>
-                          this.inputConfirmedPassword.focus()
-                        }
-                        onChangeText={(password) =>
-                          this.setState({
-                            newPassword: password
-                          })
-                        }
-                        value={newPassword}
-                        isPassword={true}
-                        isShowPassword={isShowNewPassword}
-                        onPress={() =>
-                          this.setState({isShowNewPassword: !isShowNewPassword})
-                        }
-                      />
-                    </View>
-
-                    <View
-                      style={{
-                        height: constant.calcHeight(25),
-                        marginTop: -10
-                      }}>
-                      <BaseText
-                        text={
-                          helper.isNonEmptyString(newPassword) &&
-                          newPassword.length < 8
-                            ? 'Mật khẩu phải có tối thiểu 8 ký tự'
-                            : newPassword.length >= 8 &&
-                              !passwordRegex.test(newPassword)
-                            ? 'Mật khẩu phải bao gồm chữ hoa, chữ thường và số'
-                            : ''
-                        }
-                        style={{
-                          marginBottom: constant.calcHeight(10),
-                          color: '#F50537'
-                        }}
-                      />
-                    </View>
-
-                    <View style={{flexDirection: 'row'}}>
-                      <FormButton
-                        title={'Hủy'}
-                        onPress={() => {
-                          this.props.navigation.goBack()
-                        }}
-                        width={constant.calcWidth(120)}
-                      />
-                      {helper.isNonEmptyString(newPassword) &&
-                        newPassword.length >= 8 &&
-                        passwordRegex.test(newPassword) && (
-                          <FormButton
-                            title={'Xác nhận'}
-                            onPress={this.onSubmit}
-                            width={constant.calcWidth(120)}
-                          />
-                        )}
-                    </View>
-                  </View>
-                )}
               </View>
             </View>
           </ImageBackground>
@@ -425,14 +357,10 @@ class CreateAccount extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  dataOtp: state.otpReducer.dataOtp,
-  stateOtp: state.otpReducer.stateOtp,
   stateAction: state.otpReducer.stateAction
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getOtp: bindActionCreators(requestGetOTP, dispatch),
-  verifyOtp: bindActionCreators(requestVerifyOTP, dispatch),
   createAccount: bindActionCreators(requestActionCreateAccount, dispatch)
 })
 

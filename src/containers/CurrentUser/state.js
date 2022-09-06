@@ -1,12 +1,5 @@
 export const currentUserState = {
-  userData: {
-    userId: '',
-    name: '',
-    avatar: '',
-    phone: '',
-    email: '',
-    address: ''
-  },
+  userData: {},
   stateUser: {
     isActioning: false,
     isActionDone: false,

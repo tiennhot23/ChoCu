@@ -9,8 +9,6 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {BUY_DEALS_MANAGER_SCR} from 'src/constants/constant'
 import {requestCreateDeal} from '../Deal/action'
-import {requestUserPayments} from '../Payment/action'
-import {requestCreatePost} from '../Post/action'
 import AddressSelection from './components/AddressSelection'
 import FormButton from './components/FormButton'
 import PaymentCheckBox from './components/PaymentCheckBox'
@@ -21,7 +19,8 @@ class CreateDeal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params,
+      theme: this.props.route.params.theme,
+      onGoBack: this.props.route.params.onGoBack,
       address: '',
       isOnlinePayment: false,
       showPayPal: false
@@ -73,12 +72,23 @@ class CreateDeal extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const {goBack, replace} = this.props.navigation
+    const {onGoBack} = this.state
     if (
       prevProps.stateDeal.isFetching !== this.props.stateDeal.isFetching &&
       prevProps.stateDeal.isFetching &&
+      !this.props.stateDeal.isError &&
       !helper.isEmptyObject(this.props.dataDeal)
     )
       replace(BUY_DEALS_MANAGER_SCR)
+    else if (
+      prevProps.stateDeal.isFetching !== this.props.stateDeal.isFetching &&
+      prevProps.stateDeal.isFetching &&
+      this.props.stateDeal.isError
+    ) {
+      alert(this.props.stateDeal.message)
+      if (helper.isFunction(onGoBack)) onGoBack()
+      goBack()
+    }
   }
 
   render() {
@@ -123,6 +133,7 @@ class CreateDeal extends Component {
               title={'Địa chỉ nhận'}
               _text={address}
               editable={false}
+              selectable
               required
               onPress={this.openAddressSeletion}
             />
@@ -155,7 +166,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createPost: bindActionCreators(requestCreatePost, dispatch),
   createDeal: bindActionCreators(requestCreateDeal, dispatch)
 })
 

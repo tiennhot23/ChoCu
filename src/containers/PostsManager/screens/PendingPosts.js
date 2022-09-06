@@ -9,7 +9,11 @@ export default function PendingPosts({route, navigation}) {
   const [posts, setPosts] = useState([...userPosts])
 
   useEffect(() => {
-    setPosts(userPosts.filter((item) => item.post_state === 'pending'))
+    setPosts(
+      userPosts
+        .filter((item) => item.post_state === 'pending')
+        .sort((a, b) => b.time_updated.localeCompare(a.time_updated))
+    )
   }, [userPosts])
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>

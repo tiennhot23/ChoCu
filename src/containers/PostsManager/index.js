@@ -10,8 +10,11 @@ import {requestUserPosts} from './action'
 import FormButton from './components/FormButton'
 import TopTabs from './components/TopTabs'
 import ActivePosts from './screens/ActivePosts'
+import DeletedPosts from './screens/DeletedPosts'
+import DeniedPosts from './screens/DeniedPosts'
 import HiddenPosts from './screens/HiddenPosts'
 import PendingPosts from './screens/PendingPosts'
+import SoldPosts from './screens/SoldPosts'
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -33,13 +36,15 @@ class PostsManager extends Component {
     const {isLoggedIn, currentUser} = this.props
     if (isLoggedIn) {
       if (currentUser?.post_turn === 0) alert('Bạn đã hết lượt đăng bài')
+      else if (!currentUser?.active)
+        alert('Tài khoản của bạn đã bị khoá chức năng đăng bài')
       else navigate(CREATE_POST_SCR)
     } else alert('Cần đăng nhập để thực hiện chức năng này')
   }
 
   render() {
     const {theme} = this.state
-    const {isLoggedIn} = this.props
+    const {isLoggedIn, userPosts} = this.props
     const {navigate} = this.props.navigation
     const style = initStyle(theme)
     return (
@@ -56,7 +61,9 @@ class PostsManager extends Component {
             />
             <View style={{flex: 1, width: '100%'}}>
               <Tab.Navigator
+                initialRouteName="PENDINGPOSTS"
                 screenOptions={{
+                  tabBarScrollEnabled: true,
                   tabBarActiveTintColor: theme.primaryText,
                   tabBarLabelStyle: {
                     fontSize: font.FONT_SIZE_14,
@@ -76,19 +83,64 @@ class PostsManager extends Component {
                 // tabBar={(props) => <TopTabs {...props} />}
               >
                 <Tab.Screen
+                  name="DENIEDPOSTS"
+                  component={DeniedPosts}
+                  options={{
+                    title: `Bị từ chối (${
+                      userPosts.filter((item) => item.post_state === 'denied')
+                        .length
+                    })`
+                  }}
+                />
+                <Tab.Screen
                   name="PENDINGPOSTS"
                   component={PendingPosts}
-                  options={{title: 'Đang duyệt'}}
+                  options={{
+                    title: `Đang duyệt (${
+                      userPosts.filter((item) => item.post_state === 'pending')
+                        .length
+                    })`
+                  }}
                 />
                 <Tab.Screen
                   name="ACTIVEPOSTS"
                   component={ActivePosts}
-                  options={{title: 'Đang đăng'}}
+                  options={{
+                    title: `Đang đăng (${
+                      userPosts.filter((item) => item.post_state === 'active')
+                        .length
+                    })`
+                  }}
+                />
+                <Tab.Screen
+                  name="SOLDPOSTS"
+                  component={SoldPosts}
+                  options={{
+                    title: `Đã bán (${
+                      userPosts.filter((item) => item.post_state === 'sold')
+                        .length
+                    })`
+                  }}
                 />
                 <Tab.Screen
                   name="HIDDENPOSTS"
                   component={HiddenPosts}
-                  options={{title: 'Đã ẩn'}}
+                  options={{
+                    title: `Đã ẩn (${
+                      userPosts.filter((item) => item.post_state === 'hidden')
+                        .length
+                    })`
+                  }}
+                />
+                <Tab.Screen
+                  name="DELETEDPOSTS"
+                  component={DeletedPosts}
+                  options={{
+                    title: `Đã khoá (${
+                      userPosts.filter((item) => item.post_state === 'locked')
+                        .length
+                    })`
+                  }}
                 />
               </Tab.Navigator>
             </View>
@@ -102,7 +154,8 @@ class PostsManager extends Component {
 const mapStateToProps = (state) => ({
   isLoggedIn: state.currentUserReducer.isLoggedIn,
   currentUser: state.currentUserReducer.userData,
-  statePost: state.postReducer.statePost
+  statePost: state.postReducer.statePost,
+  userPosts: state.userPostsReducer.dataUserPosts
 })
 
 const mapDispatchToProps = (dispatch) => ({

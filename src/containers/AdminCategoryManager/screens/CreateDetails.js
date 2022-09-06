@@ -1,5 +1,5 @@
 import {helper} from '@common'
-import {Icon, Input, KeyboardView} from '@components'
+import {Icon, Input, KeyboardView, ModalLoading} from '@components'
 import {constant} from '@constants'
 import {dimen} from '@styles'
 import React, {useEffect, useRef, useState} from 'react'
@@ -7,7 +7,7 @@ import {Text, TouchableOpacity, View} from 'react-native'
 import {TextInput} from 'react-native-gesture-handler'
 import {Checkbox} from 'react-native-paper'
 import {useDispatch, useSelector} from 'react-redux'
-import {addDetails} from '../action'
+import {addDetails, updateDetails} from '../action'
 import FilePicker from '../components/FilePicker'
 import FormButton from '../components/FormButton'
 
@@ -18,7 +18,7 @@ export default function CreateDetails({
   backgroundColor = 'white',
   width = '80%'
 }) {
-  const {theme, onGoBack} = route.params
+  const {theme, details, onGoBack} = route.params
   const dispatch = useDispatch()
   const [icon, setIcon] = useState(null)
   const [checked, setChecked] = useState(false)
@@ -27,6 +27,13 @@ export default function CreateDetails({
   const detailsState = useSelector(
     (state) => state.adminCategoriesManagerReducer.detailsState
   )
+
+  useEffect(() => {
+    if (details) {
+      setContents(details?.default_content)
+      setChecked(details?.editable)
+    }
+  }, [])
 
   useEffect(() => {
     if (detailsState.isActionDone) {
@@ -40,37 +47,42 @@ export default function CreateDetails({
   }
 
   const onSubmit = () => {
-    const details = {
+    const d = {
       details_title: titleRef.current.getText(),
       default_content: contents.filter((e) => e !== ''),
       editable: checked,
       details_icon: icon
     }
 
-    if (!validateRequest(details)) return
+    if (!validateRequest(d)) return
 
     let formData = new FormData()
-    formData.append('details_title', details.details_title)
-    details.default_content.forEach((item, index) => {
+    formData.append('details_title', d.details_title)
+    d.default_content.forEach((item, index) => {
       formData.append(`default_content[${index}]`, item)
     })
-    formData.append('editable', details.editable)
-    if (details.details_icon)
+    formData.append('editable', d.editable)
+    if (d.details_icon)
       formData.append('details_icon', {
-        uri: details.details_icon.uri,
-        name: details.details_icon.fileName,
+        uri: d.details_icon.uri,
+        name: d.details_icon.fileName,
         type: 'image/jpeg'
       })
-    // alert(JSON.stringify(formData))
-    dispatch(addDetails({formData}))
+    if (details)
+      dispatch(updateDetails({details_id: details?.details_id, formData}))
+    else dispatch(addDetails({formData}))
   }
 
-  const validateRequest = (details) => {
-    if (!details.details_title || helper.isEmptyString(details.details_title)) {
+  const validateRequest = (d) => {
+    if (!d.details_title || helper.isEmptyString(d.details_title)) {
       titleRef.current.alertMessage('Tiêu đề không được để trống')
       return false
     }
-    if (!details.details_icon) {
+    if (
+      !d.details_icon &&
+      details &&
+      helper.isEmptyString(details?.details_icon)
+    ) {
       alert('Yêu cầu cung cấp icon')
       return false
     }
@@ -87,15 +99,18 @@ export default function CreateDetails({
             alignItems: 'center'
           }
         ]}>
+        <ModalLoading loading={detailsState.isFetching} />
         <FilePicker
           title={'Choose icon'}
           icon={'image-outline'}
+          defaultFileUrl={details?.details_icon}
           onPicked={onFilePicked}
         />
         <Input
           title={'Tiêu đề'}
           required
           ref={titleRef}
+          _text={details?.details_title}
           placeholder={'Tiêu đề'}
         />
 
@@ -103,22 +118,38 @@ export default function CreateDetails({
           <Text>Các nội dung mặc định</Text>
         </View>
         {contents.map((item, index) => (
-          <TextInput
+          <View
             style={{
-              borderRadius: 10,
-              borderWidth: 1,
-              margin: 10,
-              padding: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
               width
-            }}
-            placeholder={`Nội dung ${index + 1}`}
-            value={item}
-            onChangeText={(text) => {
-              let a = [...contents]
-              a[index] = text
-              setContents(a)
-            }}
-          />
+            }}>
+            <TextInput
+              style={{
+                flex: 1,
+                borderRadius: 10,
+                borderWidth: 1,
+                margin: 10,
+                padding: 10
+              }}
+              placeholder={`Nội dung ${index + 1}`}
+              value={item}
+              onChangeText={(text) => {
+                let a = [...contents]
+                a[index] = text
+                setContents(a)
+              }}
+            />
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                let a = [...contents]
+                a.splice(index, 1)
+                setContents(a)
+              }}>
+              <Icon name="remove-circle-outline" size={30} color="black" />
+            </TouchableOpacity>
+          </View>
         ))}
         <TouchableOpacity
           activeOpacity={1}

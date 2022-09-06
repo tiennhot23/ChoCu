@@ -9,7 +9,11 @@ export default function SendingDeals({route, navigation}) {
   const [deals, setDeals] = useState([...userDeals])
 
   useEffect(() => {
-    setDeals(userDeals.filter((item) => item.deal_state === 'sending'))
+    setDeals(
+      userDeals
+        .filter((item) => item.deal_state === 'delivering')
+        .sort((a, b) => b.time_created.localeCompare(a.time_created))
+    )
   }, [userDeals])
 
   return (
@@ -38,7 +42,16 @@ export default function SendingDeals({route, navigation}) {
               onPress={() =>
                 navigation.navigate(DEAL_SCR, {
                   dealId: item.deal_id,
-                  actions: []
+                  actions: [
+                    {
+                      label: 'Huỷ',
+                      action: 'cancel',
+                      nextState: 'canceled',
+                      onActionDone: () => {
+                        navigation.jumpTo('CANCELEDDEALS')
+                      }
+                    }
+                  ]
                 })
               }
             />

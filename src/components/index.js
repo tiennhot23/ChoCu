@@ -9,6 +9,7 @@ import Input from './Input'
 import BottomSheet from './BottomSheet'
 import ComponentLoading from './ComponentLoading'
 import ModalLoading from './ModalLoading'
+import ConfirmDialog from './ConfirmDialog'
 
 export {
   Icon,
@@ -21,5 +22,6 @@ export {
   Input,
   BottomSheet,
   ComponentLoading,
-  ModalLoading
+  ModalLoading,
+  ConfirmDialog
 }

@@ -2,12 +2,13 @@ import {AnimatedImageSlide, AnimatedImageSlide2} from '@components'
 import {dimen} from '@styles'
 import moment from 'moment'
 import React, {Component, PureComponent} from 'react'
-import {AppState, FlatList, StyleSheet, Text, View} from 'react-native'
+import {FlatList, RefreshControl, StyleSheet, Text, View} from 'react-native'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {
   CHAT_BOX_SCR,
   CHAT_SCR,
+  EDIT_INFO_SCR,
   POST_SCR,
   SEARCH_SCR
 } from 'src/constants/constant'
@@ -22,7 +23,8 @@ class Home extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      theme: this.props.route.params
+      theme: this.props.route.params,
+      refreshing: false
     }
   }
 
@@ -30,6 +32,17 @@ class Home extends Component {
     this.props.getPosts({})
     this.props.getDataCurrentUser()
   }
+
+  // componentDidUpdate() {
+  //   const {currentUser} = this.props
+  //   if (
+  //     currentUser &&
+  //     (currentUser?.name === 'Chưa cung cấp' ||
+  //       currentUser?.email === 'Chưa cung cấp')
+  //   ) {
+  //     this.props.navigation.navigate(EDIT_INFO_SCR, {backToHome: true})
+  //   }
+  // }
 
   onPostPress = (postId) => {
     this.props.navigation.navigate(POST_SCR, {postId, onGoBack: this.onRefresh})
@@ -57,7 +70,7 @@ class Home extends Component {
   }
 
   render() {
-    const {theme} = this.state
+    const {theme, refreshing} = this.state
     const {navigate} = this.props.navigation
     const {posts} = this.props
     const style = initStyle(theme)
@@ -73,6 +86,12 @@ class Home extends Component {
             />
           }
           data={posts}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
           showsVerticalScrollIndicator={false}
           overScrollMode={'never'}
           renderItem={({item, index}) => (
@@ -82,7 +101,7 @@ class Home extends Component {
               image={item.picture[0]}
               title={item.title}
               price={item.default_price}
-              time={moment(item.time_updated).fromNow()}
+              time={moment(item.time_created).fromNow()}
               location={item.sell_address.split(', ')[2]}
               haveOnlinePayment={item.online_payment}
               onPress={this.onPostPress}
@@ -97,7 +116,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => ({
   posts: state.postsReducer.dataPosts,
-  isLoggedIn: state.currentUserReducer.isLoggedIn
+  isLoggedIn: state.currentUserReducer.isLoggedIn,
+  currentUser: state.currentUserReducer.userData
 })
 
 const mapDispatchToProps = (dispatch) => ({

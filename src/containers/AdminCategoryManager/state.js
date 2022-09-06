@@ -1,6 +1,7 @@
 export const adminCategoriesManagerState = {
   categoriesData: [],
   categoriesState: {
+    isActioning: false,
     isActionDone: false,
     isFetching: false,
     isEmpty: false,
@@ -9,6 +10,7 @@ export const adminCategoriesManagerState = {
   },
   detailsData: [],
   detailsState: {
+    isActioning: false,
     isActionDone: false,
     isFetching: false,
     isEmpty: false,
@@ -17,6 +19,7 @@ export const adminCategoriesManagerState = {
   },
   cateDetailsData: [],
   cateDetailsState: {
+    isActioning: false,
     isActionDone: false,
     isFetching: false,
     isEmpty: false,

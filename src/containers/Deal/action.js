@@ -76,7 +76,8 @@ export const requestCreateDeal =
             stopGetDeal({
               dataDeal: {},
               message: message || '',
-              isEmpty: true
+              isEmpty: true,
+              isError: true
             })
           )
         }
@@ -111,7 +112,8 @@ export const requestRateDeal =
             stopRateDeal({
               dataRating: {},
               message: message || '',
-              isEmpty: true
+              isEmpty: true,
+              isError: true
             })
           )
         }

@@ -71,20 +71,6 @@ class Search extends Component {
           <CategorySelection ref={this.categorySelectionRef} />
           <PostsHeader />
         </View>
-        {posts.length === 0 && (
-          <Image
-            source={{
-              uri: 'https://static.vecteezy.com/system/resources/thumbnails/005/163/918/small/search-no-result-found-word-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg'
-            }}
-            style={{
-              width: 200,
-              height: 200,
-              alignSelf: 'center',
-              justifyContent: 'center'
-            }}
-            resizeMode="contain"
-          />
-        )}
         <ComponentLoading
           isLoading={statePosts.isFetching}
           textLoading="Đang tìm kiếm">
@@ -99,7 +85,7 @@ class Search extends Component {
                 image={item.picture[0]}
                 title={item.title}
                 price={item.default_price}
-                time={moment(item.time_updated).fromNow()}
+                time={moment(item.time_created).fromNow()}
                 location={item.sell_address.split(', ')[2]}
                 haveOnlinePayment={item.online_payment}
                 onPress={this.onPostPress}

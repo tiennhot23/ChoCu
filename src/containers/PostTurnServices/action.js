@@ -23,11 +23,10 @@ export const postTurnServicesAction = {
 }
 
 export const addUserServices =
-  ({service_id, price, post_turn}) =>
+  ({price, post_turn}) =>
   (dispatch, getState) => {
     dispatch(startAction())
     apiBase(API_REQUEST_ADD_USER_SERVICE, METHOD_POST, {
-      service_id,
       price,
       post_turn
     })

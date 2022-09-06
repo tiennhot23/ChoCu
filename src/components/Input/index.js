@@ -27,17 +27,19 @@ export default Input = forwardRef(
       height = 70,
       title,
       _text = '',
-      required,
-      placeholder = 'Select',
+      required = false,
+      placeholder = title,
       message,
       multiline = false,
       inputType,
       editable = true,
+      selectable = false,
       onPress,
       onChange
     },
     ref
   ) => {
+    color = editable ? 'black' : selectable ? 'black' : 'gray'
     const [isEmpty, setIsEmpty] = useState(false)
     const [text, setText] = useState('')
 
@@ -85,7 +87,7 @@ export default Input = forwardRef(
                 elevation: 3
               }}>
               <TextInput
-                keyboardType={inputType}
+                keyboardType={inputType === 'money' ? 'numeric' : inputType}
                 multiline={multiline}
                 editable={editable}
                 style={{

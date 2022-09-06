@@ -11,33 +11,24 @@ import {add_notify} from 'src/containers/Notification/action'
 import {NOTIFICATIONS} from 'src/constants/storage'
 import {getItem, setItem} from 'src/common/storage'
 import AdminStackNavigator from './AdminStackNavigator'
-import {navigateToAdminScreen} from 'src/containers/AppNavigate/action'
+import {requestUserData} from 'src/containers/CurrentUser/action'
+import {
+  requestBuyDeals,
+  requestSellDeals
+} from 'src/containers/DealManager/action'
+import {requestUserPosts} from 'src/containers/PostsManager/action'
 
 const Stack = createNativeStackNavigator()
 
 export default function RootNavigator() {
   const appNavigate = useSelector((state) => state.appNavigateReducer)
-  const currentUser = useSelector((state) => state.currentUserReducer.userData)
-
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (currentUser.role_id === 'admin') global.adminLogin = true
-  }, [currentUser])
   const onRegister = (token) => {
     console.log('onRegister', token)
   }
   const onNotification = (notification) => {
     console.log('onNotification', notification)
-    // const { data } = notification;
-    // if (helper.isValidObject(data?.custom_notification)) {
-    //     const { notify_id,
-    //       notify_detail_id,
-    //       notify_type,
-    //       title,
-    //       message,
-    //       time_created } = JSON.parse(data?.custom_notification);
-    // }
   }
   const _notify = new NotifService(onRegister, onNotification)
 
@@ -56,6 +47,15 @@ export default function RootNavigator() {
       message: notification.body
     })
     if (helper.isValidObject(data)) {
+      if (notification.title === 'Tài khoản đã bị khoá')
+        dispatch(requestUserData())
+      else if (data.notify_type === 'deal') {
+        dispatch(requestSellDeals())
+        dispatch(requestBuyDeals())
+      } else if (data.notify_type === 'post') {
+        dispatch(requestUserPosts())
+      }
+
       dispatch(add_notify(data))
       await addNotifyToStorage(data)
     }
@@ -107,6 +107,5 @@ export default function RootNavigator() {
         <Stack.Screen name={AUTH_NAV} component={AuthStackNavigator} />
       )}
     </Stack.Navigator>
-    // <AuthStackNavigator />
   )
 }
